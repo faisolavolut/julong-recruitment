@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_BASE_URL: https://julong-portal.avolut.com
+        NEXT_PUBLIC_BASE_URL: https://julong-mpp.avolut.com
+        NODE_ENV: production
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=https://julong-portal.avolut.com
+      - NEXT_PUBLIC_BASE_URL=https://julong-mpp.avolut.com
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
