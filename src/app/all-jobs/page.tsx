@@ -1,42 +1,30 @@
 "use client";
-import api from "@/lib/utils/axios";
-import {
-  filterMenuByPermission,
-  getFirstMenuWithUrl,
-} from "@/lib/utils/filterMenuByPermission";
-import { userRoleMe } from "@/lib/utils/getAccess";
 import get from "lodash.get";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { configMenu } from "./d/config-menu";
-import { read } from "fs";
 import { useLocal } from "@/lib/utils/use-local";
-import ServerErrorPage from "../lib/components/comp/500";
-import DefaultHeaderNavigation from "./components/navbarHeader";
 import { siteurl } from "@/lib/utils/siteurl";
 import { Form } from "@/lib/components/form/Form";
-import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Field } from "@/lib/components/form/Field";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
-import JobCard from "./components/JobCard";
 import { PinterestLayout } from "@/lib/components/ui/PinterestLayout";
-import FlowbiteFooterSection from "./components/flowbite-footer";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
-import { Avatar } from "flowbite-react";
-import TestimonialsCard from "./components/testimoni";
+import ServerErrorPage from "@/lib/components/comp/500";
+import DefaultHeaderNavigation from "@/app/components/navbarHeader";
+import JobCard from "@/app/components/JobCard";
+import TestimonialsCard from "@/app/components/testimoni";
+import FlowbiteFooterSection from "@/app/components/flowbite-footer";
+import { PaginationDemo } from "../components/pagination";
+import DetailJobs from "../components/DetailJobs";
+import CardCompanyProfile from "../components/CardCompanyProfile";
 
 function HomePage() {
-  const router = useRouter();
   const local = useLocal({
-    ready: false,
-    access: true,
+    open: false,
   });
   useEffect(() => {}, []);
-  if (local.ready) {
-    if (!local.access) return <ServerErrorPage />;
-  }
   return (
     <div className="flex flex-col max-w-screen bg-white">
       <DefaultHeaderNavigation />
@@ -104,71 +92,29 @@ function HomePage() {
       <div className="relative flex flex-col flex-grow">
         <div className="flex-grow flex flex-col p-8 ">
           <div className="flex flex-row items-center justify-between pb-4">
-            <p className="font-bold text-3xl">Featured Jobs</p>
-            <Link
-              href="#"
-              className="flex flex-row items-center gap-x-2 font-bold text-blue-500"
-            >
-              Show all jobs <FaArrowRight />
-            </Link>
+            <p className="font-bold text-3xl">All Jobs</p>
           </div>
-          <div className="flex flex-grow">
+          <div className="flex flex-row flex-grow">
+            <div>
+
             <PinterestLayout
               gap={4}
-              data={[1, 2, 3, 4, 1, 2, 3, 4]}
+              data={[1, 2, 3, 4, 1]}
               child={() => {
                 return <JobCard />;
               }}
-              col={4}
+              col={1}
             />
+            </div>
+            <div className="relative flex flex-row flex-grow overflow-y-scroll">
+              <div className="absolute top-0 left-0 flex-grow flex flex-col p-8 ">
+                <DetailJobs />
+                <CardCompanyProfile />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="flex-grow flex flex-col p-8 ">
-          <div className="flex flex-row items-center justify-center pb-4">
-            <p className="font-bold text-3xl">Testimonials</p>
-          </div>
-          <div className="flex flex-grow">
-            <PinterestLayout
-              gap={4}
-              data={[
-                {
-                  title: "Bapak",
-                  testimoni: `"Website ini tuh kayak wingman terbaik buat cari kerja! Tadinya aku ngira bakal ribet dan harus ngirim lamaran ke sana-sini, tapi ternyata semuanya bisa dilakuin dalam satu platform ini. Fiturnya lengkap banget—mulai dari filter pekerjaan sampai tips buat wawancara. Nggak nyangka, akhirnya aku dapet kerjaan impian berkat website ini. Kayak dapet jodoh, tapi versi karier. Pokoknya, thank you banget, ya!"`,
-                },
-
-                {
-                  title: "Ibu",
-                  testimoni: `"Gara-gara website ini, aku jadi kayak HR pribadi buat diriku sendiri. Tinggal klik sana-sini, udah dapet list pekerjaan yang pas banget sama skill. Thanks banget, sekarang aku jadi bisa bilang, 'Bye, pengangguran!”`,
-                },
-                {
-                  title: "Adik",
-                  testimoni: `"Sumpah, ini website penyelamat hidup! Pekerjaan impian sekarang cuma sejauh scroll dan klik. Aku nggak tahu harus bilang apa lagi selain 'mantap betul!'”`,
-                },
-                {
-                  title: "Kakak",
-                  testimoni: `"Fix, ini Tinder buat cari kerja. Swipe-swipe, dapet kerja!”`,
-                },
-                {
-                  title: "Agak Laen Sekeluarga",
-                  testimoni: `"Website ini bikin nyari kerjaan jadi lebih gampang daripada nyari pasangan. Fix suka!”`,
-                },
-                {
-                  title: "Horor",
-                  testimoni: `"Aku dapet kerjaan horor jaga kuburan.”`,
-                },
-              ]}
-              child={(item, idx, data, key) => {
-                return (
-                  <div key={key}>
-                    <TestimonialsCard
-                      title={item?.title}
-                      data={`${item?.testimoni}`}
-                    />
-                  </div>
-                );
-              }}
-              col={3}
-            />
+          <div className="flex flex-row items-center py-4">
+            <PaginationDemo />
           </div>
         </div>
         <div className="flex flex-col">

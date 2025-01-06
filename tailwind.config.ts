@@ -7,14 +7,15 @@ export default {
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/lib/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/flowbite-react/lib/**/*.{js,ts}",
   ],
   theme: {
     extend: {
       colors: {
+        primary: "#313678",
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: "#313678",
         second: "#C3D5FF",
         "background-default": "#F4F7FF",
         "default-stroke": "#C3D5FF",
