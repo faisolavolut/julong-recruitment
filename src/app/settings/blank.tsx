@@ -5,8 +5,6 @@ import Header from "@/lib/components/partials/Header";
 import Script from "@/lib/components/partials/Script";
 import NavFlow from "@/lib/components/partials/NavbarFlow";
 import Footer from "@/lib/components/partials/Footer";
-
-import { SidebarProvider } from "@/context/SidebarContext";
 import SidebarTree from "@/lib/components/partials/Sidebar";
 
 const geistSans = localFont({

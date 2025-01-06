@@ -1,21 +1,11 @@
 "use client";
-import api from "@/lib/utils/axios";
-import {
-  filterMenuByPermission,
-  getFirstMenuWithUrl,
-} from "@/lib/utils/filterMenuByPermission";
-import { userRoleMe } from "@/lib/utils/getAccess";
-import get from "lodash.get";
 import { notFound, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { configMenu } from "./d/config-menu";
-import { read } from "fs";
 import { useLocal } from "@/lib/utils/use-local";
 import ServerErrorPage from "../lib/components/comp/500";
 import DefaultHeaderNavigation from "./components/navbarHeader";
 import { siteurl } from "@/lib/utils/siteurl";
 import { Form } from "@/lib/components/form/Form";
-import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Field } from "@/lib/components/form/Field";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
@@ -24,7 +14,6 @@ import { PinterestLayout } from "@/lib/components/ui/PinterestLayout";
 import FlowbiteFooterSection from "./components/flowbite-footer";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
-import { Avatar } from "flowbite-react";
 import TestimonialsCard from "./components/testimoni";
 
 function HomePage() {
