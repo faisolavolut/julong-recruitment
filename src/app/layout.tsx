@@ -1,6 +1,6 @@
 "use client";
 import localFont from "next/font/local";
-import "./globals.css";
+import "@/app/globals.css";
 import Header from "@/lib/components/partials/Header";
 import Script from "@/lib/components/partials/Script";
 import { v4 as uuidv4 } from "uuid";
@@ -23,6 +23,10 @@ globalThis.navigate = navigate;
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const routerInstance = useRouter();
   useEffect(() => {
+    const run = async () => {
+      // await
+    };
+    run();
     globalThis.router = routerInstance;
     const user = localStorage.getItem("user");
     if (user) {

@@ -1,3 +1,4 @@
+import { siteurl } from "@/lib/utils/siteurl";
 import React from "react";
 
 const CardCompanyProfile = () => {
@@ -6,7 +7,7 @@ const CardCompanyProfile = () => {
       <h2 className="text-lg font-bold mb-4">Profil perusahaan</h2>
       <div className="flex items-start">
         <img
-          src="https://via.placeholder.com/80"
+          src={siteurl("/dog.jpg")}
           alt="Company Logo"
           className="h-16 w-16 mr-4"
         />

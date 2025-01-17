@@ -1,4 +1,3 @@
-// pages/api/set-cookie.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import { serialize } from "cookie";
 

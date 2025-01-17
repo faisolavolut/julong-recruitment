@@ -1,14 +1,13 @@
+import { siteurl } from "@/lib/utils/siteurl";
+import { Avatar } from "flowbite-react";
 import React from "react";
 
 const DetailJobs = () => {
   return (
     <div className="flex flex-grow flex-col">
             <div className="flex items-center mb-4">
-              <img
-                src="https://via.placeholder.com/80"
-                alt="Company Logo"
-                className="h-16 w-16 mr-4"
-              />
+              
+                        <Avatar alt="" img={siteurl("/dog.jpg")} rounded size="md" className="mr-2" />
               <div>
                 <h2 className="text-xl font-bold">
                   PT Indojaya Perkasa Abadi (Medan)
@@ -18,13 +17,9 @@ const DetailJobs = () => {
                 </a>
               </div>
             </div>
-
-            {/* Job Title */}
             <h1 className="text-2xl font-semibold mb-4">
               Staff Pembukuan dan Perpajakan
             </h1>
-
-            {/* Job Details */}
             <ul className="space-y-2 mb-4">
               <li className="flex items-center text-gray-700">
                 <svg

@@ -9,9 +9,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #313678;
+  --second: #c3d5ff;
+  --gray: #ebebeb;
+  --selectGray: #ebebeb33;
 }
-
-
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -23,28 +25,28 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: 'Roboto';
+  font-family: "Roboto";
 }
-.breadcrumb li{
+.breadcrumb li {
   margin-left: 0px;
 }
-.breadcrumb li > span{
+.breadcrumb li > span {
   padding-left: 0px;
 }
-.group{
-  margin-left: 5px
+.group {
+  margin-left: 5px;
 }
-.group span{
-padding: 5px;
-font-size: 0.75rem !important; /* 12px */
-line-height: 1rem  !important; /* 16px */
+.group span {
+  padding: 5px;
+  font-size: 0.75rem !important; /* 12px */
+  line-height: 1rem !important; /* 16px */
 }
 /* .group span.capitalize{
   padding: 0px;
   } */
-  .group >span{
-    padding: 5px 8px 5px 8px;
-    }
+.group > span {
+  padding: 5px 8px 5px 8px;
+}
 .resizer {
   position: absolute;
   top: 0;
@@ -131,10 +133,191 @@ line-height: 1rem  !important; /* 16px */
   }
 }
 
-.animate-spin-important{
+.animate-spin-important {
   animation: spin 1s linear infinite !important;
 }
 
 .active-menu-icon svg {
   fill: white;
+}
+.tiptap h1 {
+  font-size: 1.4rem;
+}
+
+.tiptap h2 {
+  font-size: 1.2rem;
+}
+
+.tiptap h3 {
+  font-size: 1.1rem;
+}
+.tiptap {
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
+    li p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
+  }
+  code {
+    background-color: var(--purple-light);
+    border-radius: 0.4rem;
+    color: var(--black);
+    font-size: 0.85rem;
+    padding: 0.25em 0.3em;
+  }
+
+  pre {
+    background: var(--black);
+    border-radius: 0.5rem;
+    color: var(--white);
+    font-family: "JetBrainsMono", monospace;
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+
+    code {
+      background: none;
+      color: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+    }
+  }
+
+  blockquote {
+    border-left: 3px solid var(--gray-3);
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--gray-2);
+    margin: 2rem 0;
+  }
+}
+.tiptap {
+  /* Table-specific styling */
+  table {
+    border-collapse: collapse;
+    margin: 0;
+    overflow: hidden;
+    table-layout: fixed;
+    width: 100%;
+
+    td,
+    th {
+      border: 1px solid var(--primary);
+      box-sizing: border-box;
+      min-width: 1em;
+      padding: 6px 8px;
+      position: relative;
+      vertical-align: top;
+
+      > * {
+        margin-bottom: 0;
+      }
+    }
+
+    th {
+      background-color: var(--second);
+      font-weight: bold;
+      text-align: left;
+    }
+    .selectedCell:after {
+      background: var(--selectGray);
+      content: "";
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .column-resize-handle {
+      background-color: var(--gray);
+      bottom: -2px;
+      pointer-events: none;
+      position: absolute;
+      right: -2px;
+      top: 0;
+      width: 1px;
+    }
+  }
+
+  .tableWrapper {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+  }
+
+  &.resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
+  }
+}
+
+.tiptap-border-none {
+  border: 0px solid transparent !important;
+  background-color: transparent !important;
+}
+
+.tiptap-border-none th {
+  border: 0px solid transparent !important;
+  background-color: transparent !important;
+}
+.tiptap-border-none td {
+  border: 0px solid transparent !important;
+  background-color: transparent !important;
+}
+
+::-webkit-scrollbar {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #d5d5d5; /* Warna latar belakang track */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Warna scrollbar */
+  border-radius: 10px; /* Membulatkan scrollbar */
+  border: 3px solid #d5d5d5;
+}
+
+/* Untuk scrollbar horizontal (opsional) */
+::-webkit-scrollbar-horizontal {
+  height: 11px !important;
+}
+
+::-webkit-scrollbar-vertical {
+  width: 11px !important;
+}
+
+::-webkit-scrollbar-track-horizontal {
+  background: #d5d5d5; /* Warna latar belakang track horizontal */
+}
+
+::-webkit-scrollbar-thumb-horizontal {
+  background: #888; /* Warna scrollbar horizontal */
+  border-radius: 10px; /* Membulatkan scrollbar horizontal */
+}
+
+.sidebar > div::-webkit-scrollbar-track {
+  background: transparent !important; /* Warna latar belakang track */
+  border-radius: 10px;
+}
+
+.sidebar > div::-webkit-scrollbar-thumb {
+  background: #d5d5d5; /* Warna scrollbar */
+  border-radius: 5px; /* Membulatkan scrollbar */
+  border: 3px solid transparent;
+}
+.sidebar > div::-webkit-scrollbar {
+  width: 0px !important;
+  height: 5px !important;
 }

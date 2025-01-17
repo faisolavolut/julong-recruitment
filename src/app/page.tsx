@@ -95,7 +95,7 @@ function HomePage() {
           <div className="flex flex-row items-center justify-between pb-4">
             <p className="font-bold text-3xl">Featured Jobs</p>
             <Link
-              href="#"
+              href="/all-jobs"
               className="flex flex-row items-center gap-x-2 font-bold text-blue-500"
             >
               Show all jobs <FaArrowRight />
