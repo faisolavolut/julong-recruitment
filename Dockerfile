@@ -5,8 +5,11 @@ WORKDIR /app
 # Salin file yang diperlukan untuk instalasi dependencies
 RUN apt-get update && apt-get install -y git && apt-get clean
 
-COPY package.json package-lock.json ./
+COPY . .
+
 RUN git submodule update --init --recursive
+
+COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
