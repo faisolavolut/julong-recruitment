@@ -5,9 +5,7 @@ WORKDIR /app
 # Salin file yang diperlukan untuk instalasi dependencies
 RUN apt-get update && apt-get install -y git && apt-get clean
 
-COPY . .
-
-RUN git submodule update --init --recursive
+RUN git clone https://github.com/faisolavolut/julong-lib.git src/lib
 
 COPY package.json package-lock.json ./
 # Install dependencies
