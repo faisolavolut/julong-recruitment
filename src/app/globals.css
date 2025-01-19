@@ -321,3 +321,17 @@ body {
   width: 0px !important;
   height: 5px !important;
 }
+
+.vertical-rounded-tab {
+  --r: 22px; /* control the radius */
+
+  line-height: 1.7;
+  padding-inline: 0.5em;
+  border-block: var(--r) solid #0000;
+  border-radius: var(--r) 0 0 var(--r) / calc(2 * var(--r));
+  mask: radial-gradient(var(--r) at 0 var(--r), #0000 98%, #000 101%) 100%
+      calc(-1 * var(--r)) / var(--r) 100% repeat-y,
+    conic-gradient(#000 0 0) padding-box;
+  /* background: #00a0b0 border-box; */
+  /* width: fit-content; */
+}

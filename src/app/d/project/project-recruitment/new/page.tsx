@@ -1,4 +1,5 @@
 "use client";
+
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
@@ -11,8 +12,8 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 
 function Page() {
-  const labelPage = "Document Checking";
-  const urlPage = `/d/master-data/document-checking`;
+  const labelPage = "Project Recruitment";
+  const urlPage = `/d/project/project-recruitment`;
   const local = useLocal({
     can_add: false,
     ready: false as boolean,
@@ -71,7 +72,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-verifications",
+          path: "/api/project-recruitment-headers",
           method: "post",
           data: {
             ...fm.data,
@@ -80,7 +81,9 @@ function Page() {
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
-        return {};
+        return {
+          status: "DRAFT",
+        };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -94,18 +97,44 @@ function Page() {
                 <div>
                   <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
                 </div>
+                <div></div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"format"}
-                    label={"Format"}
+                    name={"document_number"}
+                    label={"Document Number"}
                     type={"text"}
+                    disabled={true}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_question_id"}
+                    name={"document_date"}
+                    label={"Document Date"}
+                    type={"date"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"start_date"}
+                    label={"Start Date"}
+                    type={"date"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"end_date"}
+                    label={"End Date"}
+                    type={"date"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"template_activity_id"}
                     label={"Template"}
                     type={"dropdown"}
                     onLoad={async () => {
@@ -120,6 +149,44 @@ function Page() {
                       });
                       return res;
                     }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"recruitment_type"}
+                    label={"Recruitment Type"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: "/api/recruitment-types",
+                        validate: "dropdown",
+                        keys: {
+                          value: "value",
+                          label: "value",
+                        },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <Field
+                    fm={fm}
+                    name={"description"}
+                    label={"Description"}
+                    type={"textarea"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"status"}
+                    label={"Status"}
+                    type={"text"}
+                    disabled={true}
                   />
                 </div>
               </div>

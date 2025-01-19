@@ -75,9 +75,10 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
                   className={`flex items-center ${mini && "justify-center"}`}
                 >
                   {true && (
-                    <button
+                    <div
                       onClick={() => {
                         setMini(!mini);
+                        localStorage.setItem("mini", !mini ? "true" : "false");
                       }}
                       className={` ${
                         !mini && "mr-3"
@@ -85,7 +86,7 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
                     >
                       <span className="sr-only">Toggle sidebar</span>
                       <HiMenuAlt1 className="h-6 w-6" />
-                    </button>
+                    </div>
                   )}
                   {!mini && (
                     <Navbar.Brand href="/">

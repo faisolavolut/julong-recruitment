@@ -4,7 +4,7 @@ import { RiCalendarScheduleLine, RiTeamFill } from "react-icons/ri";
 
 export const configMenu = [
   {
-    title: "Master Data",
+    title: "Master Data Document Setup",
     icon: <HiCubeTransparent />,
     children: [
       {
@@ -68,10 +68,10 @@ export const configMenu = [
       },
       {
         title: "Project",
-        href: "/d/project/project",
-        permision: ["read-project"],
+        href: "/d/project/project-recruitment",
+        permision: ["read-project-recruitment"],
       },
     ],
-    permision: ["read-project-calender", "read-project"],
+    permision: ["read-project-calender", "read-project-recruitment"],
   },
 ];

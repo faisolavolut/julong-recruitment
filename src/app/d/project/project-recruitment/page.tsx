@@ -6,6 +6,8 @@ import { events } from "@/lib/utils/event";
 import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
+import { dayDate } from "@/lib/utils/date";
+import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
@@ -20,8 +22,8 @@ function Page() {
   useEffect(() => {
     const run = async () => {
       const roles = await userRoleMe();
-      local.can_add = getAccess("create-document-checking", roles);
-      local.can_edit = getAccess("edit-document-checking", roles);
+      local.can_add = getAccess("create-project-recruitment", roles);
+      local.can_edit = getAccess("edit-project-recruitment", roles);
       local.render();
     };
     run();
@@ -31,12 +33,12 @@ function Page() {
     <div className="flex p-4 flex-col flex-grow bg-white rounded-lg border border-gray-300 shadow-md shadow-gray-300">
       <div className="flex flex-col py-4 pb-0 pt-0">
         <h2 className="text-xl font-semibold text-gray-900 ">
-          <span className="">Document Checking</span>
+          <span className="">Project Recruitment</span>
         </h2>
       </div>
       <div className="w-full flex flex-row flex-grow bg-white overflow-hidden ">
         <TableList
-          name="document-checking"
+          name="project-recruitment"
           header={{
             sideLeft: (data: any) => {
               if (!local.can_add) return <></>;
@@ -44,7 +46,7 @@ function Page() {
                 <div className="flex flex-row flex-grow">
                   <ButtonLink
                     className="bg-primary"
-                    href={"/d/master-data/document-checking/new"}
+                    href={"/d/project/project-recruitment/new"}
                   >
                     <div className="flex items-center gap-x-0.5">
                       <HiPlus className="text-xl" />
@@ -57,24 +59,38 @@ function Page() {
           }}
           column={[
             {
+              name: "document_number",
+              header: () => <span>Document No.</span>,
+              renderCell: ({ row, name }: any) => {
+                return <>{getValue(row, name)}</>;
+              },
+            },
+            {
               name: "name",
-              header: () => <span>Name</span>,
+              header: () => <span>Project Name</span>,
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
-              name: "format",
-              header: () => <span>Format</span>,
+              name: "start_date",
+              header: () => <span>Start Date</span>,
               renderCell: ({ row, name }: any) => {
-                return <>{getValue(row, name)}</>;
+                return <>{dayDate(getValue(row, name))}</>;
               },
             },
             {
-              name: "template_question.name",
-              header: () => <span>Template</span>,
+              name: "end_date",
+              header: () => <span>End Date</span>,
               renderCell: ({ row, name }: any) => {
-                return <>{getValue(row, name)}</>;
+                return <>{dayDate(getValue(row, name))}</>;
+              },
+            },
+            {
+              name: "status",
+              header: () => <span>Status</span>,
+              renderCell: ({ row, name }: any) => {
+                return <>{getStatusLabel(getValue(row, name))}</>;
               },
             },
             {
@@ -86,7 +102,7 @@ function Page() {
                   <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                     {local.can_edit ? (
                       <ButtonLink
-                        href={`/d/master-data/document-checking/${row.id}/edit`}
+                        href={`/d/project/project-recruitment/${row.id}/edit`}
                       >
                         <div className="flex items-center gap-x-2">
                           <HiOutlinePencilAlt className="text-lg" />
@@ -95,7 +111,7 @@ function Page() {
                     ) : (
                       <ButtonLink
                         className="bg-primary"
-                        href={`/d/master-data/document-checking/${row.id}/view`}
+                        href={`/d/project/project-recruitment/${row.id}/view`}
                       >
                         <div className="flex items-center gap-x-2">
                           <IoEye className="text-lg" />
@@ -111,8 +127,8 @@ function Page() {
             const params = await events("onload-param", param);
             const result: any = await apix({
               port: "recruitment",
-              value: "data.data.document_verifications",
-              path: `/api/document-verifications${params}`,
+              value: "data.data.project_recruitment_headers",
+              path: `/api/project-recruitment-headers${params}`,
               validate: "array",
             });
             return result;
@@ -121,7 +137,7 @@ function Page() {
             const result: any = await apix({
               port: "recruitment",
               value: "data.data.total",
-              path: `/api/document-verifications?page=1&page_size=1`,
+              path: `/api/project-recruitment-headers?page=1&page_size=1`,
               validate: "object",
             });
             return getNumber(result);
