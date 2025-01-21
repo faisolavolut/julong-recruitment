@@ -80,16 +80,16 @@ function Page() {
       }}
       onSubmit={async (fm: any) => {
         console.log({ data: fm.data });
-        // const res = await apix({
-        //   port: "recruitment",
-        //   value: "data.data",
-        //   path: "/api/template-questions",
-        //   method: "post",
-        //   data: {
-        //     ...fm.data,
-        //   },
-        // });
-        // navigate("/d/master-data/mail-template/" + res.id + "/edit");
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/mail-templates",
+          method: "post",
+          data: {
+            ...fm.data,
+          },
+        });
+        navigate("/d/master-data/mail-template/" + res.id + "/edit");
       }}
       onLoad={async () => {
         return {
@@ -142,7 +142,7 @@ function Page() {
                 <div className="col-span-2">
                   <Field
                     fm={fm}
-                    name={"content_mail"}
+                    name={"body"}
                     label={"Mail Text"}
                     type={"richtext"}
                   />

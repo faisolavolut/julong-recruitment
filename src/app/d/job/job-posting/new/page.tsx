@@ -83,6 +83,14 @@ function Page() {
             end_date: normalDate(fm?.data?.end_date),
           },
         });
+        const requestData = Object.entries(fm.data as any).reduce(
+          (formData, [key, value]) => {
+            formData.append(key, value as any);
+            return formData;
+          },
+          new FormData()
+        );
+        console.log(requestData);
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
@@ -207,6 +215,7 @@ function Page() {
                     name={"start_date"}
                     label={"Start Date"}
                     type={"date"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -215,6 +224,7 @@ function Page() {
                     name={"end_date"}
                     label={"End Date"}
                     type={"date"}
+                    required={true}
                   />
                 </div>
                 <div>

@@ -159,11 +159,6 @@ export const configMenu = [
     icon: <SiTeamspeak />,
     children: [
       {
-        title: "FGD Setup",
-        href: "/d/fgd/setup",
-        permision: ["read-fgd-setup"],
-      },
-      {
         title: "FGD Schedule",
         href: "/d/fgd/schedule",
         permision: ["read-fgd-schedule"],

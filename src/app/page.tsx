@@ -15,14 +15,26 @@ import FlowbiteFooterSection from "./components/flowbite-footer";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import TestimonialsCard from "./components/testimoni";
+import { apix } from "@/lib/utils/apix";
 
 function HomePage() {
   const router = useRouter();
   const local = useLocal({
     ready: false,
     access: true,
+    jobs: [] as any[],
   });
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const run = async () => {
+      const res = await apix({
+        port: "recruitment",
+        value: "data.data",
+        path: "/api/job-postings",
+        method: "get",
+      });
+    };
+    run();
+  }, []);
   if (local.ready) {
     if (!local.access) return <ServerErrorPage />;
   }

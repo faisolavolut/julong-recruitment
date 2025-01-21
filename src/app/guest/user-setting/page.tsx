@@ -19,6 +19,7 @@ import { cloneFM } from "@/lib/utils/cloneFm";
 import { actionToast } from "@/lib/utils/action";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { GoVerified } from "react-icons/go";
+import { flattenObject } from "@/lib/utils/flattenObject";
 
 function Page() {
   const labelPage = "Job Posting";
@@ -34,10 +35,18 @@ function Page() {
     ready: false as boolean,
     tab: get(list, "[0].id"),
     fm: null as any,
+    verif: false,
   });
 
   useEffect(() => {
     const run = async () => {
+      const res = await apix({
+        port: "portal",
+        value: "data.data",
+        path: "/api/users/me",
+        method: "get",
+      });
+      local.verif = res?.verified_user_profile === "false" ? false : true;
       local.can_add = true;
       local.ready = true;
       local.render();
@@ -68,7 +77,7 @@ function Page() {
           <div className="text-white">
             <div className="flex flex-row gap-x-2">
               <h1 className="text-lg font-semibold">John Cena </h1>
-              {false ? (
+              {local.verif ? (
                 <div className="flex flex-row gap-x-2 items-center justify-center rounded-full bg-blue-500 text-xs px-2">
                   <GoVerified /> Verified
                 </div>
@@ -114,7 +123,9 @@ function Page() {
             onClick={async (event) => {
               // let result =
               await actionToast({
-                task: async () => {},
+                task: async () => {
+                  local.fm.submit();
+                },
                 after: () => {},
                 msg_load: "Saving ",
                 msg_error: "Saving failed ",
@@ -148,31 +159,32 @@ function Page() {
             local.render();
           }}
           onSubmit={async (fm: any) => {
+            const data = {
+              ...fm.data,
+            };
+            delete data["user"];
+            let result = flattenObject(data) as any;
+            console.log(result);
             const res = await apix({
               port: "recruitment",
               value: "data.data",
-              path: "/api/job-postings",
+              path: "/api/user-profiles",
               method: "post",
               type: "form",
               data: {
-                ...fm.data,
-                document_date: normalDate(fm?.data?.document_date),
-                start_date: normalDate(fm?.data?.start_date),
-                end_date: normalDate(fm?.data?.end_date),
+                ...result,
               },
             });
-            if (res) navigate(`${urlPage}/${res?.id}/edit`);
+            // if (res) navigate(`${urlPage}/${res?.id}/edit`);
           }}
           onLoad={async () => {
             const data = await apix({
-              port: "portal",
+              port: "recruitment",
               value: "data.data",
-              path: "/api/users/me",
+              path: "/api/user-profiles/user",
             });
             return {
               ...data,
-              status: "DRAFT",
-              work_experience: [],
             };
           }}
           showResize={false}
@@ -188,7 +200,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
-                          name={"full_name"}
+                          name={"name"}
                           label={"Full Name"}
                           type={"text"}
                         />
@@ -293,13 +305,13 @@ function Page() {
               return (
                 <>
                   <div className={"flex flex-col flex-wrap px-4 py-2 pb-8"}>
-                    {fm.data?.work_experience?.length >= 1 &&
-                      fm.data.work_experience.map((e: any, idx: number) => {
+                    {fm.data?.work_experiences?.length >= 1 &&
+                      fm.data.work_experiences.map((e: any, idx: number) => {
                         const fm_row = cloneFM(fm, e);
                         return (
                           <div
                             className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8 border-b pb-4 border-gray-200"
-                            key={`work_experience-${idx}`}
+                            key={`work_experiences-${idx}`}
                           >
                             <div>
                               <Field
@@ -320,7 +332,7 @@ function Page() {
                             <div>
                               <Field
                                 fm={fm_row}
-                                name={"year_experience"}
+                                name={"year_experienced"}
                                 label={"Year Experience"}
                                 type={"text"}
                               />
@@ -349,9 +361,9 @@ function Page() {
                         onClick={(event) => {
                           event.preventDefault();
                           event.stopPropagation();
-                          const data = fm?.data?.work_experience || [];
+                          const data = fm?.data?.work_experiences || [];
                           data.push({});
-                          fm.data.work_experience = data;
+                          fm.data.work_experiences = data;
                           fm.render();
                         }}
                       >
@@ -381,77 +393,73 @@ function Page() {
               return (
                 <>
                   <div className={"flex flex-col flex-wrap px-4 py-2 pb-8"}>
-                    <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8"></div>
-
-                    {fm.data?.educational_background?.length >= 1 &&
-                      fm.data.educational_background.map(
-                        (e: any, idx: number) => {
-                          const fm_row = cloneFM(fm, e);
-                          return (
-                            <div
-                              className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8 border-b pb-4 border-gray-200"
-                              key={`educational_background-${idx}`}
-                            >
-                              <div>
-                                <Field
-                                  fm={fm_row}
-                                  name={"education_level"}
-                                  label={"Education Level"}
-                                  type={"text"}
-                                />
-                              </div>
-                              <div>
-                                <Field
-                                  fm={fm_row}
-                                  name={"school_name"}
-                                  label={"School or College Name"}
-                                  type={"text"}
-                                />
-                              </div>
-                              <div>
-                                <Field
-                                  fm={fm_row}
-                                  name={"major"}
-                                  label={"Major"}
-                                  type={"text"}
-                                />
-                              </div>
-                              <div>
-                                <Field
-                                  fm={fm_row}
-                                  name={"graduation_year"}
-                                  label={"Graduation Year"}
-                                  type={"money"}
-                                />
-                              </div>
-                              <div>
-                                <Field
-                                  fm={fm_row}
-                                  name={"gpa"}
-                                  label={"GPA"}
-                                  type={"money"}
-                                />
-                              </div>
-                              <div>
-                                <Field
-                                  fm={fm_row}
-                                  name={"certificate"}
-                                  label={"Certificate of Employee (SK)"}
-                                  type={"upload"}
-                                />
-                              </div>
+                    {fm.data?.educations?.length >= 1 &&
+                      fm.data.educations.map((e: any, idx: number) => {
+                        const fm_row = cloneFM(fm, e);
+                        return (
+                          <div
+                            className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8 border-b pb-4 border-gray-200"
+                            key={`educations-${idx}`}
+                          >
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"education_level"}
+                                label={"Education Level"}
+                                type={"text"}
+                              />
                             </div>
-                          );
-                        }
-                      )}
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"school_name"}
+                                label={"School or College Name"}
+                                type={"text"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"major"}
+                                label={"Major"}
+                                type={"text"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"graduation_year"}
+                                label={"Graduation Year"}
+                                type={"money"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"gpa"}
+                                label={"GPA"}
+                                type={"money"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"certificate"}
+                                label={"Certificate of Employee (SK)"}
+                                type={"upload"}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
                     <div>
                       <ButtonBetter
                         onClick={(event) => {
                           event.preventDefault();
                           event.stopPropagation();
-                          const data = fm?.data?.educational_background || [];
+                          const data = fm?.data?.educations || [];
                           data.push({});
-                          fm.data.educational_background = data;
+                          fm.data.educations = data;
                           fm.render();
                         }}
                       >
@@ -478,7 +486,93 @@ function Page() {
                 </>
               );
             } else if (local.tab === "skill") {
-              return <></>;
+              return (
+                <>
+                  <div className={"flex flex-col flex-wrap px-4 py-2 pb-8"}>
+                    {fm.data?.skills?.length >= 1 &&
+                      fm.data.skills.map((e: any, idx: number) => {
+                        const fm_row = cloneFM(fm, e);
+                        return (
+                          <div
+                            className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8 border-b pb-4 border-gray-200"
+                            key={`educations-${idx}`}
+                          >
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"name"}
+                                label={"Name"}
+                                type={"text"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"description"}
+                                label={"Description"}
+                                type={"textarea"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"level"}
+                                label={"Level"}
+                                type={"rating"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"graduation_year"}
+                                label={"Graduation Year"}
+                                type={"money"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                name={"certificate"}
+                                label={"Certificate"}
+                                type={"upload"}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    <div>
+                      <ButtonBetter
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          const data = fm?.data?.skills || [];
+                          data.push({});
+                          fm.data.skills = data;
+                          fm.render();
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={25}
+                          height={25}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="none"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeMiterlimit={10}
+                            strokeWidth={1.5}
+                            d="M6 12h12m-6 6V6"
+                          ></path>
+                        </svg>
+                        Add New
+                      </ButtonBetter>
+                    </div>
+                  </div>
+                </>
+              );
             }
             return (
               <>

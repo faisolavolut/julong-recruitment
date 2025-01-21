@@ -105,7 +105,7 @@ function Page() {
             const result: any = await apix({
               port: "recruitment",
               value: "data.data",
-              path: `/api/university${params}`,
+              path: `/api/universities${params}`,
               validate: "array",
             });
             return result;
@@ -114,7 +114,7 @@ function Page() {
             const result: any = await apix({
               port: "recruitment",
               value: "data.data.total",
-              path: `/api/university?page=1&page_size=1`,
+              path: `/api/universities?page=1&page_size=1`,
               validate: "object",
             });
             return getNumber(result);

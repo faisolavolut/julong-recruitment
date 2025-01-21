@@ -58,18 +58,33 @@ function Page() {
             </div>
             <div className="flex flex-row space-x-2 items-center">
               {local.can_edit && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoMdSave className="text-xl" />
-                    Save
-                  </ButtonContainer>
-                </Alert>
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Save
+                    </ButtonContainer>
+                  </Alert>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.data.status = "IN PROGRESS";
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Submit
+                    </ButtonContainer>
+                  </Alert>
+                </>
               )}
               {local.can_delete && (
                 <Alert
@@ -94,13 +109,30 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        const data = fm.data;
+
+        data["deleted_organization_logo"] = "false";
+        data["deleted_poster"] = "false";
+        if (!data?.organization_logo) {
+          data["deleted_organization_logo"] = "true";
+        }
+        if (!data?.poster) {
+          data["deleted_poster"] = "true";
+        }
+        if (typeof data?.organization_logo === "string") {
+          delete data["organization_logo"];
+        }
+        if (typeof data?.poster === "string") {
+          delete data["poster"];
+        }
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/job-postings",
+          path: "/api/job-postings/update",
           method: "put",
+          type: "form",
           data: {
-            ...fm.data,
+            ...data,
           },
         });
       }}
@@ -131,8 +163,8 @@ function Page() {
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data",
-                        path: "/api/job-postings",
+                        value: "data.data.project_recruitment_headers",
+                        path: "/api/project-recruitment-headers",
                         validate: "dropdown",
                         keys: {
                           label: "document_number",

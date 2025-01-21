@@ -168,8 +168,8 @@ function Page() {
             const params = await events("onload-param", param);
             const result: any = await apix({
               port: "recruitment",
-              value: "data.data.template_questions",
-              path: `/api/template-questions${params}`,
+              value: "data.data.mail_templates",
+              path: `/api/mail-templates${params}`,
               validate: "array",
             });
             console.log({ result });
@@ -179,7 +179,7 @@ function Page() {
             const result: any = await apix({
               port: "recruitment",
               value: "data.data.total",
-              path: `/api/template-questions?page=1&page_size=1`,
+              path: `/api/mail-templates?page=1&page_size=1`,
               validate: "object",
             });
             return getNumber(result);

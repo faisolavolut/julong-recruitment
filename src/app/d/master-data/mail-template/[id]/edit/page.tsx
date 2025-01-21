@@ -95,12 +95,12 @@ function Page() {
                       await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/template-questions/" + id,
+                        path: "/api/mail-templates/" + id,
                         method: "delete",
                       });
                     },
                     after: () => {
-                      navigate("/d/master-data/question");
+                      navigate("/d/master-data/mail-template");
                     },
                     msg_load: "Delete ",
                     msg_error: "Delete failed ",
@@ -121,24 +121,18 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/template-questions/update",
-          method: "put",
+          path: "/api/mail-templates",
+          method: "post",
           data: {
-            id: fm.data?.id,
-            name: fm.data?.name,
-            duration: fm.data?.duration,
-            description: fm.data?.description, // optional
-            status: fm.data?.status === "ACTIVE" ? fm.data?.status : "INACTIVE",
-            form_type: fm.data?.form_type,
+            ...fm.data,
           },
         });
-        // navigate("/d/master-data/question/" + res.id + "/edit");
       }}
       onLoad={async () => {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/template-questions/" + id,
+          path: "/api/mail-templates/" + id,
           validate: "object",
         });
         return {
@@ -192,7 +186,7 @@ function Page() {
                 <div className="col-span-2">
                   <Field
                     fm={fm}
-                    name={"content_mail"}
+                    name={"body"}
                     label={"Mail Text"}
                     type={"richtext"}
                   />

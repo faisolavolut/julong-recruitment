@@ -76,13 +76,21 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        const data = fm.data;
+        if (typeof data?.organization_logo === "string") {
+          delete data["organization_logo"];
+        }
+        if (typeof data?.poster === "string") {
+          delete data["poster"];
+        }
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/job-postings",
+          path: "/api/job-postings/update",
           method: "put",
+          type: "form",
           data: {
-            ...fm.data,
+            ...data,
           },
         });
       }}
@@ -102,8 +110,22 @@ function Page() {
       children={(fm: any) => {
         return (
           <>
-            <div className={"flex flex-col flex-wrap px-4 py-2"}>
-              <div className="grid gap-4 mb-4 grid-cols-4">
+            <div
+              className={cx(
+                "flex flex-col flex-wrap",
+                css`
+                  .field-form {
+                    border: none;
+                    border-radius: none;
+                  }
+                  .richtext-field {
+                    border: none;
+                    border-radius: none;
+                  }
+                `
+              )}
+            >
+              <div className="grid gap-4 mb-4 grid-cols-3">
                 <div className="col-span-3">
                   <Field
                     fm={fm}

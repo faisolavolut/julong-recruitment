@@ -28,7 +28,6 @@ import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoMdSave } from "react-icons/io";
-import { IoEye } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 
 function Page() {
@@ -41,13 +40,10 @@ function Page() {
     roles: null as any,
     ready: false as boolean,
   });
-  const config = {
-    document_checking: "document_checking",
-    question: "template_question",
-    document_setup: "document_setup",
-  };
   useEffect(() => {
     const run = async () => {
+      // local.ready = false;
+      // local.render();
       local.can_add = true;
       local.ready = true;
       local.render();
@@ -57,7 +53,6 @@ function Page() {
   if (local.ready && !local.can_add) return notFound();
   return (
     <FormBetter
-      mode="view"
       onTitle={(fm: any) => {
         return (
           <div className="flex flex-row w-full">
@@ -81,32 +76,17 @@ function Page() {
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/template-questions/update",
-          method: "put",
-          data: {
-            id: fm.data?.id,
-            name: fm.data?.name,
-            duration: fm.data?.duration,
-            description: fm.data?.description, // optional
-            status: fm.data?.status === "ACTIVE" ? fm.data?.status : "INACTIVE",
-            form_type: fm.data?.form_type,
-          },
-        });
-        // navigate("/d/master-data/question/" + res.id + "/edit");
-      }}
+      onSubmit={async (fm: any) => {}}
       onLoad={async () => {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/template-questions/" + id,
+          path: "/api/mail-templates/" + id,
           validate: "object",
         });
         return {
           id,
+          name_type: data?.document_type?.name,
           ...data,
         };
       }}
@@ -114,6 +94,7 @@ function Page() {
       header={(fm: any) => {
         return <></>;
       }}
+      mode={"view"}
       children={(fm: any) => {
         return (
           <>
@@ -125,23 +106,9 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_type_id"}
+                    name={"name_type"}
                     label={"Document Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/document-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: (item: any) => {
-                            return labelDocumentType(get(item, "name")) || "-";
-                          },
-                        },
-                      });
-                      return res;
-                    }}
+                    type={"text"}
                   />
                 </div>
                 <div>
@@ -156,7 +123,7 @@ function Page() {
                 <div className="col-span-2">
                   <Field
                     fm={fm}
-                    name={"content_mail"}
+                    name={"body"}
                     label={"Mail Text"}
                     type={"richtext"}
                   />
