@@ -185,6 +185,7 @@ function Page() {
             });
             return {
               ...data,
+              email: data?.user?.email,
             };
           }}
           showResize={false}
@@ -251,6 +252,7 @@ function Page() {
                           name={"email"}
                           label={"Email"}
                           type={"text"}
+                          disabled={true}
                         />
                       </div>
                       <div>
