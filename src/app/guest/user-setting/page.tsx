@@ -256,7 +256,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
-                          name={"contact"}
+                          name={"phone_number"}
                           label={"Contact"}
                           type={"text"}
                         />
@@ -284,6 +284,14 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
+                          name={"birth_date"}
+                          label={"Birth Date"}
+                          type={"date"}
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          fm={fm}
                           name={"ktp"}
                           label={"KTP"}
                           type={"upload"}
@@ -292,7 +300,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
-                          name={"cv"}
+                          name={"curriculum_vitae"}
                           label={"CV"}
                           type={"upload"}
                         />
@@ -402,11 +410,65 @@ function Page() {
                             key={`educations-${idx}`}
                           >
                             <div>
-                              <Field
+                              {/* <Field
                                 fm={fm_row}
                                 name={"education_level"}
                                 label={"Education Level"}
                                 type={"text"}
+                              /> */}
+                              <Field
+                                fm={fm_row}
+                                name={"education_level"}
+                                label={"Education Level"}
+                                type={"dropdown"}
+                                onLoad={() => {
+                                  return [
+                                    {
+                                      label: "1 - Doctoral / Professor",
+                                      value: "1 - Doctoral / Professor",
+                                    },
+                                    {
+                                      label: "2 - Master Degree",
+                                      value: "2 - Master Degree",
+                                    },
+                                    {
+                                      label: "3 - Bachelor",
+                                      value: "3 - Bachelor",
+                                    },
+                                    {
+                                      label: "4 - Diploma 1",
+                                      value: "4 - Diploma 1",
+                                    },
+                                    {
+                                      label: "5 - Diploma 2",
+                                      value: "5 - Diploma 2",
+                                    },
+                                    {
+                                      label: "6 - Diploma 3",
+                                      value: "6 - Diploma 3",
+                                    },
+                                    {
+                                      label: "7 - Diploma 4",
+                                      value: "7 - Diploma 4",
+                                    },
+                                    {
+                                      label: "8 - Elementary School",
+                                      value: "8 - Elementary School",
+                                    },
+                                    {
+                                      label: "9 - Senior High School",
+                                      value: "9 - Senior High School",
+                                    },
+                                    {
+                                      label: "10 - Junior High School",
+                                      value: "10 - Junior High School",
+                                    },
+                                    {
+                                      label: "11 - Unschooled",
+                                      value: "11 - Unschooled",
+                                    },
+                                  ];
+                                }}
                               />
                             </div>
                             <div>
@@ -519,14 +581,6 @@ function Page() {
                                 name={"level"}
                                 label={"Level"}
                                 type={"rating"}
-                              />
-                            </div>
-                            <div>
-                              <Field
-                                fm={fm_row}
-                                name={"graduation_year"}
-                                label={"Graduation Year"}
-                                type={"money"}
                               />
                             </div>
                             <div>

@@ -28,10 +28,12 @@ function HomePage() {
     const run = async () => {
       const res = await apix({
         port: "recruitment",
-        value: "data.data",
-        path: "/api/job-postings",
+        value: "data.data.job_postings",
+        path: "/api/job-postings?page=1&page_size=8&status=IN PROGRESS",
         method: "get",
       });
+      local.jobs = res;
+      local.render();
     };
     run();
   }, []);
@@ -116,9 +118,9 @@ function HomePage() {
           <div className="flex flex-grow">
             <PinterestLayout
               gap={4}
-              data={[1, 2, 3, 4, 1, 2, 3, 4]}
-              child={() => {
-                return <JobCard />;
+              data={local.jobs}
+              child={(item, idx, data, key) => {
+                return <JobCard data={data} />;
               }}
               col={4}
             />

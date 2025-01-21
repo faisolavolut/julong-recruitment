@@ -1,4 +1,4 @@
-export const JobCard: React.FC = () => {
+export const JobCard: React.FC<any> = ({ data }: { data: any }) => {
   return (
     <div className="border rounded-lg shadow-md p-4 w-72 bg-white">
       {/* Logo dan Tombol */}
@@ -22,8 +22,10 @@ export const JobCard: React.FC = () => {
       </div>
 
       {/* Judul dan Lokasi */}
-      <h2 className="mt-3 font-bold text-lg">Email Marketing</h2>
-      <p className="text-gray-600 text-sm">Revolut &bull; Madrid, Spain</p>
+      <h2 className="mt-3 font-bold text-lg">{data?.job_name}</h2>
+      <p className="text-gray-600 text-sm line-clamp-1">
+        {data?.for_organization_name} &bull; {data?.for_organization_location}
+      </p>
 
       {/* Deskripsi */}
       <p className="mt-2 text-gray-500 text-sm">
@@ -32,8 +34,8 @@ export const JobCard: React.FC = () => {
 
       {/* Tags */}
       <div className="flex gap-2 mt-4">
-        <span className="bg-yellow-100 text-yellow-600 text-xs font-medium px-3 py-1 rounded-full">
-          Marketing
+        <span className="bg-yellow-100 text-yellow-600 text-xs font-medium px-3 py-1 rounded-full line-clamp-1">
+          {data?.recruitment_type}
         </span>
         <span className="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-full">
           Design
