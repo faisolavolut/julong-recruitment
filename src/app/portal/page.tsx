@@ -24,7 +24,7 @@ function Portal() {
     local.render();
     const jwt = get_params_url("token");
     const run = async () => {
-      if (!jwt) return navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
+      // if (!jwt) return navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
       try {
         await api.post(process.env.NEXT_PUBLIC_BASE_URL + "/api/cookies", {
           token: jwt,
@@ -40,10 +40,11 @@ function Portal() {
           local.ready = true;
           local.render();
         } else {
-          navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
+          // navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
         }
-      } catch (e) {
-        navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
+      } catch (e: any) {
+        console.error(e?.message);
+        // navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
       }
     };
     run();
