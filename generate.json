@@ -1,9 +1,9 @@
 [
   // format data tablelist
   {
-    "name": "project-recruitment",
-    "title": "Project Recruitment",
-    "url_root": "/d/project",
+    "name": "applicant-result",
+    "title": "Applicant Result",
+    "url_root": "/d",
     "apix": {
       "port": "recruitment",
       "value": "data.data.job_postings",
@@ -11,158 +11,61 @@
       "validate": "array"
     },
     "column": [
-      ["document_number", "Document No."],
-      ["project_recruitment_header.name", "Project Name"],
-      ["start_date", "Start Date", "date"],
-      ["end_date", "End Date", "date"],
+      ["applicant_name", "Applicant Name"],
+      ["age", "Age"],
+      ["marital_status", "Marital Status"],
+      ["work_experience", "Work Experience (month)"],
+      ["cv", "CV"],
       ["status", "Status", "status"]
     ]
   },
   // FORM NEW
   {
     "mode": "new",
-    "name": "project-recruitment",
-    "title": "Project Recruitment",
-    "url_root": "/d/project",
+    "name": "job-posting",
+    "title": "Job Posting",
+    "url_root": "/d/job",
     "apix": {
       "port": "recruitment",
       "value": "data.data",
-      "path": "/api/project-recruitment-headers",
+      "path": "/api/job-postings",
       "validate": "object"
     },
     // default tipe fieldnya text
     // jika tipe fieldnya richtext maka col-span-2
     "field": [
-      ["name", "Name", "text"],
-      [
-        "document_number", // disabled
-        "Document Number",
-        "text"
-      ],
-      ["document_date", "Document Date", "date"],
-      ["start_date", "Start Date", "date"],
-      ["end_date", "End Date", "date"],
-      [
-        "template_activity_id",
-        "Template",
-        "dropdown",
-        {
-          "apix": {
-            "port": "recruitment",
-            "value": "data.data.template_questions",
-            "path": "/api/template-questions",
-            "keys": {
-              "label": "name"
-            },
-            "validate": "dropdown"
-          }
-        }
-      ],
-      [
-        "recruitment_type",
-        "Recruitment Type",
-        "dropdown",
-        {
-          "apix": {
-            "port": "recruitment",
-            "value": "data.data",
-            "path": "/api/recruitment-types",
-            "keys": {
-              "value": "value",
-              "label": "value"
-            },
-            "validate": "dropdown"
-          }
-        }
-      ],
-      [
-        "description", // col-span-2
-        "Description",
-        "textarea"
-      ],
-      [
-        "status", // disabled
-        "Status",
-        "text"
-      ]
+      ["education_level", "Education Level", "text"],
+      ["school_or_college_name", "School or College Name", "text"],
+      ["major", "Major", "text"],
+      ["graduation_year", "Graduation Year", "text"],
+      ["gpa", "GPA", "text"],
+      ["certificate_of_employment", "Certificate of Employee (SK)", "upload"]
     ]
   },
 
   // FORM EDIT
   {
     "mode": "edit",
-    "name": "project-recruitment",
-    "title": "Project Recruitment",
-    "url_root": "/d/project",
+    "name": "verification-profile",
+    "title": "Verification Profile",
+    "url_root": "/d",
     "apix": {
       "port": "recruitment",
       "value": "data.data",
-      "path": "/api/template-questions",
+      "path": "/api/job-postings",
       "validate": "object"
     },
     "onload": {
       "apix": {
         "port": "recruitment",
         "value": "data.data",
-        "path": "/api/template-questions",
+        "path": "/api/job-postings",
         "validate": "object"
       }
     },
     // default tipe fieldnya text
     // jika tipe fieldnya richtext maka col-span-2
-    "field": [
-      ["name", "Name", "text"],
-      [
-        "document_number", // disabled
-        "Document Number",
-        "text"
-      ],
-      ["document_date", "Document Date", "date"],
-      ["start_date", "Start Date", "date"],
-      ["end_date", "End Date", "date"],
-      [
-        "template_activity_id",
-        "Template",
-        "dropdown",
-        {
-          "apix": {
-            "port": "recruitment",
-            "value": "data.data.template_questions",
-            "path": "/api/template-questions",
-            "keys": {
-              "label": "name"
-            },
-            "validate": "dropdown"
-          }
-        }
-      ],
-      [
-        "recruitment_type",
-        "Recruitment Type",
-        "dropdown",
-        {
-          "apix": {
-            "port": "recruitment",
-            "value": "data.data",
-            "path": "/api/recruitment-types",
-            "keys": {
-              "value": "value",
-              "label": "value"
-            },
-            "validate": "dropdown"
-          }
-        }
-      ],
-      [
-        "description", // col-span-2
-        "Description",
-        "textarea"
-      ],
-      [
-        "status", // disabled
-        "Status",
-        "text"
-      ]
-    ]
+
+    "field": []
   }
 ]

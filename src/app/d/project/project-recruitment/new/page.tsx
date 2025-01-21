@@ -1,11 +1,13 @@
 "use client";
 
+import { generateLineActivity } from "@/app/lib/job-posting";
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
+import { normalDate } from "@/lib/utils/date";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
@@ -76,13 +78,23 @@ function Page() {
           method: "post",
           data: {
             ...fm.data,
+            start_date: normalDate(fm.data?.start_date),
+            end_date: normalDate(fm.data?.end_date),
+            document_date: normalDate(fm?.data?.document_date),
           },
         });
+        await generateLineActivity(res?.id, res?.template_activity_id);
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/project-recruitment-headers/document-number",
+        });
         return {
           status: "DRAFT",
+          document_number: res,
         };
       }}
       showResize={false}
@@ -140,8 +152,8 @@ function Page() {
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data.template_questions",
-                        path: "/api/template-questions",
+                        value: "data.data.template_activities",
+                        path: "/api/template-activities",
                         validate: "dropdown",
                         keys: {
                           label: "name",

@@ -16,6 +16,8 @@ import { cloneFM } from "@/lib/utils/cloneFm";
 import { actionToast } from "@/lib/utils/action";
 import get from "lodash.get";
 import { TableList } from "@/lib/components/tablelist/TableList";
+import { normalDate } from "@/lib/utils/date";
+import { generateLineActivity } from "@/app/lib/job-posting";
 
 function Page() {
   const id = getParams("id");
@@ -98,24 +100,96 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        const lines = fm?.data?.line;
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/template-questions",
+          path: "/api/project-recruitment-headers/update",
           method: "put",
           data: {
             ...fm.data,
+            start_date: normalDate(fm.data?.start_date),
+            end_date: normalDate(fm.data?.end_date),
+            document_date: normalDate(fm?.data?.document_date),
           },
         });
+        if (lines?.length) {
+          const prm = {
+            deleted_project_recruitment_line_ids: fm.data?.del_ids || [],
+            project_recruitment_header_id: id,
+            project_recruitment_lines: lines.map((e: any) => {
+              return {
+                ...e,
+                end_date: normalDate(e?.end_date),
+                start_date: normalDate(e?.start_date),
+                project_pics: e.pic?.length
+                  ? e.pic.map((e: any) => {
+                      return {
+                        employee_id: e,
+                      };
+                    })
+                  : [],
+              };
+            }),
+          };
+          await apix({
+            port: "recruitment",
+            value: "data.data",
+            path: "/api/project-recruitment-lines",
+            method: "post",
+            data: {
+              ...prm,
+            },
+          });
+        }
       }}
       onLoad={async () => {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/template-questions/${id}`,
+          path: `/api/project-recruitment-headers/${id}`,
           validate: "object",
         });
-        return { ...data, line: [{}] };
+
+        const lineData = data?.project_recruitment_lines || [];
+        const ids = lineData.map((e: any) => e?.id);
+        const line: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/template-activity-lines/template-activity/${data?.template_activity_id}`,
+          validate: "array",
+        });
+        let lines = lineData || [];
+        let del_ids = [];
+        if (Array.isArray(line) && line.length) {
+          const result = line.map((e) => {
+            return {
+              template_activity_line_id: e?.id,
+              name: e?.name,
+            };
+          });
+          if (
+            get(lines, "[0].template_activity_line.id") !==
+            get(result, "[0].template_activity_line_id")
+          ) {
+            del_ids = lines.map((e: any) => e?.id) || [];
+            lines = result;
+          } else {
+            lines = lines.map((e: any) => {
+              return {
+                ...e,
+                name: e?.template_activity_line?.name,
+                end_date: normalDate(e?.end_date),
+                start_date: normalDate(e?.start_date),
+                pic: e?.project_pics?.length
+                  ? e.project_pics.map((e: any) => e?.employee_id)
+                  : [],
+              };
+            });
+          }
+        }
+        console.log(lines);
+        return { ...data, line: lines, del_ids };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -168,11 +242,22 @@ function Page() {
                     name={"template_activity_id"}
                     label={"Template"}
                     type={"dropdown"}
+                    onChange={() => {
+                      const run = async () => {
+                        if (typeof id === "string") {
+                          const res = await generateLineActivity(
+                            id,
+                            fm?.data?.template_activity_id
+                          );
+                        }
+                      };
+                      run();
+                    }}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data.template_questions",
-                        path: "/api/template-questions",
+                        value: "data.data.template_activities",
+                        path: "/api/template-activities",
                         validate: "dropdown",
                         keys: {
                           label: "name",
@@ -242,6 +327,9 @@ function Page() {
               <div className="flex flex-grow flex-col h-[350px]">
                 <TableList
                   align="top"
+                  mode="form"
+                  fm={fm}
+                  name="line"
                   disabledHoverRow={true}
                   disabledPagination={true}
                   header={{
@@ -258,24 +346,12 @@ function Page() {
                                 onClick={async (event) => {
                                   event.preventDefault();
                                   event.stopPropagation();
-                                  const data = fm.data?.document_checking;
                                   await actionToast({
                                     task: async () => {
-                                      let result = await apix({
-                                        port: "recruitment",
-                                        value: "data.data",
-                                        path: "/api/questions",
-                                        method: "post",
-                                        data: {
-                                          template_question_id: id,
-                                          data: data,
-                                          deleted_question_ids:
-                                            get(
-                                              fm,
-                                              "data.deleted_line_checking_ids"
-                                            ) || [],
-                                        },
-                                      });
+                                      await generateLineActivity(
+                                        fm.data?.id,
+                                        fm.data?.template_activity_id
+                                      );
                                     },
                                     after: () => {},
                                     msg_load: "Saving ",
@@ -299,7 +375,7 @@ function Page() {
                                     d="M7.558 3.75H7.25a3.5 3.5 0 0 0-3.5 3.5v9.827a3.173 3.173 0 0 0 3.173 3.173v0m.635-16.5v2.442a2 2 0 0 0 2 2h2.346a2 2 0 0 0 2-2V3.75m-6.346 0h6.346m0 0h.026a3 3 0 0 1 2.122.879l3.173 3.173a3.5 3.5 0 0 1 1.025 2.475v6.8a3.173 3.173 0 0 1-3.173 3.173v0m-10.154 0V15a3 3 0 0 1 3-3h4.154a3 3 0 0 1 3 3v5.25m-10.154 0h10.154"
                                   ></path>
                                 </svg>
-                                Save
+                                Generate
                               </ButtonBetter>
                             </div>
                           </div>
@@ -311,11 +387,11 @@ function Page() {
                     {
                       name: "name",
                       header: () => <span>Name</span>,
-                      renderCell: ({ row, name, cell, tbl }: any) => {
+                      renderCell: ({ row, name, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
-                              fm={cloneFM(fm, row)}
+                              fm={fm_row}
                               hidden_label={true}
                               name={"name"}
                               label={""}
@@ -330,7 +406,7 @@ function Page() {
                       name: "pic",
                       width: 100,
                       header: () => <span>PIC</span>,
-                      renderCell: ({ row, name, cell, tbl }: any) => {
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <div
                             className={cx(
@@ -340,10 +416,14 @@ function Page() {
                             )}
                           >
                             <Field
-                              fm={cloneFM(fm, row)}
+                              fm={fm_row}
                               hidden_label={true}
                               name={"pic"}
                               label={""}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                               onLoad={async () => {
                                 const res: any = await apix({
                                   port: "portal",
@@ -365,14 +445,18 @@ function Page() {
                     {
                       name: "start_date",
                       header: () => <span>Start Date</span>,
-                      renderCell: ({ row, name, cell, tbl }: any) => {
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
-                              fm={cloneFM(fm, row)}
+                              fm={fm_row}
                               hidden_label={true}
                               name={name}
                               label={""}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                               type={"date"}
                             />
                           </>
@@ -382,14 +466,18 @@ function Page() {
                     {
                       name: "end_date",
                       header: () => <span>End Date</span>,
-                      renderCell: ({ row, name, cell, tbl }: any) => {
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
-                              fm={cloneFM(fm, row)}
+                              fm={fm_row}
                               hidden_label={true}
                               name={name}
                               label={""}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                               type={"date"}
                             />
                           </>
@@ -397,9 +485,7 @@ function Page() {
                       },
                     },
                   ]}
-                  onLoad={async (param: any) => {
-                    return fm.data.line || [];
-                  }}
+                  onLoad={fm.data.line}
                   onInit={async (list: any) => {}}
                 />
               </div>

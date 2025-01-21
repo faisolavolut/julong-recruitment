@@ -92,7 +92,6 @@ function Portal() {
                     let showEvent = [];
                     let isMore = false;
                     const showMoreCount = allEvent.filter((e: any) => !e.show);
-                    console.log(yourDay.data.date, { showMoreCount });
                     if (showMoreCount.length) {
                       showEvent = events.find((e: any) => e.idx === 0)
                         ? [events.find((e: any) => e.idx === 0)]

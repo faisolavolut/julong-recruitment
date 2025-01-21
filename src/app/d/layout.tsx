@@ -34,6 +34,8 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
     } else {
       setMini(localMini === "true" ? true : false);
     }
+    local.ready = true;
+    local.render();
     const run = async () => {
       try {
         const user = await api.get(
@@ -57,7 +59,6 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
         navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
       }
     };
-    run();
   }, []);
 
   return (

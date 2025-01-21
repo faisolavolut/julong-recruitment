@@ -32,7 +32,7 @@ const DefaultHeaderNavigation: FC = function () {
   }, []);
   return (
     <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50">
-      <Link href="https://flowbite.com" className="flex flex-row items-center">
+      <Link href={siteurl("/")} className="flex flex-row items-center">
         <img
           src={siteurl("/julong.png")}
           className="mr-3 h-6 sm:h-9 rounded"
@@ -126,6 +126,16 @@ const UserDropdown: FC = function () {
         }}
       >
         Switch Role
+      </Dropdown.Item>
+      <Dropdown.Divider />
+      <Dropdown.Item
+        className="flex flex-row items-center gap-x-1"
+        onClick={() => {
+          if (typeof window === "object")
+            navigate(`${siteurl(`/guest/user-setting`)}`);
+        }}
+      >
+        Setting
       </Dropdown.Item>
       <Dropdown.Divider />
       <Dropdown.Item

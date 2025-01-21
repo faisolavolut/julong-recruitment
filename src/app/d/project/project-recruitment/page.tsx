@@ -25,6 +25,7 @@ function Page() {
       local.can_add = getAccess("create-project-recruitment", roles);
       local.can_edit = getAccess("edit-project-recruitment", roles);
       local.render();
+      console.log({ local });
     };
     run();
   }, []);
