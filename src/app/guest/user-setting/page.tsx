@@ -478,7 +478,23 @@ function Page() {
                                 fm={fm_row}
                                 name={"school_name"}
                                 label={"School or College Name"}
-                                type={"text"}
+                                type={"dropdown"}
+                                onChange={() => {
+                                  console.log(fm_row);
+                                }}
+                                onLoad={async () => {
+                                  const res: any = await apix({
+                                    port: "recruitment",
+                                    value: "data.data",
+                                    path: "/api/universities",
+                                    validate: "dropdown",
+                                    keys: {
+                                      value: "name",
+                                      label: "name",
+                                    },
+                                  });
+                                  return res;
+                                }}
                               />
                             </div>
                             <div>
