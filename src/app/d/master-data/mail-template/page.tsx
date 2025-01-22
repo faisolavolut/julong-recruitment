@@ -2,6 +2,7 @@
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
+import { labelDocumentType } from "@/lib/utils/document_type";
 import { events } from "@/lib/utils/event";
 import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
@@ -65,9 +66,10 @@ function Page() {
               },
             },
             {
-              name: "form_type",
+              name: "document_type.name",
               header: () => <span>Document Type</span>,
               renderCell: ({ row, name, cell }: any) => {
+                return labelDocumentType(getValue(row, name));
                 switch (getValue(row, name)) {
                   case "ADMINISTRATIVE_SELECTION":
                     return "Administrative";

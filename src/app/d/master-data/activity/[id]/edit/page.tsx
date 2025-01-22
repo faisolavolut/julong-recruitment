@@ -241,7 +241,6 @@ function Page() {
                                   className="bg-primary"
                                   onClick={() => {
                                     const data = {};
-                                    fm.data.line.push(data);
                                     tbl.addRow(data);
                                     tbl.render();
                                     fm.render();
@@ -260,59 +259,6 @@ function Page() {
                     },
                     sideRight: (tbl: any) => {
                       return <></>;
-                      return (
-                        <>
-                          <div className="flex flex-row gap-x-2 items-center">
-                            <div className="flex flex-row flex-grow space-x-2">
-                              <ButtonBetter
-                                onClick={async (event) => {
-                                  event.preventDefault();
-                                  event.stopPropagation();
-                                  const data = fm.data?.document_checking;
-                                  await actionToast({
-                                    task: async () => {
-                                      let result = await apix({
-                                        port: "recruitment",
-                                        value: "data.data",
-                                        path: "/api/questions",
-                                        method: "post",
-                                        data: {
-                                          template_question_id: id,
-                                          data: data,
-                                          deleted_question_ids:
-                                            get(fm, "data.deleted_line_ids") ||
-                                            [],
-                                        },
-                                      });
-                                    },
-                                    after: () => {},
-                                    msg_load: "Saving ",
-                                    msg_error: "Saving failed ",
-                                    msg_succes: "Saving success ",
-                                  });
-                                }}
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={25}
-                                  height={25}
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={1.5}
-                                    d="M7.558 3.75H7.25a3.5 3.5 0 0 0-3.5 3.5v9.827a3.173 3.173 0 0 0 3.173 3.173v0m.635-16.5v2.442a2 2 0 0 0 2 2h2.346a2 2 0 0 0 2-2V3.75m-6.346 0h6.346m0 0h.026a3 3 0 0 1 2.122.879l3.173 3.173a3.5 3.5 0 0 1 1.025 2.475v6.8a3.173 3.173 0 0 1-3.173 3.173v0m-10.154 0V15a3 3 0 0 1 3-3h4.154a3 3 0 0 1 3 3v5.25m-10.154 0h10.154"
-                                  ></path>
-                                </svg>
-                                Save
-                              </ButtonBetter>
-                            </div>
-                          </div>
-                        </>
-                      );
                     },
                   }}
                   column={[
@@ -320,8 +266,7 @@ function Page() {
                       name: "name",
                       sortable: false,
                       header: () => <span>Document Name</span>,
-                      renderCell: ({ row, name, cell, tbl }: any) => {
-                        const fm_row = cloneFM(fm, row);
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
@@ -330,6 +275,10 @@ function Page() {
                               name={"name"}
                               label={"Template"}
                               type={"dropdown"}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                               onLoad={async () => {
                                 const res: any = await apix({
                                   port: "recruitment",
@@ -358,8 +307,7 @@ function Page() {
                       sortable: false,
                       header: () => <span>Template</span>,
                       width: 150,
-                      renderCell: ({ row, name, cell }: any) => {
-                        const fm_row = cloneFM(fm, row);
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
@@ -368,6 +316,10 @@ function Page() {
                               name={"question_template_id"}
                               label={"Template"}
                               type={"dropdown"}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                               onLoad={async () => {
                                 const res: any = await apix({
                                   port: "recruitment",
@@ -391,7 +343,7 @@ function Page() {
                       resize: false,
                       header: () => <span>Colour</span>,
                       width: 10,
-                      renderCell: ({ row, name, cell }: any) => {
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
@@ -400,6 +352,10 @@ function Page() {
                               name={"color_hex_code"}
                               label={"Colour"}
                               type={"color"}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                             />
                           </>
                         );
@@ -410,7 +366,7 @@ function Page() {
                       sortable: false,
                       header: () => <span>Description</span>,
                       width: 150,
-                      renderCell: ({ row, name, cell }: any) => {
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
@@ -419,6 +375,10 @@ function Page() {
                               name={"description"}
                               label={"Colour"}
                               type={"text"}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                             />
                           </>
                         );
@@ -430,7 +390,7 @@ function Page() {
                       resize: false,
                       header: () => <span>Active</span>,
                       width: 10,
-                      renderCell: ({ row, name, cell }: any) => {
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
                             <Field
@@ -439,6 +399,10 @@ function Page() {
                               name={"status"}
                               label={"Status"}
                               type={"single-checkbox"}
+                              onChange={() => {
+                                fm.data.line[idx] = fm_row?.data;
+                                fm.render();
+                              }}
                               onLoad={() => {
                                 return [
                                   {
@@ -456,7 +420,14 @@ function Page() {
                       name: "action",
                       header: () => <span>Action</span>,
                       sortable: false,
-                      renderCell: ({ row, name, cell, tbl }: any) => {
+                      renderCell: ({
+                        row,
+                        name,
+                        cell,
+                        idx,
+                        fm_row,
+                        tbl,
+                      }: any) => {
                         if (false) return <></>;
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap">

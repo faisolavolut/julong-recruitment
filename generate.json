@@ -1,22 +1,23 @@
 [
   // format data tablelist
   {
-    "name": "applicant-result",
-    "title": "Applicant Result",
+    "name": "mpr",
+    "title": "MPR Overview",
     "url_root": "/d",
     "apix": {
       "port": "recruitment",
-      "value": "data.data.job_postings",
-      "path": "/api/job-postings",
+      "value": "data.data.mp_request_header",
+      "path": "/api/mp-requests",
       "validate": "array"
     },
     "column": [
-      ["applicant_name", "Applicant Name"],
-      ["age", "Age"],
-      ["marital_status", "Marital Status"],
-      ["work_experience", "Work Experience (month)"],
-      ["cv", "CV"],
-      ["status", "Status", "status"]
+      ["document_number", "MPR Number"],
+      ["document_number", "Project Number"],
+      ["organization_name", "Organization"],
+      ["for_organization_name", "Company"],
+      ["recruitment_type", "Recruitment Type"],
+      ["mp_request_type", "Request Type", "status"],
+      ["status", "Status Recruitment", "status"]
     ]
   },
   // FORM NEW

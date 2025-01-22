@@ -16,6 +16,7 @@ import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa";
 import TestimonialsCard from "./components/testimoni";
 import { apix } from "@/lib/utils/apix";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 function HomePage() {
   const router = useRouter();
@@ -45,88 +46,97 @@ function HomePage() {
       <DefaultHeaderNavigation />
       <div
         className={cx(
-          "h-64 relative mb-8",
-          css`
-            background-image: url("${siteurl("/office.png")}");
-          `
+          "h-64 relative mb-8 flex flex-row items-center justify-center bg-primary"
         )}
       >
-        <div className="absolute bottom-[-25px] w-full flex flex-row justify-center items-center px-32">
-          <div className="flex flex-grow bg-white shadow-md rounded-md">
-            <div className="flex flex-grow">
-              <Form
-                onSubmit={async (fm: any) => {}}
-                onLoad={async () => {
-                  return {};
-                }}
-                showResize={false}
-                header={(fm: any) => {
-                  return <></>;
-                }}
-                children={(fm: any) => {
-                  return (
-                    <>
-                      <div className={cx("flex flex-row flex-wrap px-4 py-2")}>
-                        <div className="flex-grow grid gap-4 md:gap-6 md:grid-cols-2">
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"recommended_by"}
-                              label={"Recommend by"}
-                              type={"text"}
-                              hidden_label={true}
-                              placeholder="Job, title or keywords"
-                            />
-                          </div>
-
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"recommended_by"}
-                              label={"Recommend by"}
-                              type={"text"}
-                              hidden_label={true}
-                              placeholder="Location"
-                            />
-                          </div>
+        <div className="flex flex-grow max-w-screen-xl justify-center">
+          <div className="flex  w-3/4 bg-white shadow-md rounded-full">
+            <Form
+              onSubmit={async (fm: any) => {}}
+              onLoad={async () => {
+                return {};
+              }}
+              showResize={false}
+              header={(fm: any) => {
+                return <></>;
+              }}
+              children={(fm: any) => {
+                return (
+                  <>
+                    <div className={cx("flex flex-row flex-wrap px-4 py-2")}>
+                      <div className="flex-grow grid gap-4 md:gap-6 md:grid-cols-2">
+                        <div>
+                          <Field
+                            style="underline"
+                            fm={fm}
+                            name={"recommended_by"}
+                            label={"Recommend by"}
+                            type={"text"}
+                            hidden_label={true}
+                            placeholder="Job, title or keywords"
+                            prefix={
+                              <div className="text-md flex flex-row items-center font-bold">
+                                <IoIosSearch />
+                              </div>
+                            }
+                          />
                         </div>
-                        <div className="flex flex-row items-center">
-                          <ButtonBetter>
-                            <IoIosSearch />
-                          </ButtonBetter>
+
+                        <div>
+                          <Field
+                            fm={fm}
+                            style="underline"
+                            name={"recommended_by"}
+                            label={"Recommend by"}
+                            type={"text"}
+                            hidden_label={true}
+                            placeholder="Location"
+                            prefix={
+                              <div className="text-md flex flex-row items-center font-bold text-gray-500">
+                                <MdOutlineLocationOn />
+                              </div>
+                            }
+                          />
                         </div>
                       </div>
-                    </>
-                  );
-                }}
-              />
-            </div>
+                      <div className="flex flex-row items-center">
+                        <ButtonBetter className="rounded-full px-6">
+                          Search My Job
+                        </ButtonBetter>
+                      </div>
+                    </div>
+                  </>
+                );
+              }}
+            />
           </div>
         </div>
       </div>
       <div className="relative flex flex-col flex-grow">
-        <div className="flex-grow flex flex-col p-8 ">
-          <div className="flex flex-row items-center justify-between pb-4">
-            <p className="font-bold text-3xl">Featured Jobs</p>
-            <Link
-              href="/all-jobs"
-              className="flex flex-row items-center gap-x-2 font-bold text-blue-500"
-            >
-              Show all jobs <FaArrowRight />
-            </Link>
-          </div>
-          <div className="flex flex-grow">
-            <PinterestLayout
-              gap={4}
-              data={local.jobs}
-              child={(item, idx, data, key) => {
-                return <JobCard data={data} />;
-              }}
-              col={4}
-            />
+        <div className="flex flex-col justify-center items-center">
+          <div className="flex-grow flex flex-col p-8 max-w-screen-xl">
+            <div className="flex flex-row items-center justify-between pb-4  w-full">
+              <p className="font-bold text-3xl">Featured Jobs</p>
+              <Link
+                href="/all-jobs"
+                className="flex flex-row items-center gap-x-2 font-bold text-blue-500"
+              >
+                Show all jobs <FaArrowRight />
+              </Link>
+            </div>
+            <div className="flex flex-grow">
+              <PinterestLayout
+                gap={4}
+                data={local.jobs}
+                child={(item, idx, data, key) => {
+                  return <JobCard data={item} />;
+                }}
+                col={4}
+              />
+            </div>
           </div>
         </div>
-        <div className="flex-grow flex flex-col p-8 ">
+        <div className="flex-grow flex flex-col p-8 hidden">
           <div className="flex flex-row items-center justify-center pb-4">
             <p className="font-bold text-3xl">Testimonials</p>
           </div>

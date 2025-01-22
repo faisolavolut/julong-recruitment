@@ -1,22 +1,32 @@
+import { siteurl } from "@/lib/utils/siteurl";
 export const JobCard: React.FC<any> = ({ data }: { data: any }) => {
   return (
-    <div className="border rounded-lg shadow-md p-4 w-72 bg-white">
-      {/* Logo dan Tombol */}
+    <div
+      className="border rounded-lg shadow-md p-4 w-72 bg-white"
+      onClick={() => {
+        let _url: any = siteurl(`/job-posting/${data?.id}`);
+        console.log(_url);
+        window.open(_url, "_blank");
+      }}
+    >
       <div className="flex justify-between items-center">
         <div className="text-black font-bold text-xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="23.49"
-            height="20"
-            viewBox="0 0 256 218"
-          >
-            <path
-              fill="#0061ff"
-              d="M63.995 0L0 40.771l63.995 40.772L128 40.771zM192 0l-64 40.775l64 40.775l64.001-40.775zM0 122.321l63.995 40.772L128 122.321L63.995 81.55zM192 81.55l-64 40.775l64 40.774l64-40.774zM64 176.771l64.005 40.772L192 176.771L128.005 136z"
+          <div className="w-12 h-12">
+            <img
+              src={siteurl("/dog.jpg")}
+              alt="John Cena"
+              className="rounded-full w-full h-full object-cover border-2 border-white"
             />
-          </svg>
+          </div>
         </div>
-        <button className="text-blue-600 border border-blue-600 rounded px-3 py-1 text-sm hover:bg-blue-600 hover:text-white transition">
+        <button
+          className="text-blue-600 border border-blue-600 rounded px-3 py-1 text-sm hover:bg-blue-600 hover:text-white transition cursor-pointer"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log("CLICK APPLY");
+          }}
+        >
           Apply Now
         </button>
       </div>
@@ -28,17 +38,15 @@ export const JobCard: React.FC<any> = ({ data }: { data: any }) => {
       </p>
 
       {/* Deskripsi */}
-      <p className="mt-2 text-gray-500 text-sm">
-        Revolut is looking for Email Marketing to help team ma ...
-      </p>
+      <div
+        className={cx("mt-2 text-gray-500 text-sm line-clamp-1")}
+        dangerouslySetInnerHTML={{ __html: data?.content_description }}
+      ></div>
 
       {/* Tags */}
       <div className="flex gap-2 mt-4">
         <span className="bg-yellow-100 text-yellow-600 text-xs font-medium px-3 py-1 rounded-full line-clamp-1">
           {data?.recruitment_type}
-        </span>
-        <span className="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-full">
-          Design
         </span>
       </div>
     </div>

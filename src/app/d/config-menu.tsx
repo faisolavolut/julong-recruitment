@@ -78,6 +78,12 @@ export const configMenu = [
     permision: ["read-project-calender", "read-project-recruitment"],
   },
   {
+    title: "MPR Overview",
+    icon: <GoProject />,
+    href: "/d/mpr",
+    permision: ["read-mpr"],
+  },
+  {
     title: "Job Posting",
     icon: <GoProject />,
     children: [
