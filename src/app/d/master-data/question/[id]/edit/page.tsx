@@ -509,7 +509,7 @@ function Page() {
                                     >
                                       <div>
                                         <Field
-                                          fm={cloneFM(fm, e)}
+                                          fm={fm_row}
                                           name={"name"}
                                           label={"Question"}
                                           type={"text"}
@@ -518,7 +518,7 @@ function Page() {
                                       <div className="flex flex-row w-full gap-x-1">
                                         <div className="flex-grow flex flex-col">
                                           <Field
-                                            fm={cloneFM(fm, e)}
+                                            fm={fm_row}
                                             name={"answer_type_id"}
                                             label={"Answer Type"}
                                             type={"dropdown"}
@@ -590,7 +590,7 @@ function Page() {
                                       ) && (
                                         <div>
                                           <Field
-                                            fm={cloneFM(fm, e)}
+                                            fm={fm_row}
                                             name={"question_options"}
                                             label={"Option"}
                                             type={"tag"}

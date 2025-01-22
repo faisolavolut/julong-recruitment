@@ -118,7 +118,11 @@ function Page() {
           path: `/api/user-profiles/${id}`,
           validate: "object",
         });
-        return { ...data, email: data?.user?.email };
+        return {
+          ...data,
+          email: data?.user?.email,
+          address: data?.user?.address,
+        };
       }}
       showResize={false}
       header={(fm: any) => {
