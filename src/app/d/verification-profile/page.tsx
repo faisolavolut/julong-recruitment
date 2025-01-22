@@ -1,5 +1,7 @@
 "use client";
 import { TableList } from "@/lib/components/tablelist/TableList";
+import { Alert } from "@/lib/components/ui/alert";
+import { ButtonContainer } from "@/lib/components/ui/button";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
 import { dayDate } from "@/lib/utils/date";
@@ -8,9 +10,11 @@ import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
+import { X } from "lucide-react";
 import { useEffect } from "react";
 import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
-import { IoEye } from "react-icons/io5";
+import { IoMdSave } from "react-icons/io";
+import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
 
 function Page() {
   const local = useLocal({
@@ -39,21 +43,44 @@ function Page() {
           name="verification-profile"
           header={{
             sideLeft: (data: any) => {
-              return <></>;
-              if (!local.can_approve)
-                return (
-                  <div className="flex flex-row flex-grow">
-                    <ButtonLink
-                      className="bg-primary"
-                      href={"/d/verification-profile/new"}
-                    >
-                      <div className="flex items-center gap-x-0.5">
-                        <HiPlus className="text-xl" />
-                        <span className="capitalize">Add New</span>
-                      </div>
-                    </ButtonLink>
-                  </div>
-                );
+              return (
+                <div className="flex flex-row flex-grow gap-x-2">
+                  {data?.selection?.all || data?.selection?.partial?.length ? (
+                    <>
+                      <Alert
+                        type={"save"}
+                        msg={`Are you sure you want to approve ${
+                          data?.selection?.all
+                            ? "All"
+                            : `${data?.selection?.partial?.length}`
+                        } profile?`}
+                        onClick={() => {}}
+                      >
+                        <ButtonContainer className={"bg-primary"}>
+                          <IoCheckmarkOutline className="text-xl" />
+                          Approve
+                        </ButtonContainer>
+                      </Alert>
+                      <Alert
+                        type={"delete"}
+                        msg={`Are you sure you want to reject ${
+                          data?.selection?.all
+                            ? "All"
+                            : `${data?.selection?.partial?.length}`
+                        } profile?`}
+                        onClick={async () => {}}
+                      >
+                        <ButtonContainer variant={"destructive"}>
+                          <X className="text-xl" />
+                          Reject
+                        </ButtonContainer>
+                      </Alert>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              );
             },
           }}
           column={[
