@@ -2,6 +2,10 @@
 
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
+import {
+  TableBetter,
+  TableEditBetter,
+} from "@/lib/components/tablelist/TableBetter";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -115,8 +119,7 @@ function Page() {
             ...fm.data,
           },
         });
-        console.log({ line: data?.line });
-        if (data?.line?.length) {
+        if (data?.line?.length || data?.deleted_line_ids?.length) {
           const lines = data.line.map((e: any) => {
             let result = {
               ...e,
@@ -130,13 +133,15 @@ function Page() {
             template_activity_lines: lines,
             deleted_template_activity_line_ids: data?.deleted_line_ids || [],
           };
-          await apix({
+          const res = await apix({
             port: "recruitment",
-            value: "data.data",
+            value: "data.data.template_activity_lines",
             path: "/api/template-activity-lines",
             method: "post",
             data: data_line,
           });
+          fm.data.line = res;
+          fm.render();
         }
       }}
       onLoad={async () => {
@@ -146,6 +151,7 @@ function Page() {
           path: "/api/template-activities/" + id,
           validate: "object",
         });
+        console.log(data?.template_activity_lines || []);
         return { ...data, line: data?.template_activity_lines || [] };
       }}
       showResize={false}
@@ -227,7 +233,10 @@ function Page() {
           >
             <div className="w-full flex flex-row">
               <div className="flex flex-grow flex-col h-[350px]">
-                <TableList
+                <TableEditBetter
+                  name="line"
+                  delete_name="deleted_line_ids"
+                  fm={fm}
                   disabledHoverRow={true}
                   disabledPagination={true}
                   header={{
@@ -275,10 +284,6 @@ function Page() {
                               name={"name"}
                               label={"Template"}
                               type={"dropdown"}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
                               onLoad={async () => {
                                 const res: any = await apix({
                                   port: "recruitment",
@@ -306,7 +311,6 @@ function Page() {
                       name: "template",
                       sortable: false,
                       header: () => <span>Template</span>,
-                      width: 150,
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
@@ -316,10 +320,6 @@ function Page() {
                               name={"question_template_id"}
                               label={"Template"}
                               type={"dropdown"}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
                               onLoad={async () => {
                                 const res: any = await apix({
                                   port: "recruitment",
@@ -342,7 +342,7 @@ function Page() {
                       sortable: false,
                       resize: false,
                       header: () => <span>Colour</span>,
-                      width: 10,
+                      width: 50,
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
@@ -352,10 +352,6 @@ function Page() {
                               name={"color_hex_code"}
                               label={"Colour"}
                               type={"color"}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
                             />
                           </>
                         );
@@ -375,10 +371,6 @@ function Page() {
                               name={"description"}
                               label={"Colour"}
                               type={"text"}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
                             />
                           </>
                         );
@@ -389,7 +381,7 @@ function Page() {
                       sortable: false,
                       resize: false,
                       header: () => <span>Active</span>,
-                      width: 10,
+                      width: 50,
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
@@ -399,10 +391,6 @@ function Page() {
                               name={"status"}
                               label={"Status"}
                               type={"single-checkbox"}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
                               onLoad={() => {
                                 return [
                                   {
@@ -420,34 +408,14 @@ function Page() {
                       name: "action",
                       header: () => <span>Action</span>,
                       sortable: false,
-                      renderCell: ({
-                        row,
-                        name,
-                        cell,
-                        idx,
-                        fm_row,
-                        tbl,
-                      }: any) => {
+                      renderCell: ({ row, tbl }: any) => {
                         if (false) return <></>;
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                             <ButtonBetter
                               className="bg-red-500"
                               onClick={() => {
-                                const deleted_line_ids: any[] = Array.isArray(
-                                  fm.data?.deleted_line_ids
-                                )
-                                  ? fm.data?.deleted_line_ids
-                                  : [];
-                                if (row?.id) {
-                                  deleted_line_ids.push(row.id);
-                                }
-                                fm.data["deleted_line_ids"] = deleted_line_ids;
                                 tbl.removeRow(row);
-                                fm.data.line = fm.data.line.filter(
-                                  (e: any) => e !== row
-                                );
-                                fm.render();
                               }}
                             >
                               <div className="flex items-center">
@@ -459,7 +427,6 @@ function Page() {
                       },
                     },
                   ]}
-                  onLoad={fm.data.line}
                   onInit={async (list: any) => {}}
                 />
               </div>
