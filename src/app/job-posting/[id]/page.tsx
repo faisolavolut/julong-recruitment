@@ -42,6 +42,7 @@ function Page() {
         validate: "object",
       });
       local.data = data;
+      local.applied = data?.is_applied;
       local.render();
       console.log({ data });
     };

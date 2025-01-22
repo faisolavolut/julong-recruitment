@@ -53,7 +53,7 @@ function Page() {
               },
             },
             {
-              name: "document_number",
+              name: "project_number",
               header: () => <span>Project Number</span>,
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;

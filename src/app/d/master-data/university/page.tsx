@@ -39,6 +39,7 @@ function Page() {
           name="university"
           header={{
             sideLeft: (data: any) => {
+              return <></>;
               if (!local.can_add) return <></>;
               return (
                 <div className="flex flex-row flex-grow">
