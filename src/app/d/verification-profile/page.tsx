@@ -2,6 +2,7 @@
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
+import { dayDate } from "@/lib/utils/date";
 import { events } from "@/lib/utils/event";
 import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
@@ -64,18 +65,10 @@ function Page() {
               },
             },
             {
-              name: "register_date",
+              name: "created_at",
               header: () => <span>Register Date</span>,
               renderCell: ({ row, name }: any) => {
-                return (
-                  <a
-                    href={getValue(row, name)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {getValue(row, name)}
-                  </a>
-                );
+                return <>{dayDate(getValue(row, name))}</>;
               },
             },
             {
@@ -102,8 +95,8 @@ function Page() {
             const params = await events("onload-param", param);
             const result: any = await apix({
               port: "recruitment",
-              value: "data.data.job_postings",
-              path: `/api/job-postings${params}`,
+              value: "data.data.user_profiles",
+              path: `/api/user-profiles${params}`,
               validate: "array",
             });
             return result;
@@ -112,7 +105,7 @@ function Page() {
             const result: any = await apix({
               port: "recruitment",
               value: "data.data.total",
-              path: `/api/job-postings?page=1&page_size=1`,
+              path: `/api/user-profiles?page=1&page_size=1`,
               validate: "object",
             });
             return getNumber(result);

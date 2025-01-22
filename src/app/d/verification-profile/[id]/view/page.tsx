@@ -19,6 +19,7 @@ import {
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
 import { cloneFM } from "@/lib/utils/cloneFm";
+import { X } from "lucide-react";
 
 function Page() {
   const id = getParams("id");
@@ -68,8 +69,9 @@ function Page() {
                 <>
                   <Alert
                     type={"save"}
-                    msg={"Are you sure you want to save this record?"}
+                    msg={"Are you sure you want to approve this profile?"}
                     onClick={() => {
+                      fm.data["status"] = "ACTIVE";
                       fm.submit();
                     }}
                   >
@@ -80,14 +82,14 @@ function Page() {
                   </Alert>
                   <Alert
                     type={"delete"}
-                    msg={"Are you sure you want to delete this record?"}
+                    msg={"Are you sure you want to reject this profile?"}
                     onClick={async () => {
                       fm.submit();
                     }}
                   >
                     <ButtonContainer variant={"destructive"}>
-                      <MdDelete className="text-xl" />
-                      Delete
+                      <X className="text-xl" />
+                      Reject
                     </ButtonContainer>
                   </Alert>
                 </>
@@ -100,10 +102,12 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/job-postings",
+          path: "/api/user-profiles/update/status",
           method: "put",
           data: {
             ...fm.data,
+            id: id,
+            status: fm?.data?.status,
           },
         });
       }}
@@ -111,15 +115,16 @@ function Page() {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/job-postings/${id}`,
+          path: `/api/user-profiles/${id}`,
           validate: "object",
         });
-        return data;
+        return { ...data, email: data?.user?.email };
       }}
       showResize={false}
       header={(fm: any) => {
         return <></>;
       }}
+      mode="view"
       children={(fm: any) => {
         return (
           <>
@@ -128,7 +133,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"full_name"}
+                    name={"name"}
                     label={"Full Name"}
                     type={"text"}
                   />
@@ -144,7 +149,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"no_telp"}
+                    name={"phone_number"}
                     label={"No. Telp"}
                     type={"text"}
                   />
@@ -201,8 +206,8 @@ function Page() {
                       </AccordionTriggerCustom>
                       <AccordionContent>
                         <div className="grid grid-cols-1">
-                          {fm.data?.work_experience?.length >= 1 &&
-                            fm.data.work_experience.map(
+                          {fm.data?.work_experiences?.length >= 1 &&
+                            fm.data.work_experiences.map(
                               (e: any, idx: number) => {
                                 const fm_row = cloneFM(fm, e);
                                 return (
@@ -221,7 +226,7 @@ function Page() {
                                     <div>
                                       <Field
                                         fm={cloneFM(fm, e)}
-                                        name={"company_name"}
+                                        name={"name"}
                                         label={"Company Name"}
                                         type={"text"}
                                       />
@@ -239,14 +244,6 @@ function Page() {
                                         fm={cloneFM(fm, e)}
                                         name={"job_description"}
                                         label={"Job Description"}
-                                        type={"text"}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Field
-                                        fm={cloneFM(fm, e)}
-                                        name={"certificate_of_employment"}
-                                        label={"Certificate of Employment"}
                                         type={"text"}
                                       />
                                     </div>
@@ -285,67 +282,65 @@ function Page() {
                       </AccordionTriggerCustom>
                       <AccordionContent>
                         <div className="grid grid-cols-1">
-                          {fm.data?.educational_background?.length >= 1 &&
-                            fm.data.educational_background.map(
-                              (e: any, idx: number) => {
-                                const fm_row = cloneFM(fm, e);
-                                return (
-                                  <div
-                                    className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8"
-                                    key={`educational_background_${idx}`}
-                                  >
-                                    <div>
-                                      <Field
-                                        fm={cloneFM(fm, e)}
-                                        name={"education_level"}
-                                        label={"Education Level"}
-                                        type={"text"}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Field
-                                        fm={cloneFM(fm, e)}
-                                        name={"major"}
-                                        label={"Major"}
-                                        type={"text"}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Field
-                                        fm={cloneFM(fm, e)}
-                                        name={"school_college"}
-                                        label={"School / College"}
-                                        type={"text"}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Field
-                                        fm={cloneFM(fm, e)}
-                                        name={"graduation_year"}
-                                        label={"Graduation Year"}
-                                        type={"text"}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Field
-                                        fm={cloneFM(fm, e)}
-                                        name={"gpa"}
-                                        label={"GPA"}
-                                        type={"text"}
-                                      />
-                                    </div>
-                                    <div>
-                                      <Field
-                                        fm={cloneFM(fm, e)}
-                                        name={"certificate"}
-                                        label={"Certificate"}
-                                        type={"upload"}
-                                      />
-                                    </div>
+                          {fm.data?.educations?.length >= 1 &&
+                            fm.data.educations.map((e: any, idx: number) => {
+                              const fm_row = cloneFM(fm, e);
+                              return (
+                                <div
+                                  className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8"
+                                  key={`educational_background_${idx}`}
+                                >
+                                  <div>
+                                    <Field
+                                      fm={cloneFM(fm, e)}
+                                      name={"education_level"}
+                                      label={"Education Level"}
+                                      type={"text"}
+                                    />
                                   </div>
-                                );
-                              }
-                            )}
+                                  <div>
+                                    <Field
+                                      fm={cloneFM(fm, e)}
+                                      name={"major"}
+                                      label={"Major"}
+                                      type={"text"}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Field
+                                      fm={cloneFM(fm, e)}
+                                      name={"school_name"}
+                                      label={"School / College"}
+                                      type={"text"}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Field
+                                      fm={cloneFM(fm, e)}
+                                      name={"graduate_year"}
+                                      label={"Graduation Year"}
+                                      type={"text"}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Field
+                                      fm={cloneFM(fm, e)}
+                                      name={"gpa"}
+                                      label={"GPA"}
+                                      type={"text"}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Field
+                                      fm={cloneFM(fm, e)}
+                                      name={"certificate"}
+                                      label={"Certificate"}
+                                      type={"upload"}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })}
                         </div>
                       </AccordionContent>
                     </AccordionItem>
@@ -370,8 +365,8 @@ function Page() {
                       </AccordionTriggerCustom>
                       <AccordionContent>
                         <div className="grid grid-cols-1">
-                          {fm.data?.skill?.length >= 1 &&
-                            fm.data.skill.map((e: any, idx: number) => {
+                          {fm.data?.skills?.length >= 1 &&
+                            fm.data.skills.map((e: any, idx: number) => {
                               const fm_row = cloneFM(fm, e);
                               return (
                                 <div
