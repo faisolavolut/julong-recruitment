@@ -21,11 +21,18 @@ import { HiPlus } from "react-icons/hi";
 import { toast } from "sonner";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 
-export const Applicant: FC<any> = ({ fm }) => {
+export const ImportResult: FC<any> = ({ fm }) => {
   const local = useLocal({
     tbl: null as any,
     open: false,
   });
+
+  const handleFileChange = (event: any) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("Selected file:", file.name);
+    }
+  };
   return (
     <div>
       <Dialog open={local.open}>
@@ -37,12 +44,11 @@ export const Applicant: FC<any> = ({ fm }) => {
           }}
         >
           <div className="flex flex-col">
-            <div className="py-3.5"></div>
             <div className="flex flex-row flex-grow">
               <ButtonContainer className="bg-primary">
                 <div className="flex items-center gap-x-0.5">
-                  <HiPlus className="text-xl" />
-                  <span className="capitalize">Add Applicant</span>
+                  <AiOutlineCloudUpload className="text-xl" />
+                  Import Result
                 </div>
               </ButtonContainer>
             </div>
@@ -65,66 +71,42 @@ export const Applicant: FC<any> = ({ fm }) => {
             <DialogDescription className="hidden"></DialogDescription>
           </DialogHeader>
           <div className="flex items-center flex-col flex-grow ">
-            <div className="w-full h-96 flex flex-row flex-grow bg-white overflow-hidden ">
-              <TableList
-                disabledHeader={true}
-                feature={["checkbox"]}
-                name="verification-profile"
-                header={{
-                  sideLeft: (data: any) => {
-                    return <></>;
-                  },
-                }}
-                onInit={(list: any) => {
-                  local.tbl = list;
-                  local.render();
-                }}
-                column={[
-                  {
-                    name: "id_applicant",
-                    sortable: false,
-                    header: () => <span>ID Applicant</span>,
-                    renderCell: ({ row, name }: any) => {
-                      return <>{getValue(row, name)}</>;
-                    },
-                  },
-                  {
-                    name: "name",
-                    sortable: false,
-                    header: () => <span>Applicant Name</span>,
-                    renderCell: ({ row, name }: any) => {
-                      return <>{getValue(row, name)}</>;
-                    },
-                  },
-                  {
-                    sortable: false,
-                    name: "job_name",
-                    header: () => <span>Job Name</span>,
-                    renderCell: ({ row, name }: any) => {
-                      return <>{getValue(row, name)}</>;
-                    },
-                  },
-                ]}
-                onLoad={async (param: any) => {
-                  const params = await events("onload-param", param);
-                  const result: any = await apix({
-                    port: "recruitment",
-                    value: "data.data.user_profiles",
-                    path: `/api/user-profiles${params}`,
-                    validate: "array",
-                  });
-                  return result;
-                }}
-                onCount={async () => {
-                  const result: any = await apix({
-                    port: "recruitment",
-                    value: "data.data.total",
-                    path: `/api/user-profiles?page=1&page_size=1`,
-                    validate: "object",
-                  });
-                  return getNumber(result);
-                }}
-              />
+            <div className="w-full h-64 flex flex-row flex-grow bg-white overflow-hidden ">
+              <div className="flex items-center justify-center w-full">
+                <label
+                  htmlFor="dropzone-file"
+                  className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                >
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg
+                      className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 16"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      />
+                    </svg>
+                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                      <span className="font-semibold">
+                        Click to upload the test results
+                      </span>
+                    </p>
+                  </div>
+                  <input
+                    id="dropzone-file"
+                    type="file"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
             </div>
           </div>
           <DialogFooter className="sm:justify-end">

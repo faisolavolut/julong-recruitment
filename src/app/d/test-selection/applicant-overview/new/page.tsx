@@ -3,7 +3,7 @@
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import { Alert } from "@/lib/components/ui/alert";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
@@ -11,10 +11,14 @@ import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { normalDate } from "@/lib/utils/date";
+import get from "lodash.get";
+import { current } from "tailwindcss/colors";
+import { getNumber } from "@/lib/utils/getNumber";
+import { QuestionPage } from "../QuestionPage";
 
 function Page() {
-  const labelPage = "Job Posting";
-  const urlPage = `/d/job/job-posting`;
+  const labelPage = "Test";
+  const urlPage = `/d/test-selection/applicant-overview`;
   const local = useLocal({
     can_add: false,
     ready: false as boolean,
@@ -52,20 +56,7 @@ function Page() {
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center">
-              <Alert
-                type={"save"}
-                msg={"Are you sure you want to save this record?"}
-                onClick={() => {
-                  fm.submit();
-                }}
-              >
-                <ButtonContainer className={"bg-primary"}>
-                  <IoMdSave className="text-xl" />
-                  Save
-                </ButtonContainer>
-              </Alert>
-            </div>
+            <div className="flex flex-row space-x-2 items-center"></div>
           </div>
         );
       }}
@@ -92,8 +83,50 @@ function Page() {
           path: "/api/job-postings/document-number",
         });
         return {
+          step: 0,
+          current_step: {
+            label: "Personal Information",
+            value: "personal_information",
+            fields: [
+              { name: "first_name", type: "text", label: "First Name" },
+              { name: "last_name", type: "text", label: "Last Name" },
+              { name: "email", type: "email", label: "Email Address" },
+            ],
+          },
           status: "DRAFT",
           document_number: res,
+          steps: [
+            {
+              label: "Personal Information",
+              value: "personal_information",
+              fields: [
+                { name: "first_name", type: "text", label: "First Name" },
+                { name: "last_name", type: "text", label: "Last Name" },
+                { name: "email", type: "email", label: "Email Address" },
+              ],
+            },
+            {
+              label: "Address Details",
+              value: "address_details",
+              fields: [
+                { name: "address", type: "text", label: "Address" },
+                { name: "city", type: "text", label: "City" },
+                { name: "zip_code", type: "text", label: "ZIP Code" },
+              ],
+            },
+            {
+              label: "Confirmation",
+              value: "confirmation",
+              submit: true, // Menandakan halaman terakhir dengan tombol submit
+              fields: [
+                {
+                  name: "terms",
+                  type: "checkbox",
+                  label: "I agree to the terms and conditions",
+                },
+              ],
+            },
+          ],
         };
       }}
       showResize={false}
@@ -104,196 +137,153 @@ function Page() {
         return (
           <>
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
-              <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
+              {fm.data?.step === "home" ? (
+                <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8"></div>
+              ) : (
+                <></>
+              )}
+              <QuestionPage
+                fm={fm}
+                tab={"current_step.value"}
+                value="personal_information"
+              >
                 <div>
-                  <Field
-                    fm={fm}
-                    name={"project_recruitment_header_id"}
-                    label={"No. Reference Project"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data.project_recruitment_headers",
-                        path: "/api/project-recruitment-headers",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"document_date"}
-                    label={"Document Date"}
-                    type={"date"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"document_number"}
-                    label={"Document No."}
-                    type={"text"}
-                    disabled={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
+                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
                 </div>
 
                 <div>
                   <Field
                     fm={fm}
-                    name={"mp_request_id"}
-                    label={"MPR Document No"}
+                    name={"gender"}
+                    label={"Gender"}
                     type={"dropdown"}
-                    onChange={(item: any) => {
-                      const data = item?.data;
-                      fm.data["job_id"] = data?.job_id;
-                      fm.data["job_name"] = data?.job_name;
-                      fm.data["for_organization_location_id"] =
-                        data?.for_organization_location_id;
-                      fm.render();
-                    }}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data.mp_request_header",
-                        path: "/api/mp-requests",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
+                    onLoad={() => {
+                      return [
+                        {
+                          value: "MALE",
+                          label: "Male",
                         },
-                      });
-                      return res;
+                        {
+                          value: "FEMALE",
+                          label: "Female",
+                        },
+                      ];
                     }}
                   />
                 </div>
                 <div>
-                  <Field
-                    fm={fm}
-                    name={"job_name"}
-                    label={"Job Position"}
-                    type={"text"}
-                    disabled={true}
-                  />
+                  <Field fm={fm} name={"phone"} label={"Phone"} type={"text"} />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"start_date"}
-                    label={"Start Date"}
+                    name={"birth_date"}
+                    label={"Birth Date"}
                     type={"date"}
                   />
                 </div>
                 <div>
-                  <Field
-                    fm={fm}
-                    name={"end_date"}
-                    label={"End Date"}
-                    type={"date"}
-                  />
+                  <Field fm={fm} name={"age"} label={"Age"} type={"money"} />
                 </div>
+              </QuestionPage>
+              <QuestionPage
+                fm={fm}
+                tab={"current_step.value"}
+                value="address_details"
+              >
                 <div>
                   <Field
                     fm={fm}
-                    name={"status"}
-                    label={"Status"}
+                    name={"name"}
+                    label={"Address"}
                     type={"text"}
                   />
                 </div>
+              </QuestionPage>
+              <QuestionPage
+                fm={fm}
+                tab={"current_step.value"}
+                value="confirmation"
+              >
                 <div>
-                  <Field
-                    fm={fm}
-                    name={"link"}
-                    label={"Link Job Posting"}
-                    type={"text"}
-                    disabled={true}
-                  />
+                  <Field fm={fm} name={"name"} label={"Notes"} type={"text"} />
                 </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"for_organization_id"}
-                    label={"Company"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "portal",
-                        value: "data.data.organizations",
-                        path: "/api/organizations",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"salary_min"}
-                    label={"Minimal Range Salary"}
-                    type={"money"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"salary_max"}
-                    label={"Maximal Range Salary"}
-                    type={"money"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"organization_logo"}
-                    label={"Logo Company"}
-                    type={"upload"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"poster"}
-                    label={"Poster Recruitment"}
-                    type={"upload"}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Field
-                    fm={fm}
-                    name={"content_description"}
-                    label={"Description Post a Job"}
-                    type={"richtext"}
-                  />
-                </div>
+              </QuestionPage>
+              <div>
+                {fm.data?.step === 0 ? (
+                  <>
+                    <ButtonBetter
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fm.data.step = getNumber(fm.data?.step) + 1;
+                        fm.render();
+                        fm.data.current_step = get(
+                          fm,
+                          `data.steps[${getNumber(fm.data.step)}]`
+                        );
+                        fm.render();
+                        console.log({
+                          current: fm.data.current_step,
+                          step: fm.data.step,
+                        });
+                      }}
+                    >
+                      Start
+                    </ButtonBetter>
+                  </>
+                ) : get(fm, `data.current_step.submit`) ? (
+                  <>
+                    <ButtonBetter
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fm.data.step = "start";
+                        fm.data.current_step = get(fm, `data.steps[0]`);
+                        fm.render();
+                      }}
+                    >
+                      Submit
+                    </ButtonBetter>
+                  </>
+                ) : (
+                  <div>
+                    <ButtonBetter
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fm.data.step = getNumber(fm.data?.step) - 1;
+                        fm.render();
+                        fm.data.current_step = get(
+                          fm,
+                          `data.steps[${getNumber(fm.data.step)}]`
+                        );
+                        fm.render();
+                        console.log({
+                          current: fm.data.current_step,
+                          step: fm.data.step,
+                        });
+                      }}
+                    >
+                      Prev
+                    </ButtonBetter>
+                    <ButtonBetter
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        fm.data.step = getNumber(fm.data?.step) + 1;
+                        fm.render();
+                        fm.data.current_step = get(
+                          fm,
+                          `data.steps[${getNumber(fm.data?.step)}]`
+                        );
+                        fm.render();
+                      }}
+                    >
+                      Next
+                    </ButtonBetter>
+                  </div>
+                )}
               </div>
             </div>
           </>

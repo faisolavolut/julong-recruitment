@@ -15,7 +15,6 @@ import { getParams } from "@/lib/utils/get-params";
 import { Applicant } from "../Application";
 import { getNumber } from "@/lib/utils/getNumber";
 import { events } from "@/lib/utils/event";
-import { ButtonLink } from "@/lib/components/ui/button-link";
 import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
 import { X } from "lucide-react";
 import { getValue } from "@/lib/utils/getValue";
@@ -23,8 +22,8 @@ import { TableList } from "@/lib/components/tablelist/TableList";
 
 function Page() {
   const id = getParams("id");
-  const labelPage = "Job Posting";
-  const urlPage = `/d/job/job-posting`;
+  const labelPage = "Schedule Test";
+  const urlPage = `/d/test-selection/schedule-test`;
   const local = useLocal({
     can_edit: false,
     can_delete: false,
@@ -358,15 +357,8 @@ function Page() {
                       },
                     },
                     {
-                      name: "gpa",
-                      header: () => <span>GPA</span>,
-                      renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
-                      },
-                    },
-                    {
-                      name: "major",
-                      header: () => <span>Major</span>,
+                      name: "age",
+                      header: () => <span>Age</span>,
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
@@ -374,13 +366,6 @@ function Page() {
                     {
                       name: "job_name",
                       header: () => <span>Job Name</span>,
-                      renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
-                      },
-                    },
-                    {
-                      name: "job_experience",
-                      header: () => <span>Job Experience</span>,
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
@@ -415,25 +400,6 @@ function Page() {
                                 <X className="text-lg" />
                               </div>
                             </ButtonBetter>
-                          </div>
-                        );
-                      },
-                    },
-                    {
-                      name: "action",
-                      header: () => <span>Action</span>,
-                      sortable: false,
-                      renderCell: ({ row }: any) => {
-                        return (
-                          <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                            <ButtonLink
-                              className="bg-primary"
-                              href={`/d/administrative/selection-setup/${id}/candidate/${row.id}/view`}
-                            >
-                              <div className="flex items-center gap-x-2">
-                                <IoEye className="text-lg" />
-                              </div>
-                            </ButtonLink>
                           </div>
                         );
                       },
