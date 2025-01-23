@@ -2,10 +2,7 @@
 
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import {
-  TableBetter,
-  TableEditBetter,
-} from "@/lib/components/tablelist/TableBetter";
+import { TableEditBetter } from "@/lib/components/tablelist/TableBetter";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
