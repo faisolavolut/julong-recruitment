@@ -105,7 +105,7 @@ function Page() {
             const result: any = await apix({
               port: "recruitment",
               value: "data.data",
-              path: `/api/type-test${params}`,
+              path: `/api/test-types${params}`,
               validate: "array",
             });
             return result;
@@ -114,7 +114,7 @@ function Page() {
             const result: any = await apix({
               port: "recruitment",
               value: "data.data.total",
-              path: `/api/type-test?page=1&page_size=1`,
+              path: `/api/test-types?page=1&page_size=1`,
               validate: "object",
             });
             return getNumber(result);

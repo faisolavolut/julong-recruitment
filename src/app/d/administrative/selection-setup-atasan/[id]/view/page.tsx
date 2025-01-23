@@ -1,5 +1,7 @@
 "use client";
 
+import { getParams } from "@/lib/utils/get-params";
+
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
@@ -10,25 +12,27 @@ import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
 
 function Page() {
-  const labelPage = "Type Test";
-  const urlPage = `/d/master-data/type-test`;
+  const id = getParams("id"); // Replace this with dynamic id retrieval
+  const labelPage = "Document Checking";
+  const urlPage = `/d/master-data/document-checking`;
   const local = useLocal({
-    can_add: false,
+    can_edit: false,
     ready: false as boolean,
   });
 
   useEffect(() => {
     const run = async () => {
-      local.can_add = true;
+      local.can_edit = true;
       local.ready = true;
       local.render();
     };
     run();
   }, []);
 
-  if (local.ready && !local.can_add) return notFound();
+  if (local.ready && !local.can_edit) return notFound();
 
   return (
     <FormBetter
@@ -46,44 +50,35 @@ function Page() {
                     url: urlPage,
                   },
                   {
-                    title: "New",
+                    title: "View",
                   },
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center">
-              <Alert
-                type={"save"}
-                msg={"Are you sure you want to save this record?"}
-                onClick={() => {
-                  fm.submit();
-                }}
-              >
-                <ButtonContainer className={"bg-primary"}>
-                  <IoMdSave className="text-xl" />
-                  Save
-                </ButtonContainer>
-              </Alert>
-            </div>
+            <div className="flex flex-row space-x-2 items-center"></div>
           </div>
         );
       }}
       onSubmit={async (fm: any) => {
-        const res = await apix({
+        await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/test-types",
-          method: "post",
+          path: "/api/document-verifications",
+          method: "put",
           data: {
             ...fm.data,
-            status:
-              fm?.data?.status === "ACTIVE" ? fm?.data?.status : "INACTIVE",
           },
         });
-        if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
+      mode="view"
       onLoad={async () => {
-        return {};
+        const data: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/document-verifications/${id}`,
+          validate: "object",
+        });
+        return { ...data, template_name: data?.template_question?.name };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -97,42 +92,20 @@ function Page() {
                 <div>
                   <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
                 </div>
-
                 <div>
                   <Field
                     fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
-                      });
-                      return res;
-                    }}
+                    name={"format"}
+                    label={"Format"}
+                    type={"text"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"status"}
-                    label={"Status"}
-                    type={"single-checkbox"}
-                    onLoad={() => {
-                      return [
-                        {
-                          label: "Active",
-                          value: "ACTIVE",
-                        },
-                      ];
-                    }}
+                    name={"template_name"}
+                    label={"Template"}
+                    type={"text"}
                   />
                 </div>
               </div>

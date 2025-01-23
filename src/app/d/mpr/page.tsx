@@ -12,6 +12,8 @@ import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
+import { TabHeader } from "@/lib/components/tablist/TabHeader";
+import get from "lodash.get";
 
 function Page() {
   const local = useLocal({
@@ -32,9 +34,11 @@ function Page() {
   return (
     <div className="flex p-4 flex-col flex-grow bg-white rounded-lg border border-gray-300 shadow-md shadow-gray-300">
       <div className="flex flex-col py-4 pb-0 pt-0">
-        <h2 className="text-xl font-semibold text-gray-900 ">
-          <span className="">MPR Overview</span>
-        </h2>
+        <div className="flex flex-row items-center">
+          <h2 className="text-xl font-semibold text-gray-900 ">
+            <span className="">MPR Overview</span>
+          </h2>
+        </div>
       </div>
       <div className="w-full flex flex-row flex-grow bg-white overflow-hidden ">
         <TableList
@@ -94,30 +98,30 @@ function Page() {
                 return <>{getStatusLabel(getValue(row, name))}</>;
               },
             },
-            // {
-            //   name: "action",
-            //   header: () => <span>Action</span>,
-            //   sortable: false,
-            //   renderCell: ({ row }: any) => {
-            //     return (
-            //       <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-            //         <ButtonLink href={`/d/job/job-posting/${row.id}/edit`}>
-            //           <div className="flex items-center gap-x-2">
-            //             <HiOutlinePencilAlt className="text-lg" />
-            //           </div>
-            //         </ButtonLink>
-            //         <ButtonLink
-            //           className="bg-primary"
-            //           href={`/d/mpr/${row.id}/view`}
-            //         >
-            //           <div className="flex items-center gap-x-2">
-            //             <IoEye className="text-lg" />
-            //           </div>
-            //         </ButtonLink>
-            //       </div>
-            //     );
-            //   },
-            // },
+            {
+              name: "action",
+              header: () => <span>Action</span>,
+              sortable: false,
+              renderCell: ({ row }: any) => {
+                return (
+                  <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                    <ButtonLink href={`/d/mpr/${row?.mpr_clone_id}/view`}>
+                      <div className="flex items-center gap-x-2">
+                        <IoEye className="text-lg" />
+                      </div>
+                    </ButtonLink>
+                    {/* <ButtonLink
+                        className="bg-primary"
+                        href={`/d/mpr/${row.id}/view`}
+                      >
+                        <div className="flex items-center gap-x-2">
+                          <IoEye className="text-lg" />
+                        </div>
+                      </ButtonLink> */}
+                  </div>
+                );
+              },
+            },
           ]}
           onLoad={async (param: any) => {
             const params = await events("onload-param", param);

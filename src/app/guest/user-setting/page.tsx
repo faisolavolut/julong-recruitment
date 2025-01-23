@@ -476,6 +476,7 @@ function Page() {
                             <div>
                               <Field
                                 fm={fm_row}
+                                allowNew={true}
                                 name={"school_name"}
                                 label={"School or College Name"}
                                 type={"dropdown"}

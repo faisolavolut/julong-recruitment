@@ -71,35 +71,35 @@ function Page() {
                 return getValue(row, name) === "ACTIVE" ? "Active" : "Inactive";
               },
             },
-            {
-              name: "action",
-              header: () => <span>Action</span>,
-              sortable: false,
-              renderCell: ({ row }: any) => {
-                return (
-                  <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                    {local.can_edit ? (
-                      <ButtonLink
-                        href={`/d/master-data/university/${row.id}/edit`}
-                      >
-                        <div className="flex items-center gap-x-2">
-                          <HiOutlinePencilAlt className="text-lg" />
-                        </div>
-                      </ButtonLink>
-                    ) : (
-                      <ButtonLink
-                        className="bg-primary"
-                        href={`/d/master-data/university/${row.id}/view`}
-                      >
-                        <div className="flex items-center gap-x-2">
-                          <IoEye className="text-lg" />
-                        </div>
-                      </ButtonLink>
-                    )}
-                  </div>
-                );
-              },
-            },
+            // {
+            //   name: "action",
+            //   header: () => <span>Action</span>,
+            //   sortable: false,
+            //   renderCell: ({ row }: any) => {
+            //     return (
+            //       <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+            //         {false ? (
+            //           <ButtonLink
+            //             href={`/d/master-data/university/${row.id}/edit`}
+            //           >
+            //             <div className="flex items-center gap-x-2">
+            //               <HiOutlinePencilAlt className="text-lg" />
+            //             </div>
+            //           </ButtonLink>
+            //         ) : (
+            //           <ButtonLink
+            //             className="bg-primary"
+            //             href={`/d/master-data/university/${row.id}/view`}
+            //           >
+            //             <div className="flex items-center gap-x-2">
+            //               <IoEye className="text-lg" />
+            //             </div>
+            //           </ButtonLink>
+            //         )}
+            //       </div>
+            //     );
+            //   },
+            // },
           ]}
           onLoad={async (param: any) => {
             const params = await events("onload-param", param);

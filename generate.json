@@ -11,45 +11,89 @@
       "validate": "array"
     },
     "column": [
-      ["document_number", "MPR Number"],
-      ["document_number", "Project Number"],
-      ["organization_name", "Organization"],
-      ["for_organization_name", "Company"],
-      ["recruitment_type", "Recruitment Type"],
-      ["mp_request_type", "Request Type", "status"],
-      ["status", "Status Recruitment", "status"]
+      ["id_applicant", "ID Applicant"],
+      ["applicant_name", "Applicant Name"],
+      ["gpa", "GPA"],
+      ["major", "Major"],
+      ["job_name", "Job Name"],
+      ["job_experience", "Job Experience"],
+      ["work_experience", "Work Experience (month)"],
+      ["cv", "CV"],
+      ["status_selection", "Status Selection", "status"]
     ]
   },
   // FORM NEW
   {
     "mode": "new",
-    "name": "job-posting",
-    "title": "Job Posting",
-    "url_root": "/d/job",
+    "name": "schedule-test",
+    "title": "Schedule Test",
+    "url_root": "/d/test-selection",
     "apix": {
       "port": "recruitment",
       "value": "data.data",
-      "path": "/api/job-postings",
+      "path": "/api/schedule-test",
       "validate": "object"
     },
     // default tipe fieldnya text
     // jika tipe fieldnya richtext maka col-span-2
     "field": [
-      ["education_level", "Education Level", "text"],
-      ["school_or_college_name", "School or College Name", "text"],
-      ["major", "Major", "text"],
-      ["graduation_year", "Graduation Year", "text"],
-      ["gpa", "GPA", "text"],
-      ["certificate_of_employment", "Certificate of Employee (SK)", "upload"]
+      ["document_number", "Document Number", "text"], // disabled
+      ["schedule_date", "Schedule Date", "date"],
+      ["name", "Name", "text"],
+      [
+        "select_test_type",
+        "Select Test Type",
+        "dropdown",
+        {
+          "apix": {
+            "port": "recruitment",
+            "value": "data.data",
+            "path": "/api/test-types",
+            "keys": {
+              "label": "name"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+      ["project_number", "Project Number", "text"], // disabled
+      [
+        "activity",
+        "Activity",
+        "dropdown",
+        {
+          "apix": {
+            "port": "recruitment",
+            "value": "data.data",
+            "path": "/api/template-questions/form-types",
+            "keys": {
+              "label": "value",
+              "value": "value"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+
+      ["start_date", "Start Date", "date"], // disabled
+      ["end_date", "End Date", "date"], // disabled
+      ["start_time", "Start Time", "time"],
+      ["end_time", "End Time", "time"],
+      ["location", "Location (Url)", "text"],
+      ["job_name", "Job Name", "text"],
+      ["description", "Description", "textarea"],
+      ["link_test", "Link Test", "text"],
+      ["status", "Status", "text"],
+      ["total_candidate", "Total Candidate", "money"]
     ]
   },
 
   // FORM EDIT
   {
     "mode": "edit",
-    "name": "verification-profile",
-    "title": "Verification Profile",
-    "url_root": "/d",
+    "name": "applicant-overview",
+    "title": "Applicant Overview",
+    "url_root": "/d/administrative",
     "apix": {
       "port": "recruitment",
       "value": "data.data",
@@ -67,6 +111,47 @@
     // default tipe fieldnya text
     // jika tipe fieldnya richtext maka col-span-2
 
-    "field": []
+    "field": [
+      ["project_number", "Project Number", "text"], // disabled
+      [
+        "activity",
+        "Activity",
+        "dropdown",
+        {
+          "apix": {
+            "port": "recruitment",
+            "value": "data.data",
+            "path": "/api/template-questions/form-types",
+            "keys": {
+              "label": "value",
+              "value": "value"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+      ["start_date", "Start Date", "date"], // disabled
+      [
+        "pic",
+        "PIC",
+        "dropdown",
+        {
+          "apix": {
+            "port": "portal",
+            "value": "data.data.employees",
+            "path": "/api/employees",
+            "keys": {
+              "label": "name"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+      ["status", "Status", "text"],
+      ["document_date", "Document Date", "date"],
+      ["document_number", "Document Number", "text"], // disabled
+      ["end_date", "End Date", "date"], // disabled
+      ["total_candidate", "Total Candidate", "money"]
+    ]
   }
 ]

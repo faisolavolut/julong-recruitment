@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
@@ -12,8 +11,8 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 
 function Page() {
-  const labelPage = "Type Test";
-  const urlPage = `/d/master-data/type-test`;
+  const labelPage = "Document Checking";
+  const urlPage = `/d/master-data/document-checking`;
   const local = useLocal({
     can_add: false,
     ready: false as boolean,
@@ -72,12 +71,10 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/test-types",
+          path: "/api/document-verifications",
           method: "post",
           data: {
             ...fm.data,
-            status:
-              fm?.data?.status === "ACTIVE" ? fm?.data?.status : "INACTIVE",
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
@@ -97,41 +94,31 @@ function Page() {
                 <div>
                   <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
                 </div>
-
                 <div>
                   <Field
                     fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
-                      });
-                      return res;
-                    }}
+                    name={"format"}
+                    label={"Format"}
+                    type={"text"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"status"}
-                    label={"Status"}
-                    type={"single-checkbox"}
-                    onLoad={() => {
-                      return [
-                        {
-                          label: "Active",
-                          value: "ACTIVE",
+                    name={"template_question_id"}
+                    label={"Template"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.template_questions",
+                        path: "/api/template-questions",
+                        validate: "dropdown",
+                        keys: {
+                          label: "name",
                         },
-                      ];
+                      });
+                      return res;
                     }}
                   />
                 </div>

@@ -1,38 +1,50 @@
 "use client";
 
-import { getParams } from "@/lib/utils/get-params";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { Alert } from "@/lib/components/ui/alert";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
+import { getParams } from "@/lib/utils/get-params";
+import { Applicant } from "./Application";
+import { getNumber } from "@/lib/utils/getNumber";
+import { ButtonLink } from "@/lib/components/ui/button-link";
+import { HiOutlinePencilAlt } from "react-icons/hi";
+import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
+import { getValue } from "@/lib/utils/getValue";
+import { TableList } from "@/lib/components/tablelist/TableList";
+import { X } from "lucide-react";
+import { GrNotes } from "react-icons/gr";
+import { events } from "@/lib/utils/event";
+import { getStatusLabel } from "@/constants/status-mpp";
 
 function Page() {
-  const id = getParams("id"); // Replace this with dynamic id retrieval
-  const labelPage = "Document Checking";
-  const urlPage = `/d/master-data/document-checking`;
+  const id = getParams("id");
+  const labelPage = "Applicant Overview";
+  const urlPage = `/d/administrative/applicant-overview`;
   const local = useLocal({
     can_edit: false,
+    can_delete: false,
     ready: false as boolean,
   });
 
   useEffect(() => {
     const run = async () => {
       local.can_edit = true;
+      local.can_delete = true;
       local.ready = true;
       local.render();
     };
     run();
   }, []);
 
-  if (local.ready && !local.can_edit) return notFound();
+  if (local.ready && !local.can_edit && !local.can_delete) return notFound();
 
   return (
     <FormBetter
@@ -50,35 +62,67 @@ function Page() {
                     url: urlPage,
                   },
                   {
-                    title: "View",
+                    title: "Edit",
                   },
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center"></div>
+            <div className="flex flex-row space-x-2 items-center">
+              {local.can_edit && (
+                <Alert
+                  type={"save"}
+                  msg={"Are you sure you want to save this record?"}
+                  onClick={() => {
+                    fm.submit();
+                  }}
+                >
+                  <ButtonContainer className={"bg-primary"}>
+                    <IoMdSave className="text-xl" />
+                    Save
+                  </ButtonContainer>
+                </Alert>
+              )}
+              {local.can_delete && (
+                <Alert
+                  type={"delete"}
+                  msg={"Are you sure you want to delete this record?"}
+                  onClick={async () => {
+                    await apix({
+                      port: "recruitment",
+                      path: `/api/job-postings/${id}`,
+                      method: "delete",
+                    });
+                  }}
+                >
+                  <ButtonContainer variant={"destructive"}>
+                    <MdDelete className="text-xl" />
+                    Delete
+                  </ButtonContainer>
+                </Alert>
+              )}
+            </div>
           </div>
         );
       }}
       onSubmit={async (fm: any) => {
-        await apix({
+        const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-verifications",
+          path: "/api/job-postings",
           method: "put",
           data: {
             ...fm.data,
           },
         });
       }}
-      mode="view"
       onLoad={async () => {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/document-verifications/${id}`,
+          path: `/api/job-postings/${id}`,
           validate: "object",
         });
-        return { ...data, template_name: data?.template_question?.name };
+        return data;
       }}
       showResize={false}
       header={(fm: any) => {
@@ -90,27 +134,287 @@ function Page() {
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
-                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
+                  <Field
+                    fm={fm}
+                    name={"project_number"}
+                    label={"Project Number"}
+                    type={"text"}
+                    disabled={true}
+                  />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"format"}
-                    label={"Format"}
+                    name={"activity"}
+                    label={"Activity"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: "/api/template-questions/form-types",
+                        validate: "dropdown",
+                        keys: {
+                          label: "value",
+                          value: "value",
+                        },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"start_date"}
+                    label={"Start Date"}
+                    type={"date"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"pic"}
+                    label={"PIC"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "portal",
+                        value: "data.data.employees",
+                        path: "/api/employees",
+                        validate: "dropdown",
+                        keys: {
+                          label: "name",
+                        },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"status"}
+                    label={"Status"}
                     type={"text"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_name"}
-                    label={"Template"}
-                    type={"text"}
+                    name={"document_date"}
+                    label={"Document Date"}
+                    type={"date"}
                   />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"document_number"}
+                    label={"Document Number"}
+                    type={"text"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"end_date"}
+                    label={"End Date"}
+                    type={"date"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"total_candidate"}
+                    label={"Total Candidate"}
+                    type={"money"}
+                  />
+                </div>
+                <div>
+                  <Applicant fm={fm} />
                 </div>
               </div>
             </div>
           </>
+        );
+      }}
+      onFooter={(fm: any) => {
+        if (!fm?.data?.id) return <></>;
+        return (
+          <div className={cx()}>
+            <div className="w-full flex flex-row">
+              <div className="flex flex-grow flex-col h-[350px]">
+                <TableList
+                  name="job-posting"
+                  feature={["checkbox"]}
+                  header={{
+                    sideLeft: (data: any) => {
+                      return (
+                        <div className="flex flex-row flex-grow gap-x-2">
+                          {data?.selection?.all ||
+                          data?.selection?.partial?.length ? (
+                            <>
+                              <Alert
+                                type={"save"}
+                                msg={`Are you sure you want to approve ${
+                                  data?.selection?.all
+                                    ? "All"
+                                    : `${data?.selection?.partial?.length}`
+                                } profile?`}
+                                onClick={() => {}}
+                              >
+                                <ButtonContainer className={"bg-primary"}>
+                                  <IoCheckmarkOutline className="text-xl" />
+                                  Approve
+                                </ButtonContainer>
+                              </Alert>
+                              <Alert
+                                type={"delete"}
+                                msg={`Are you sure you want to reject ${
+                                  data?.selection?.all
+                                    ? "All"
+                                    : `${data?.selection?.partial?.length}`
+                                } profile?`}
+                                onClick={async () => {}}
+                              >
+                                <ButtonContainer variant={"destructive"}>
+                                  <X className="text-xl" />
+                                  Reject
+                                </ButtonContainer>
+                              </Alert>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      );
+                    },
+                  }}
+                  column={[
+                    {
+                      name: "id_applicant",
+                      header: () => <span>ID Applicant</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "name",
+                      header: () => <span>Applicant Name</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "gpa",
+                      header: () => <span>GPA</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "major",
+                      header: () => <span>Major</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "job_name",
+                      header: () => <span>Job Name</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "job_experience",
+                      header: () => <span>Job Experience</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "work_experience",
+                      header: () => <span>Work Experience (month)</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "cv",
+                      header: () => <span>CV</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "status_selection",
+                      header: () => <span>Status Selection</span>,
+                      renderCell: ({ row }: any) => {
+                        return (
+                          <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                            <ButtonBetter>
+                              <div className="flex items-center gap-x-2">
+                                <IoCheckmarkOutline className="text-lg" />
+                              </div>
+                            </ButtonBetter>
+                            <ButtonBetter variant={"destructive"}>
+                              <div className="flex items-center gap-x-2">
+                                <X className="text-lg" />
+                              </div>
+                            </ButtonBetter>
+                          </div>
+                        );
+                      },
+                    },
+                    {
+                      name: "action",
+                      header: () => <span>Action</span>,
+                      sortable: false,
+                      renderCell: ({ row }: any) => {
+                        return (
+                          <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                            <ButtonLink
+                              className="bg-primary"
+                              href={`/d/administrative/selection-setup/${id}/candidate/${row.id}/view`}
+                            >
+                              <div className="flex items-center gap-x-2">
+                                <IoEye className="text-lg" />
+                              </div>
+                            </ButtonLink>
+                          </div>
+                        );
+                      },
+                    },
+                  ]}
+                  onLoad={async (param: any) => {
+                    const params = await events("onload-param", param);
+                    const result: any = await apix({
+                      port: "recruitment",
+                      value: "data.data.user_profiles",
+                      path: `/api/user-profiles${params}`,
+                      validate: "array",
+                    });
+                    return result;
+                  }}
+                  onCount={async () => {
+                    const result: any = await apix({
+                      port: "recruitment",
+                      value: "data.data.total",
+                      path: `/api/user-profiles?page=1&page_size=1`,
+                      validate: "object",
+                    });
+                    return getNumber(result);
+                  }}
+                  onInit={async (list: any) => {}}
+                />
+              </div>
+            </div>
+          </div>
         );
       }}
     />

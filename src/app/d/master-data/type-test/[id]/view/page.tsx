@@ -51,55 +51,22 @@ function Page() {
                     url: urlPage,
                   },
                   {
-                    title: "Edit",
+                    title: "View",
                   },
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center">
-              {local.can_edit && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoMdSave className="text-xl" />
-                    Save
-                  </ButtonContainer>
-                </Alert>
-              )}
-              {local.can_delete && (
-                <Alert
-                  type={"delete"}
-                  msg={"Are you sure you want to delete this record?"}
-                  onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/type-test/${id}`,
-                      method: "delete",
-                    });
-                  }}
-                >
-                  <ButtonContainer variant={"destructive"}>
-                    <MdDelete className="text-xl" />
-                    Delete
-                  </ButtonContainer>
-                </Alert>
-              )}
-            </div>
+            <div className="flex flex-row space-x-2 items-center"></div>
           </div>
         );
       }}
+      mode="view"
       onSubmit={async (fm: any) => {}}
-      mode={"view"}
       onLoad={async () => {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/type-test/${id}`,
+          path: `/api/test-types/${id}`,
           validate: "object",
         });
         return data;
@@ -115,6 +82,14 @@ function Page() {
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
                   <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"recruitment_type"}
+                    label={"Recruitment Type"}
+                    type={"text"}
+                  />
                 </div>
                 <div>
                   <Field
