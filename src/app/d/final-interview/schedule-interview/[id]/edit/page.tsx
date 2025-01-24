@@ -12,6 +12,10 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
+import { getNumber } from "@/lib/utils/getNumber";
+import { events } from "@/lib/utils/event";
+import { getValue } from "@/lib/utils/getValue";
+import { TableList } from "@/lib/components/tablelist/TableList";
 
 function Page() {
   const id = getParams("id");
@@ -123,38 +127,13 @@ function Page() {
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
-                  <Field
-                    fm={fm}
-                    name={"project_recruitment_header_id"}
-                    label={"No. Reference Project"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/job-postings",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"document_date"}
-                    label={"Document Date"}
-                    type={"date"}
-                  />
+                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
                 </div>
                 <div>
                   <Field
                     fm={fm}
                     name={"document_number"}
-                    label={"Document No."}
+                    label={"Document Number"}
                     type={"text"}
                     disabled={true}
                   />
@@ -162,18 +141,27 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
+                    name={"project_number"}
+                    label={"Project Number"}
+                    type={"text"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"activity"}
+                    label={"Activity"}
                     type={"dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/recruitment-types",
+                        path: "/api/template-questions/form-types",
                         validate: "dropdown",
                         keys: {
-                          value: "value",
                           label: "value",
+                          value: "value",
                         },
                       });
                       return res;
@@ -183,12 +171,38 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    name={"start_date"}
+                    label={"Start Date"}
+                    type={"date"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"end_date"}
+                    label={"End Date"}
+                    type={"date"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"schedule_date"}
+                    label={"Schedule Date"}
+                    type={"date"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
                     name={"job_id"}
-                    label={"Job Position"}
+                    label={"Job Name"}
                     type={"dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
-                        port: "portal",
+                        port: "recruitment",
                         value: "data.data.jobs",
                         path: "/api/jobs",
                         validate: "dropdown",
@@ -203,67 +217,54 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"mp_request_id"}
-                    label={"MPR Document No"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data.mp_request_header",
-                        path: "/api/mp-requests",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
-                      });
-                      return res;
-                    }}
+                    name={"start_time"}
+                    label={"Start Time"}
+                    type={"time"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"start_date"}
-                    label={"Start Date"}
-                    type={"date"}
+                    name={"end_time"}
+                    label={"End Time"}
+                    type={"time"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"end_date"}
-                    label={"End Date"}
-                    type={"date"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"status"}
-                    label={"Status"}
+                    name={"location"}
+                    label={"Location (Url)"}
                     type={"text"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"link"}
-                    label={"Link Job Posting"}
-                    type={"text"}
-                    disabled={true}
+                    name={"range_duration"}
+                    label={"Range Duration"}
+                    type={"money"}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <Field
+                    fm={fm}
+                    name={"description"}
+                    label={"Description"}
+                    type={"textarea"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"for_organization_id"}
-                    label={"Company"}
+                    name={"interviewer"}
+                    label={"Interviewer"}
                     type={"dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "portal",
-                        value: "data.data.organizations",
-                        path: "/api/organizations",
+                        value: "data.data.employees",
+                        path: "/api/employees",
                         validate: "dropdown",
                         keys: {
                           label: "name",
@@ -276,46 +277,119 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"salary_min"}
-                    label={"Minimal Range Salary"}
+                    name={"total_candidate"}
+                    label={"Total Candidate"}
                     type={"money"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"salary_max"}
-                    label={"Maximal Range Salary"}
-                    type={"money"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"organization_logo"}
-                    label={"Logo Company"}
-                    type={"upload"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"poster"}
-                    label={"Poster Recruitment"}
-                    type={"upload"}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Field
-                    fm={fm}
-                    name={"content_description"}
-                    label={"Description Post a Job"}
-                    type={"richtext"}
+                    name={"status"}
+                    label={"Status"}
+                    type={"text"}
+                    disabled={true}
                   />
                 </div>
               </div>
             </div>
           </>
+        );
+      }}
+      onFooter={(fm: any) => {
+        if (!fm?.data?.id) return <></>;
+        return (
+          <div className={cx()}>
+            <div className="w-full flex flex-row">
+              <div className="flex flex-grow flex-col h-[350px]">
+                <TableList
+                  name="job-posting"
+                  feature={["checkbox"]}
+                  header={{}}
+                  column={[
+                    {
+                      name: "id_applicant",
+                      header: () => <span>ID Applicant</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "name",
+                      header: () => <span>Applicant Name</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "age",
+                      header: () => <span>Age</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "job_name",
+                      header: () => <span>Job Name</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "work_experience",
+                      header: () => <span>Work Experience (month)</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "cv",
+                      header: () => <span>CV</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getValue(row, name)}</>;
+                      },
+                    },
+                    {
+                      name: "status_selection",
+                      header: () => <span>Status Selection</span>,
+                      renderCell: ({ row }: any) => {
+                        // return (
+                        //   <div className="flex items-center gap-x-0.5 whitespace-nowrap text-blue-500	  rounded-md font-bold">
+                        //     Accepted
+                        //   </div>
+                        // );
+                        return (
+                          <div className="flex items-center gap-x-0.5 whitespace-nowrap text-red-500	  rounded-md font-bold">
+                            Rejected
+                          </div>
+                        );
+                      },
+                    },
+                  ]}
+                  onLoad={async (param: any) => {
+                    const params = await events("onload-param", param);
+                    const result: any = await apix({
+                      port: "recruitment",
+                      value: "data.data.user_profiles",
+                      path: `/api/user-profiles${params}`,
+                      validate: "array",
+                    });
+                    return result;
+                  }}
+                  onCount={async () => {
+                    const result: any = await apix({
+                      port: "recruitment",
+                      value: "data.data.total",
+                      path: `/api/user-profiles?page=1&page_size=1`,
+                      validate: "object",
+                    });
+                    return getNumber(result);
+                  }}
+                  onInit={async (list: any) => {}}
+                />
+              </div>
+            </div>
+          </div>
         );
       }}
     />

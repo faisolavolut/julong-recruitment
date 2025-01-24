@@ -59,6 +59,13 @@ function Page() {
           }}
           column={[
             {
+              name: "activity_name",
+              header: () => <span>Activity Name</span>,
+              renderCell: ({ row, name }: any) => {
+                return <>{getValue(row, name)}</>;
+              },
+            },
+            {
               name: "schedule_name",
               header: () => <span>Schedule Name</span>,
               renderCell: ({ row, name }: any) => {
@@ -66,8 +73,8 @@ function Page() {
               },
             },
             {
-              name: "schedule_test",
-              header: () => <span>Schedule Test</span>,
+              name: "schedule_date",
+              header: () => <span>Schedule Date</span>,
               renderCell: ({ row, name }: any) => {
                 return <>{dayDate(getValue(row, name))}</>;
               },

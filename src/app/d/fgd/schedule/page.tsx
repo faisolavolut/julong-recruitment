@@ -21,8 +21,8 @@ function Page() {
   useEffect(() => {
     const run = async () => {
       const roles = await userRoleMe();
-      local.can_add = getAccess("create-schedule", roles);
-      local.can_edit = getAccess("edit-schedule", roles);
+      local.can_add = getAccess("create-fgd-schedule", roles);
+      local.can_edit = getAccess("edit-fgd-schedule", roles);
       local.render();
     };
     run();

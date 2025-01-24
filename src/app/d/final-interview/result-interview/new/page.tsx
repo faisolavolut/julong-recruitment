@@ -13,8 +13,8 @@ import { IoMdSave } from "react-icons/io";
 import { normalDate } from "@/lib/utils/date";
 
 function Page() {
-  const labelPage = "Job Posting";
-  const urlPage = `/d/job/job-posting`;
+  const labelPage = "Final Result Interview";
+  const urlPage = `/d/final-interview/result-interview`;
   const local = useLocal({
     can_add: false,
     ready: false as boolean,
@@ -106,192 +106,72 @@ function Page() {
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
-                  <Field
-                    fm={fm}
-                    name={"project_recruitment_header_id"}
-                    label={"No. Reference Project"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data.project_recruitment_headers",
-                        path: "/api/project-recruitment-headers",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
+                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_date"}
-                    label={"Document Date"}
+                    name={"final_interview_date"}
+                    label={"Final Interview Date"}
                     type={"date"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_number"}
-                    label={"Document No."}
-                    type={"text"}
-                    disabled={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"mp_request_id"}
-                    label={"MPR Document No"}
-                    type={"dropdown"}
-                    onChange={(item: any) => {
-                      const data = item?.data;
-                      fm.data["job_id"] = data?.job_id;
-                      fm.data["job_name"] = data?.job_name;
-                      fm.data["for_organization_location_id"] =
-                        data?.for_organization_location_id;
-                      fm.render();
-                    }}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data.mp_request_header",
-                        path: "/api/mp-requests",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"job_name"}
+                    name={"job_position"}
                     label={"Job Position"}
                     type={"text"}
-                    disabled={true}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"start_date"}
-                    label={"Start Date"}
-                    type={"date"}
+                    name={"description"}
+                    label={"Description"}
+                    type={"textarea"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"end_date"}
-                    label={"End Date"}
-                    type={"date"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"status"}
-                    label={"Status"}
+                    name={"id_applicant"}
+                    label={"ID Applicant"}
                     type={"text"}
                   />
                 </div>
+                <div></div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"link"}
-                    label={"Link Job Posting"}
+                    name={"penilaian_keseluruhan"}
+                    label={"Penilaian Keseluruhan"}
                     type={"text"}
-                    disabled={true}
                   />
                 </div>
+                <div></div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"for_organization_id"}
-                    label={"Company"}
-                    type={"dropdown"}
+                    name={"hasil_interview"}
+                    label={"Hasil Interview"}
+                    type={"single-checkbox"}
                     onLoad={async () => {
-                      const res: any = await apix({
-                        port: "portal",
-                        value: "data.data.organizations",
-                        path: "/api/organizations",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
+                      return [
+                        {
+                          label: "Ditolak",
+                          value: "ditolak",
                         },
-                      });
-                      return res;
+                        {
+                          label: "Cadangan",
+                          value: "cadangan",
+                        },
+                        {
+                          label: "Diterima",
+                          value: "diterima",
+                        },
+                      ];
                     }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"salary_min"}
-                    label={"Minimal Range Salary"}
-                    type={"money"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"salary_max"}
-                    label={"Maximal Range Salary"}
-                    type={"money"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"organization_logo"}
-                    label={"Logo Company"}
-                    type={"upload"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"poster"}
-                    label={"Poster Recruitment"}
-                    type={"upload"}
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Field
-                    fm={fm}
-                    name={"content_description"}
-                    label={"Description Post a Job"}
-                    type={"richtext"}
                   />
                 </div>
               </div>

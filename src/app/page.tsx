@@ -27,14 +27,16 @@ function HomePage() {
   });
   useEffect(() => {
     const run = async () => {
-      const res = await apix({
-        port: "recruitment",
-        value: "data.data.job_postings",
-        path: "/api/job-postings?page=1&page_size=8&status=IN PROGRESS",
-        method: "get",
-      });
-      local.jobs = res;
-      local.render();
+      try {
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data.job_postings",
+          path: "/api/job-postings?page=1&page_size=8&status=IN PROGRESS",
+          method: "get",
+        });
+        local.jobs = res;
+        local.render();
+      } catch (ex) {}
     };
     run();
   }, []);

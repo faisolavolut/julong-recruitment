@@ -118,11 +118,12 @@ function Page() {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/document-types",
+                        path: "/api/template-questions/form-types",
                         validate: "dropdown",
                         keys: {
+                          value: "value",
                           label: (item: any) => {
-                            return labelDocumentType(get(item, "name")) || "-";
+                            return labelDocumentType(get(item, "value")) || "";
                           },
                         },
                       });

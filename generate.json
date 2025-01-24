@@ -25,30 +25,29 @@
   // FORM NEW
   {
     "mode": "new",
-    "name": "schedule-test",
-    "title": "Schedule Test",
-    "url_root": "/d/test-selection",
+    "name": "final-interview-result",
+    "title": "Final Interview Result",
+    "url_root": "/d/final-interview",
     "apix": {
       "port": "recruitment",
       "value": "data.data",
-      "path": "/api/schedule-test",
+      "path": "/api/final-interview-result",
       "validate": "object"
     },
-    // default tipe fieldnya text
-    // jika tipe fieldnya richtext maka col-span-2
     "field": [
-      ["document_number", "Document Number", "text"], // disabled
-      ["schedule_date", "Schedule Date", "date"],
       ["name", "Name", "text"],
+      ["job_position", "Job Position", "text"],
+      ["id_applicant", "ID Applicant", "text"],
+      ["penilaian_keseluruhan", "Penilaian Keseluruhan", "text"],
       [
-        "select_test_type",
-        "Select Test Type",
+        "hasil_interview",
+        "Hasil Interview",
         "dropdown",
         {
           "apix": {
             "port": "recruitment",
             "value": "data.data",
-            "path": "/api/test-types",
+            "path": "/api/interview-results",
             "keys": {
               "label": "name"
             },
@@ -56,44 +55,17 @@
           }
         }
       ],
-      ["project_number", "Project Number", "text"], // disabled
-      [
-        "activity",
-        "Activity",
-        "dropdown",
-        {
-          "apix": {
-            "port": "recruitment",
-            "value": "data.data",
-            "path": "/api/template-questions/form-types",
-            "keys": {
-              "label": "value",
-              "value": "value"
-            },
-            "validate": "dropdown"
-          }
-        }
-      ],
-
-      ["start_date", "Start Date", "date"], // disabled
-      ["end_date", "End Date", "date"], // disabled
-      ["start_time", "Start Time", "time"],
-      ["end_time", "End Time", "time"],
-      ["location", "Location (Url)", "text"],
-      ["job_name", "Job Name", "text"],
-      ["description", "Description", "textarea"],
-      ["link_test", "Link Test", "text"],
-      ["status", "Status", "text"],
-      ["total_candidate", "Total Candidate", "money"]
+      ["final_interview_date", "Final Interview Date", "date"],
+      ["description", "Description", "textarea"]
     ]
   },
 
   // FORM EDIT
   {
     "mode": "edit",
-    "name": "applicant-overview",
-    "title": "Applicant Overview",
-    "url_root": "/d/administrative",
+    "name": "result-interview",
+    "title": "Result Interview",
+    "url_root": "/d/interview",
     "apix": {
       "port": "recruitment",
       "value": "data.data",
@@ -112,46 +84,11 @@
     // jika tipe fieldnya richtext maka col-span-2
 
     "field": [
-      ["project_number", "Project Number", "text"], // disabled
-      [
-        "activity",
-        "Activity",
-        "dropdown",
-        {
-          "apix": {
-            "port": "recruitment",
-            "value": "data.data",
-            "path": "/api/template-questions/form-types",
-            "keys": {
-              "label": "value",
-              "value": "value"
-            },
-            "validate": "dropdown"
-          }
-        }
-      ],
-      ["start_date", "Start Date", "date"], // disabled
-      [
-        "pic",
-        "PIC",
-        "dropdown",
-        {
-          "apix": {
-            "port": "portal",
-            "value": "data.data.employees",
-            "path": "/api/employees",
-            "keys": {
-              "label": "name"
-            },
-            "validate": "dropdown"
-          }
-        }
-      ],
-      ["status", "Status", "text"],
-      ["document_date", "Document Date", "date"],
-      ["document_number", "Document Number", "text"], // disabled
-      ["end_date", "End Date", "date"], // disabled
-      ["total_candidate", "Total Candidate", "money"]
+      ["name", "Name", "text"], //  disabled
+      ["interview_date", "Interview Date", "date"], //  disabled
+      ["job_name", "Job Name", "text"], //  disabled
+      ["description", "Description", "textarea"], //  disabled
+      ["interviewer_name", "Interviewer Name", "text"] //  disabled
     ]
   }
 ]

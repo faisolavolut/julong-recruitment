@@ -114,6 +114,8 @@ function Page() {
           method: "put",
           data: {
             ...fm.data,
+            status:
+              fm?.data?.status === "ACTIVE" ? fm?.data?.status : "INACTIVE",
           },
         });
         if (data?.line?.length || data?.deleted_line_ids?.length) {

@@ -183,19 +183,19 @@ export const configMenu = [
     children: [
       {
         title: "Calendar",
-        href: "/d/final-interview/calender",
+        href: "/d/final-interview/schedule-interview",
         permision: ["read-final-interview-calender"],
       },
       {
         title: "Final Interview",
-        href: "/d/final-interview/interview",
+        href: "/d/final-interview/result-interview",
         permision: ["read-final-interview-recruitment"],
       },
-      {
-        title: "Schedule & Result",
-        href: "/d/final-interview/result",
-        permision: ["read-final-interview-result"],
-      },
+      // {
+      //   title: "Schedule & Result",
+      //   href: "/d/final-interview/result",
+      //   permision: ["read-final-interview-result"],
+      // },
     ],
     permision: [
       "read-final-interview-calender",

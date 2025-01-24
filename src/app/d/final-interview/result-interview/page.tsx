@@ -21,8 +21,8 @@ function Page() {
   useEffect(() => {
     const run = async () => {
       const roles = await userRoleMe();
-      local.can_add = getAccess("create-result-interview", roles);
-      local.can_edit = getAccess("edit-result-interview", roles);
+      local.can_add = getAccess("create-final-result-interview", roles);
+      local.can_edit = getAccess("edit-final-result-interview", roles);
       local.render();
     };
     run();
@@ -32,7 +32,7 @@ function Page() {
     <div className="flex p-4 flex-col flex-grow bg-white rounded-lg border border-gray-300 shadow-md shadow-gray-300">
       <div className="flex flex-col py-4 pb-0 pt-0">
         <h2 className="text-xl font-semibold text-gray-900 ">
-          <span className="">Result Interview</span>
+          <span className="">Final Result Interview</span>
         </h2>
       </div>
       <div className="w-full flex flex-row flex-grow bg-white overflow-hidden ">
@@ -45,7 +45,7 @@ function Page() {
                 <div className="flex flex-row flex-grow">
                   <ButtonLink
                     className="bg-primary"
-                    href={"/d/interview/result-interview/new"}
+                    href={"/d/final-interview/result-interview/new"}
                   >
                     <div className="flex items-center gap-x-0.5">
                       <HiPlus className="text-xl" />
@@ -122,7 +122,7 @@ function Page() {
                   <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                     {local.can_edit ? (
                       <ButtonLink
-                        href={`/d/interview/result-interview/${row.id}/edit`}
+                        href={`/d/final-interview/result-interview/${row.id}/edit`}
                       >
                         <div className="flex items-center gap-x-2">
                           <HiOutlinePencilAlt className="text-lg" />
@@ -131,7 +131,7 @@ function Page() {
                     ) : (
                       <ButtonLink
                         className="bg-primary"
-                        href={`/d/interview/result-interview/${row.id}/view`}
+                        href={`/d/final-interview/result-interview/${row.id}/view`}
                       >
                         <div className="flex items-center gap-x-2">
                           <IoEye className="text-lg" />

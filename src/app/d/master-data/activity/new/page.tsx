@@ -76,12 +76,16 @@ function Page() {
           method: "post",
           data: {
             ...fm.data,
+            status:
+              fm?.data?.status === "ACTIVE" ? fm?.data?.status : "INACTIVE",
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
-        return {};
+        return {
+          status: "ACTIVE",
+        };
       }}
       showResize={false}
       header={(fm: any) => {

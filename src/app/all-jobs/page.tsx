@@ -47,24 +47,25 @@ function HomePage() {
   useEffect(() => {
     setIsClient(true);
     const run = async () => {
-      const res = await apix({
-        port: "recruitment",
-        value: "data.data.job_postings",
-        path: "/api/job-postings?page=1&page_size=15&status=IN PROGRESS",
-        method: "get",
-      });
+      try {
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data.job_postings",
+          path: "/api/job-postings?page=1&page_size=15&status=IN PROGRESS",
+          method: "get",
+        });
 
-      const count = await apix({
-        port: "recruitment",
-        value: "data.data.total",
-        path: "/api/job-postings?page=1&page_size=8&status=IN PROGRESS",
-        method: "get",
-      });
-      local.data = res;
-      local.count = count;
-      local.maxPage = Math.ceil(getNumber(count) / 15);
-      local.render();
-      console.log(local.data);
+        const count = await apix({
+          port: "recruitment",
+          value: "data.data.total",
+          path: "/api/job-postings?page=1&page_size=8&status=IN PROGRESS",
+          method: "get",
+        });
+        local.data = res;
+        local.count = count;
+        local.maxPage = Math.ceil(getNumber(count) / 15);
+        local.render();
+      } catch (ex) {}
     };
     run();
   }, []);
