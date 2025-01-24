@@ -16,9 +16,6 @@ import DefaultHeaderNavigation from "@/app/components/navbarHeader";
 import JobCard from "@/app/components/JobCard";
 import TestimonialsCard from "@/app/components/testimoni";
 import FlowbiteFooterSection from "@/app/components/flowbite-footer";
-import { PaginationDemo } from "../components/pagination";
-import DetailJobs from "../components/DetailJobs";
-import CardCompanyProfile from "../components/CardCompanyProfile";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { apix } from "@/lib/utils/apix";
 import {
