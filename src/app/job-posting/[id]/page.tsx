@@ -44,7 +44,6 @@ function Page() {
       local.data = data;
       local.applied = data?.is_applied;
       local.render();
-      console.log({ data });
     };
     run();
   }, []);
@@ -87,7 +86,7 @@ function Page() {
                   <div className=""></div>
 
                   {local.applied ? (
-                    <ButtonBetter className="bg-second text-black hover:bg-second">
+                    <ButtonBetter className="bg-gray-300 text-black hover:bg-gray-300 cursor-default		">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width={20}

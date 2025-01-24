@@ -31,7 +31,7 @@ function HomePage() {
         const res = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
-          path: "/api/job-postings?page=1&page_size=8&status=IN PROGRESS",
+          path: "/api/no-auth/job-postings?page=1&page_size=8&status=IN PROGRESS",
           method: "get",
         });
         local.jobs = res;

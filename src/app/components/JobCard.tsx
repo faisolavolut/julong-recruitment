@@ -1,11 +1,27 @@
+import { actionToast } from "@/lib/utils/action";
+import { apix } from "@/lib/utils/apix";
+import { get_user } from "@/lib/utils/get_user";
 import { siteurl } from "@/lib/utils/siteurl";
-export const JobCard: React.FC<any> = ({ data }: { data: any }) => {
+import { useState } from "react";
+import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
+export const JobCard: React.FC<any> = ({
+  data,
+  hidden_save,
+}: {
+  data: any;
+  hidden_save?: boolean;
+}) => {
+  const [favorite, setFavorite] = useState(data?.is_saved ? true : false);
+  const [isZooming, setIsZooming] = useState(false);
+  const handleClick = () => {
+    setIsZooming(true);
+    setTimeout(() => setIsZooming(false), 300); // Durasi animasi 300ms
+  };
   return (
     <div
       className="border rounded-lg shadow-md p-4 w-72 bg-white"
       onClick={() => {
         let _url: any = siteurl(`/job-posting/${data?.id}`);
-        console.log(_url);
         window.open(_url, "_blank");
       }}
     >
@@ -19,16 +35,22 @@ export const JobCard: React.FC<any> = ({ data }: { data: any }) => {
             />
           </div>
         </div>
-        <button
-          className="text-blue-600 border border-blue-600 rounded px-3 py-1 text-sm hover:bg-blue-600 hover:text-white transition cursor-pointer"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log("CLICK APPLY");
-          }}
-        >
-          Apply Now
-        </button>
+        {data?.is_applied ? (
+          <div className="text-blue-600  px-3 py-1 text-sm font-bold">
+            Applied
+          </div>
+        ) : (
+          <button
+            className="text-blue-600 border border-blue-600 rounded px-3 py-1 text-sm hover:bg-blue-600 hover:text-white transition cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log("CLICK APPLY");
+            }}
+          >
+            Apply Now
+          </button>
+        )}
       </div>
 
       {/* Judul dan Lokasi */}
@@ -44,10 +66,44 @@ export const JobCard: React.FC<any> = ({ data }: { data: any }) => {
       ></div>
 
       {/* Tags */}
-      <div className="flex gap-2 mt-4">
+      <div className="flex gap-2 mt-4 flex-row justify-between items-center">
         <span className="bg-yellow-100 text-yellow-600 text-xs font-medium px-3 py-1 rounded-full line-clamp-1">
           {data?.recruitment_type}
         </span>
+        <div
+          className={cx(
+            `cursor-pointer text-primary transition-transform ${
+              isZooming ? "scale-110" : "scale-100"
+            }`
+          )}
+          onClick={async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleClick();
+            setFavorite(!favorite);
+            const w: any = window as unknown as {
+              user: any;
+            };
+            if (typeof w === "object" && typeof w?.user === "object") {
+              await actionToast({
+                task: async () => {
+                  await apix({
+                    port: "recruitment",
+                    value: "data.data.job_postings",
+                    path: "/api/job-postings/save?job_posting_id=" + data?.id,
+                    method: "get",
+                  });
+                },
+                after: () => {},
+                msg_load: "Saving your favorite job ",
+                msg_error: "Failed to save your favorite job ",
+                msg_succes: "Your favorite job has been saved successfully! ",
+              });
+            }
+          }}
+        >
+          {get_user("id") && favorite ? <IoBookmark /> : <IoBookmarkOutline />}
+        </div>
       </div>
     </div>
   );

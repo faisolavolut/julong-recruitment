@@ -286,6 +286,14 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
+                          name={"birth_place"}
+                          label={"Birth Place"}
+                          type={"text"}
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          fm={fm}
                           name={"birth_date"}
                           label={"Birth Date"}
                           type={"date"}

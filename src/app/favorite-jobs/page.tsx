@@ -1,24 +1,15 @@
 "use client";
 import get from "lodash.get";
-import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocal } from "@/lib/utils/use-local";
-import { siteurl } from "@/lib/utils/siteurl";
 import { Form } from "@/lib/components/form/Form";
 import { Field } from "@/lib/components/form/Field";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
 import { PinterestLayout } from "@/lib/components/ui/PinterestLayout";
-import Link from "next/link";
-import { FaArrowRight } from "react-icons/fa";
-import ServerErrorPage from "@/lib/components/comp/500";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
 import JobCard from "@/app/components/JobCard";
-import TestimonialsCard from "@/app/components/testimoni";
 import FlowbiteFooterSection from "@/app/components/flowbite-footer";
-import { PaginationDemo } from "../components/pagination";
-import DetailJobs from "../components/DetailJobs";
-import CardCompanyProfile from "../components/CardCompanyProfile";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { apix } from "@/lib/utils/apix";
 import {
@@ -27,12 +18,8 @@ import {
   AccordionItem,
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
-import {
-  Pagination,
-  PaginationPage,
-} from "@/lib/components/tablelist/TableList";
+import { PaginationPage } from "@/lib/components/tablelist/TableList";
 import { getNumber } from "@/lib/utils/getNumber";
-import { get_user } from "@/lib/utils/get_user";
 
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
@@ -51,19 +38,15 @@ function HomePage() {
       try {
         const res = await apix({
           port: "recruitment",
-          value: "data.data.job_postings",
-          path: `/api${
-            get_user("id") ? `/` : `/no-auth/`
-          }job-postings?page=1&page_size=15&status=IN PROGRESS`,
+          value: "data.data",
+          path: "/api/job-postings/saved?page=1&page_size=15&status=IN PROGRESS",
           method: "get",
         });
 
         const count = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api${
-            get_user("id") ? `/` : `/no-auth/`
-          }job-postings?page=1&page_size=8&status=IN PROGRESS`,
+          path: "/api/job-postings/saved?page=1&page_size=8&status=IN PROGRESS",
           method: "get",
         });
         local.data = res;
@@ -88,74 +71,6 @@ function HomePage() {
   return (
     <div className="flex flex-col max-w-screen bg-white">
       <DefaultHeaderNavigation />
-      <div
-        className={cx(
-          "h-64 relative mb-8 flex flex-row items-center justify-center bg-primary"
-        )}
-      >
-        <div className="flex flex-grow max-w-screen-xl justify-center">
-          <div className="flex  w-3/4 bg-white shadow-md rounded-full">
-            <Form
-              onSubmit={async (fm: any) => {}}
-              onLoad={async () => {
-                return {};
-              }}
-              showResize={false}
-              header={(fm: any) => {
-                return <></>;
-              }}
-              children={(fm: any) => {
-                return (
-                  <>
-                    <div className={cx("flex flex-row flex-wrap px-4 py-2")}>
-                      <div className="flex-grow grid gap-4 md:gap-6 md:grid-cols-2">
-                        <div>
-                          <Field
-                            style="underline"
-                            fm={fm}
-                            name={"recommended_by"}
-                            label={"Recommend by"}
-                            type={"text"}
-                            hidden_label={true}
-                            placeholder="Job, title or keywords"
-                            prefix={
-                              <div className="text-md flex flex-row items-center font-bold">
-                                <IoIosSearch />
-                              </div>
-                            }
-                          />
-                        </div>
-
-                        <div>
-                          <Field
-                            fm={fm}
-                            style="underline"
-                            name={"recommended_by"}
-                            label={"Recommend by"}
-                            type={"text"}
-                            hidden_label={true}
-                            placeholder="Location"
-                            prefix={
-                              <div className="text-md flex flex-row items-center font-bold text-gray-500">
-                                <MdOutlineLocationOn />
-                              </div>
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-row items-center">
-                        <ButtonBetter className="rounded-full px-6">
-                          Search My Job
-                        </ButtonBetter>
-                      </div>
-                    </div>
-                  </>
-                );
-              }}
-            />
-          </div>
-        </div>
-      </div>
       <div className="relative flex flex-col flex-grow">
         <div className="flex flex-col justify-center items-center">
           <div className="flex-grow grid grid-cols-5 p-8 max-w-screen-xl">
@@ -401,7 +316,9 @@ function HomePage() {
             </div>
             <div className="flex-grow flex flex-col p-8 col-span-4 pt-0">
               <div className="flex flex-row items-center pb-4  w-full">
-                <p className="font-bold text-3xl">Jobs</p>
+                <p className="font-bold text-3xl">
+                  Favorite Jobs ({getNumber(local?.count)})
+                </p>
               </div>
               <div className="flex flex-grow pb-4">
                 <PinterestLayout

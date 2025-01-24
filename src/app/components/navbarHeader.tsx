@@ -32,18 +32,15 @@ const DefaultHeaderNavigation: FC = function () {
   }, []);
   return (
     <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
-      <div className="flex flex-row flex-grow max-w-screen-xl items-center">
+      <div className="grid grid-cols-5 max-w-screen-xl items-center w-full">
         <Link href={siteurl("/")} className="flex flex-row items-center px-4">
           <img
             src={siteurl("/jobsuit.png")}
             className="mr-3 h-3 rounded"
             alt="Flowbite Logo"
           />
-          {/* <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-            Julong
-          </span> */}
         </Link>
-        <div className="flex flex-row flex-grow items-center justify-center">
+        <div className="flex flex-row flex-grow items-center justify-center col-span-3">
           {local.user ? (
             <>
               <ButtonLink href="/guest/user-setting" variant={"noline"}>
@@ -52,13 +49,13 @@ const DefaultHeaderNavigation: FC = function () {
               <ButtonLink href="/all-jobs" variant={"noline"}>
                 Find Jobs
               </ButtonLink>
-              <ButtonLink href="/" variant={"noline"}>
+              <ButtonLink href="/favorite-jobs" variant={"noline"}>
                 Favorite Jobs
               </ButtonLink>
-              <ButtonLink href="/" variant={"noline"}>
+              <ButtonLink href="/applied-jobs" variant={"noline"}>
                 Applied Jobs
               </ButtonLink>
-              <ButtonLink href="/" variant={"noline"}>
+              <ButtonLink href="/about" variant={"noline"}>
                 About Us
               </ButtonLink>
             </>
@@ -71,20 +68,23 @@ const DefaultHeaderNavigation: FC = function () {
                 Find Jobs
               </ButtonLink>
               <ButtonLink href="/" variant={"noline"}>
-                About Company
+                About Us
               </ButtonLink>
             </>
           )}
         </div>
 
-        <div className="flex items-center gap-3 lg:order-2">
+        <div className="flex items-center gap-3 lg:order-2 justify-end">
           {local.user ? (
             <>
               <UserDropdown />
             </>
           ) : (
             <>
-              <ButtonLink href="/" variant={"noline"}>
+              <ButtonLink
+                href={`${process.env.NEXT_PUBLIC_API_PORTAL}/login`}
+                variant={"noline"}
+              >
                 Log in
               </ButtonLink>
               <ButtonLink href="/">Sign up</ButtonLink>

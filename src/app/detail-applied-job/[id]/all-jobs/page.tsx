@@ -32,7 +32,6 @@ import {
   PaginationPage,
 } from "@/lib/components/tablelist/TableList";
 import { getNumber } from "@/lib/utils/getNumber";
-import { get_user } from "@/lib/utils/get_user";
 
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
@@ -52,18 +51,14 @@ function HomePage() {
         const res = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
-          path: `/api${
-            get_user("id") ? `/` : `/no-auth/`
-          }job-postings?page=1&page_size=15&status=IN PROGRESS`,
+          path: "/api/no-auth/job-postings?page=1&page_size=15&status=IN PROGRESS",
           method: "get",
         });
 
         const count = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api${
-            get_user("id") ? `/` : `/no-auth/`
-          }job-postings?page=1&page_size=8&status=IN PROGRESS`,
+          path: "/api/no-auth/job-postings?page=1&page_size=8&status=IN PROGRESS",
           method: "get",
         });
         local.data = res;
