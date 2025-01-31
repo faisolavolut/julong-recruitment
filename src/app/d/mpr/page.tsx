@@ -11,6 +11,11 @@ import { useEffect } from "react";
 import { IoEye } from "react-icons/io5";
 import get from "lodash.get";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
+import { ButtonBetterTooltip } from "@/lib/components/ui/button";
+import { actionToast } from "@/lib/utils/action";
+import { templateContentJobPosting } from "@/app/lib/templateContent";
+import { RiAiGenerate } from "react-icons/ri";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const list = [
@@ -131,14 +136,77 @@ function Page() {
                     <IoEye className="text-lg" />
                   </div>
                 </ButtonLink>
-                {/* <ButtonLink
-                        className="bg-primary"
-                        href={`/d/mpr/${row.id}/view`}
-                      >
-                        <div className="flex items-center gap-x-2">
-                          <IoEye className="text-lg" />
-                        </div>
-                      </ButtonLink> */}
+                <ButtonBetterTooltip
+                  tooltip={"Generate MPR Job Posting"}
+                  className="bg-primary"
+                  onClick={async () => {
+                    await actionToast({
+                      task: async () => {
+                        const data: any = await apix({
+                          port: "mpp",
+                          value: "data.data",
+                          path: "/api/mp-requests/" + row?.mpr_clone_id,
+                          validate: "object",
+                        });
+                        const document_number = await apix({
+                          port: "recruitment",
+                          value: "data.data",
+                          path: "/api/job-postings/document-number",
+                        });
+                        const content_description =
+                          templateContentJobPosting(data);
+
+                        const header: any = await apix({
+                          port: "recruitment",
+                          value: "data.data.project_recruitment_headers",
+                          path: "/api/project-recruitment-headers?page=1&page_size=1&status=IN PROGRESS",
+                          validate: "dropdown",
+                          keys: {
+                            label: "document_number",
+                          },
+                        });
+                        const result = {
+                          document_number,
+                          status: "DRAFT",
+                          mp_request_id: row.id,
+                          job_name: data?.job_name,
+                          job_id: data?.job_id,
+                          for_organization_id: data?.for_organization_id,
+                          for_organization_location_id:
+                            data?.for_organization_location_id,
+                          content_description,
+                          document_date: normalDate(data?.document_date),
+                          start_date: normalDate(data?.mpp_period?.start_date),
+                          end_date: normalDate(data?.mpp_period?.end_date),
+                          recruitment_type: data?.recruitment_type,
+                          salary_min: 0,
+                          salary_max: 0,
+                          project_recruitment_header_id: header?.[0]?.value,
+                        };
+                        const res = await apix({
+                          port: "recruitment",
+                          value: "data.data",
+                          path: "/api/job-postings",
+                          method: "post",
+                          type: "form",
+                          data: {
+                            ...result,
+                          },
+                        });
+                        if (res?.id)
+                          navigate(`/d/job/job-posting/${res?.id}/edit`);
+                      },
+                      after: () => {},
+                      msg_load: "Create MPR Job Posting ",
+                      msg_error: "Create MPR Job Posting failed ",
+                      msg_succes: "MPR Job Posting success ",
+                    });
+                  }}
+                >
+                  <div className="flex items-center gap-x-2">
+                    <RiAiGenerate className="text-lg" />
+                  </div>
+                </ButtonBetterTooltip>
               </div>
             );
           },

@@ -90,7 +90,6 @@ function Page() {
           },
           new FormData()
         );
-        console.log(requestData);
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
@@ -116,6 +115,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"project_recruitment_header_id"}
                     label={"No. Reference Project"}
                     type={"dropdown"}
@@ -123,7 +123,7 @@ function Page() {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.project_recruitment_headers",
-                        path: "/api/project-recruitment-headers",
+                        path: "/api/project-recruitment-headers?status=IN PROGRESS",
                         validate: "dropdown",
                         keys: {
                           label: "document_number",
@@ -136,6 +136,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"document_date"}
                     label={"Document Date"}
                     type={"date"}
@@ -153,6 +154,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
                     type={"dropdown"}
@@ -175,6 +177,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"mp_request_id"}
                     label={"MPR Document No"}
                     type={"dropdown"}
@@ -206,15 +209,12 @@ function Page() {
                         .replace("{experiences}", data.experiences)
                         .replace("{specific_skills}", skill);
                       fm.data.content_description = result;
-                      console.log(result);
                       fm.render();
                       if (
-                        typeof fm?.fields?.content_description.editor ===
+                        typeof fm?.fields?.content_description.reload ===
                         "function"
                       ) {
-                        const { editor } =
-                          fm?.fields?.content_description.editor();
-                        console.log({ editor });
+                        fm?.fields?.content_description.reload();
                       }
                       //
                       console.log({ fm });
@@ -236,6 +236,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"job_name"}
                     label={"Job Position"}
                     type={"text"}
@@ -245,19 +246,19 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"start_date"}
                     label={"Start Date"}
                     type={"date"}
-                    required={true}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"end_date"}
                     label={"End Date"}
                     type={"date"}
-                    required={true}
                   />
                 </div>
                 <div>
@@ -280,6 +281,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"for_organization_id"}
                     label={"Company"}
                     type={"dropdown"}
@@ -300,6 +302,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"salary_min"}
                     label={"Minimal Range Salary"}
                     type={"money"}
@@ -308,6 +311,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"salary_max"}
                     label={"Maximal Range Salary"}
                     type={"money"}

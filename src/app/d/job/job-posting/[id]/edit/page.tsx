@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
+import { actionToast } from "@/lib/utils/action";
 
 function Page() {
   const id = getParams("id");
@@ -57,7 +58,7 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_edit && (
+              {fm?.data?.status === "DRAFT" && local.can_edit && (
                 <>
                   <Alert
                     type={"save"}
@@ -91,10 +92,20 @@ function Page() {
                   type={"delete"}
                   msg={"Are you sure you want to delete this record?"}
                   onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings/${id}`,
-                      method: "delete",
+                    await actionToast({
+                      task: async () => {
+                        await apix({
+                          port: "recruitment",
+                          path: `/api/job-postings/${id}`,
+                          method: "delete",
+                        });
+                      },
+                      after: () => {
+                        navigate("/d/job/job-posting");
+                      },
+                      msg_load: "Delete ",
+                      msg_error: "Delete ",
+                      msg_succes: "Delete successfully! ",
                     });
                   }}
                 >
@@ -157,6 +168,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"project_recruitment_header_id"}
                     label={"No. Reference Project"}
                     type={"dropdown"}
@@ -164,7 +176,7 @@ function Page() {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.project_recruitment_headers",
-                        path: "/api/project-recruitment-headers",
+                        path: "/api/project-recruitment-headers?status=IN PROGRESS",
                         validate: "dropdown",
                         keys: {
                           label: "document_number",
@@ -177,6 +189,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"document_date"}
                     label={"Document Date"}
                     type={"date"}
@@ -194,6 +207,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
                     type={"dropdown"}
@@ -212,31 +226,14 @@ function Page() {
                     }}
                   />
                 </div>
+
                 <div>
                   <Field
                     fm={fm}
-                    name={"job_id"}
-                    label={"Job Position"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "portal",
-                        value: "data.data.jobs",
-                        path: "/api/jobs",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
+                    required={true}
                     name={"mp_request_id"}
                     label={"MPR Document No"}
+                    type={"dropdown"}
                     onChange={(item: any) => {
                       const data = item?.data;
                       fm.data["job_id"] = data?.job_id;
@@ -245,28 +242,16 @@ function Page() {
                         data?.for_organization_location_id;
                       const template = `<p>Description Post</p><p></p><p>1. Job Description </p><p>{job_description}</p><p></p><p>2. Required Qualification </p><p>{required_qualification}</p><p></p><p>3. Work Experience </p><p>{experiences}</p><p></p><p>4. Specific Skills </p><p>{specific_skills}</p><p></p><p>5. Benefits</p><p></p>`;
                       let skill = `
-        ${
-          data?.certificate &&
-          `<p>Certificate</p><p>${
-            data?.certificate ? data?.certificate : ""
-          }</p>`
-        }
+        ${data?.certificate && `<p>Certificate</p><p>${data?.certificate}</p>`}
         ${
           data?.computer_skill &&
-          `<p>Computer</p><p>${
-            data?.computer_skill ? data?.computer_skill : ""
-          }</p>`
+          `<p>Computer</p><p>${data?.computer_skill}</p>`
         }
         ${
           data?.language_skill &&
-          `<p>Computer</p><p>${
-            data?.language_skill ? data?.language_skill : ""
-          }</p>`
+          `<p>Computer</p><p>${data?.language_skill}</p>`
         }
-        ${
-          data?.other_skill &&
-          `<p>Others</p><p>${data?.other_skill ? data?.other_skill : ""}</p>`
-        }
+        ${data?.other_skill && `<p>Others</p><p>${data?.other_skill}</p>`}
         `;
                       const result = template
                         .replace("{job_description}", data.jobdesc)
@@ -278,8 +263,15 @@ function Page() {
                         .replace("{specific_skills}", skill);
                       fm.data.content_description = result;
                       fm.render();
+                      if (
+                        typeof fm?.fields?.content_description.reload ===
+                        "function"
+                      ) {
+                        fm?.fields?.content_description.reload();
+                      }
+                      //
+                      console.log({ fm });
                     }}
-                    type={"dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
@@ -297,6 +289,17 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
+                    name={"job_name"}
+                    label={"Job Position"}
+                    type={"text"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    required={true}
                     name={"start_date"}
                     label={"Start Date"}
                     type={"date"}
@@ -305,6 +308,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"end_date"}
                     label={"End Date"}
                     type={"date"}
@@ -330,6 +334,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"for_organization_id"}
                     label={"Company"}
                     type={"dropdown"}
@@ -350,6 +355,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"salary_min"}
                     label={"Minimal Range Salary"}
                     type={"money"}
@@ -358,6 +364,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"salary_max"}
                     label={"Maximal Range Salary"}
                     type={"money"}

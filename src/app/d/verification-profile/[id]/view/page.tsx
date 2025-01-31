@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -7,10 +6,8 @@ import { ButtonContainer } from "@/lib/components/ui/button";
 import { Alert } from "@/lib/components/ui/alert";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
-import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
 import {
   Accordion,
@@ -65,13 +62,14 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_approve && (
+              {fm.data?.status !== "ACTIVE" && local.can_approve && (
                 <>
                   <Alert
                     type={"save"}
                     msg={"Are you sure you want to approve this profile?"}
                     onClick={() => {
                       fm.data["status"] = "ACTIVE";
+                      fm.render();
                       fm.submit();
                     }}
                   >

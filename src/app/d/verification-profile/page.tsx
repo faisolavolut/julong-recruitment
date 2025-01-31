@@ -12,8 +12,6 @@ import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
 import { X } from "lucide-react";
 import { useEffect } from "react";
-import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
-import { IoMdSave } from "react-icons/io";
 import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
 
 function Page() {
@@ -39,7 +37,7 @@ function Page() {
       </div>
       <div className="w-full flex flex-row flex-grow bg-white overflow-hidden ">
         <TableList
-          feature={["checkbox"]}
+          // feature={["checkbox"]}
           name="verification-profile"
           header={{
             sideLeft: (data: any) => {
@@ -119,7 +117,11 @@ function Page() {
             },
           ]}
           onLoad={async (param: any) => {
-            const params = await events("onload-param", param);
+            const prm = {
+              status: "INACTIVE",
+              ...param,
+            };
+            const params = await events("onload-param", prm);
             const result: any = await apix({
               port: "recruitment",
               value: "data.data.user_profiles",
