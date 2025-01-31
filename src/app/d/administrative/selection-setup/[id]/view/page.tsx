@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -10,24 +9,19 @@ import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
-import { Applicant } from "./Application";
 import { getNumber } from "@/lib/utils/getNumber";
 import { ButtonLink } from "@/lib/components/ui/button-link";
-import { HiOutlinePencilAlt } from "react-icons/hi";
 import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { X } from "lucide-react";
-import { GrNotes } from "react-icons/gr";
 import { events } from "@/lib/utils/event";
-import { getStatusLabel } from "@/constants/status-mpp";
 
 function Page() {
   const id = getParams("id");
-  const labelPage = "Applicant Overview";
-  const urlPage = `/d/administrative/applicant-overview`;
+  const labelPage = "Selection Setup";
+  const urlPage = `/d/administrative/selection-setup`;
   const local = useLocal({
     can_edit: false,
     can_delete: false,
@@ -82,24 +76,6 @@ function Page() {
                   </ButtonContainer>
                 </Alert>
               )}
-              {local.can_delete && (
-                <Alert
-                  type={"delete"}
-                  msg={"Are you sure you want to delete this record?"}
-                  onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings/${id}`,
-                      method: "delete",
-                    });
-                  }}
-                >
-                  <ButtonContainer variant={"destructive"}>
-                    <MdDelete className="text-xl" />
-                    Delete
-                  </ButtonContainer>
-                </Alert>
-              )}
             </div>
           </div>
         );
@@ -119,15 +95,20 @@ function Page() {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/job-postings/${id}`,
+          path: `/api/administrative-selections/${id}`,
           validate: "object",
         });
-        return data;
+        return {
+          ...data,
+          activity: "Administration Selection",
+          project_number: data?.job_posting?.document_number,
+        };
       }}
       showResize={false}
       header={(fm: any) => {
         return <></>;
       }}
+      mode={"view"}
       children={(fm: any) => {
         return (
           <>
@@ -147,7 +128,8 @@ function Page() {
                     fm={fm}
                     name={"activity"}
                     label={"Activity"}
-                    type={"dropdown"}
+                    type={"text"}
+                    disabled={true}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
@@ -234,9 +216,7 @@ function Page() {
                     type={"money"}
                   />
                 </div>
-                <div>
-                  <Applicant fm={fm} />
-                </div>
+                <div>{/* <Applicant fm={fm} /> */}</div>
               </div>
             </div>
           </>
@@ -396,7 +376,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.user_profiles",
-                      path: `/api/user-profiles${params}`,
+                      path: `/api/administrative-results/administrative-selection/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -405,7 +385,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/user-profiles?page=1&page_size=1`,
+                      path: `/api/administrative-results/administrative-selection/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

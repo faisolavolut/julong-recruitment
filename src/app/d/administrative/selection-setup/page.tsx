@@ -14,6 +14,7 @@ import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
 import get from "lodash.get";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
 
 function Page() {
   const list = [
@@ -47,6 +48,7 @@ function Page() {
       name="selection-setup"
       header={{
         sideLeft: (data: any) => {
+          return <></>;
           if (!local.can_add) return <></>;
           return (
             <div className="flex flex-row flex-grow">
@@ -65,45 +67,45 @@ function Page() {
       }}
       column={[
         {
-          name: "project_number",
+          name: "document_number",
           header: () => <span>Project Number</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "job_name",
+          name: "job_posting.job_name",
           header: () => <span>Job Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "start_date",
+          name: "job_posting.start_date",
           header: () => <span>Start Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "end_date",
+          name: "job_posting.end_date",
           header: () => <span>End Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "pic",
+          name: "project_pic.name",
           header: () => <span>PIC</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "total_candidates",
+          name: "total_applicants",
           header: () => <span>Total Candidates</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{formatMoney(getNumber(getValue(row, name)))}</>;
           },
         },
         {
@@ -147,8 +149,8 @@ function Page() {
         const params = await events("onload-param", param);
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.job_postings",
-          path: `/api/job-postings${params}`,
+          value: "data.data.administrative_selections",
+          path: `/api/administrative-selections${params}`,
           validate: "array",
         });
         return result;
