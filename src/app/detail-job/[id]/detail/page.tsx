@@ -1,20 +1,14 @@
 "use client";
 import get from "lodash.get";
-import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocal } from "@/lib/utils/use-local";
-import { siteurl } from "@/lib/utils/siteurl";
 import { Form } from "@/lib/components/form/Form";
 import { Field } from "@/lib/components/form/Field";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
 import { PinterestLayout } from "@/lib/components/ui/PinterestLayout";
-import Link from "next/link";
-import { FaArrowRight } from "react-icons/fa";
-import ServerErrorPage from "@/lib/components/comp/500";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
 import JobCard from "@/app/components/JobCard";
-import TestimonialsCard from "@/app/components/testimoni";
 import FlowbiteFooterSection from "@/app/components/flowbite-footer";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { apix } from "@/lib/utils/apix";
@@ -24,10 +18,7 @@ import {
   AccordionItem,
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
-import {
-  Pagination,
-  PaginationPage,
-} from "@/lib/components/tablelist/TableList";
+import { PaginationPage } from "@/lib/components/tablelist/TableList";
 import { getNumber } from "@/lib/utils/getNumber";
 
 function HomePage() {
@@ -446,37 +437,6 @@ function HomePage() {
           <FlowbiteFooterSection />
         </div>
       </div>
-      {/* <div className="relative flex flex-col flex-grow">
-        <div className="flex-grow flex flex-col p-8 ">
-          <div className="flex flex-row items-center justify-between pb-4">
-            <p className="font-bold text-3xl">All Jobs</p>
-          </div>
-          <div className="flex flex-row flex-grow">
-            <div>
-              <PinterestLayout
-                gap={4}
-                data={[1, 2, 3, 4, 1]}
-                child={() => {
-                  return <JobCard />;
-                }}
-                col={1}
-              />
-            </div>
-            <div className="relative flex flex-row flex-grow overflow-y-scroll">
-              <div className="absolute top-0 left-0 flex-grow flex flex-col p-8 ">
-                <DetailJobs />
-                <CardCompanyProfile />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row items-center py-4">
-            <PaginationDemo />
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <FlowbiteFooterSection />
-        </div>
-      </div> */}
     </div>
   );
 }

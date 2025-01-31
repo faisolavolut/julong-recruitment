@@ -1,6 +1,5 @@
 import type { Config } from "tailwindcss";
 import flowbite from "flowbite/plugin";
-import colors from "tailwindcss/colors";
 
 export default {
   content: [
@@ -27,6 +26,16 @@ export default {
         "disabled-text": "#94A3B8",
         accent: "#f4f4f5",
         layer: "#F8FAFB",
+        "card-layer": "#EBF1F6",
+        "card-active": "#F6FAFD",
+        "sidebar-label": "#AEB4BC",
+      },
+
+      backgroundImage: {
+        "linear-blue":
+          "linear-gradient(90deg, rgba(195,213,255,0.6) 0%, rgba(195,213,255,0.4) 100%)",
+        "linear-sidebar-active":
+          "linear-gradient(90deg, rgba(62,62,97,1) 0%, rgba(46,46,72,1) 100%)",
       },
       fontFamily: {
         body: [

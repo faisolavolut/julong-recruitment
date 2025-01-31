@@ -28,106 +28,107 @@ function Page() {
   }, []);
 
   return (
-    <div className="flex p-4 flex-col flex-grow bg-white rounded-lg border border-gray-300 shadow-md shadow-gray-300">
-      <div className="flex flex-col py-4 pb-0 pt-0">
-        <h2 className="text-xl font-semibold text-gray-900 ">
-          <span className="">Document Checking</span>
-        </h2>
+    <div className="flex flex-col flex-grow ">
+      <div className="w-full flex flex-row  p-4 py-6 pr-6 pl-3 text-2xl font-bold">
+        Document Checking
       </div>
-      <div className="w-full flex flex-row flex-grow bg-white overflow-hidden ">
-        <TableList
-          name="document-checking"
-          header={{
-            sideLeft: (data: any) => {
-              if (!local.can_add) return <></>;
-              return (
-                <div className="flex flex-row flex-grow">
-                  <ButtonLink
-                    className="bg-primary"
-                    href={"/d/master-data/document-checking/new"}
-                  >
-                    <div className="flex items-center gap-x-0.5">
-                      <HiPlus className="text-xl" />
-                      <span className="capitalize">Add New</span>
-                    </div>
-                  </ButtonLink>
-                </div>
-              );
-            },
-          }}
-          column={[
-            {
-              name: "name",
-              header: () => <span>Name</span>,
-              renderCell: ({ row, name }: any) => {
-                return <>{getValue(row, name)}</>;
-              },
-            },
-            {
-              name: "format",
-              header: () => <span>Format</span>,
-              renderCell: ({ row, name }: any) => {
-                return <>{getValue(row, name)}</>;
-              },
-            },
-            {
-              name: "template_question.name",
-              header: () => <span>Template</span>,
-              renderCell: ({ row, name }: any) => {
-                return <>{getValue(row, name)}</>;
-              },
-            },
-            {
-              name: "action",
-              header: () => <span>Action</span>,
-              sortable: false,
-              renderCell: ({ row }: any) => {
+
+      <div className="flex p-4 flex-col flex-grow bg-white rounded-lg border border-gray-300 shadow-md shadow-gray-300">
+        <div className="w-full flex flex-row flex-grow bg-white overflow-hidden ">
+          <TableList
+            name="document-checking"
+            header={{
+              sideLeft: (data: any) => {
+                if (!local.can_add) return <></>;
                 return (
-                  <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                    {local.can_edit ? (
-                      <ButtonLink
-                        href={`/d/master-data/document-checking/${row.id}/edit`}
-                      >
-                        <div className="flex items-center gap-x-2">
-                          <HiOutlinePencilAlt className="text-lg" />
-                        </div>
-                      </ButtonLink>
-                    ) : (
-                      <ButtonLink
-                        className="bg-primary"
-                        href={`/d/master-data/document-checking/${row.id}/view`}
-                      >
-                        <div className="flex items-center gap-x-2">
-                          <IoEye className="text-lg" />
-                        </div>
-                      </ButtonLink>
-                    )}
+                  <div className="flex flex-row flex-grow">
+                    <ButtonLink
+                      className="bg-primary"
+                      href={"/d/master-data/document-checking/new"}
+                    >
+                      <div className="flex items-center gap-x-0.5">
+                        <HiPlus className="text-xl" />
+                        <span className="capitalize">Add New</span>
+                      </div>
+                    </ButtonLink>
                   </div>
                 );
               },
-            },
-          ]}
-          onLoad={async (param: any) => {
-            const params = await events("onload-param", param);
-            const result: any = await apix({
-              port: "recruitment",
-              value: "data.data.document_verifications",
-              path: `/api/document-verifications${params}`,
-              validate: "array",
-            });
-            return result;
-          }}
-          onCount={async () => {
-            const result: any = await apix({
-              port: "recruitment",
-              value: "data.data.total",
-              path: `/api/document-verifications?page=1&page_size=1`,
-              validate: "object",
-            });
-            return getNumber(result);
-          }}
-          onInit={async (list: any) => {}}
-        />
+            }}
+            column={[
+              {
+                name: "name",
+                header: () => <span>Name</span>,
+                renderCell: ({ row, name }: any) => {
+                  return <>{getValue(row, name)}</>;
+                },
+              },
+              {
+                name: "format",
+                header: () => <span>Format</span>,
+                renderCell: ({ row, name }: any) => {
+                  return <>{getValue(row, name)}</>;
+                },
+              },
+              {
+                name: "template_question.name",
+                header: () => <span>Template</span>,
+                renderCell: ({ row, name }: any) => {
+                  return <>{getValue(row, name)}</>;
+                },
+              },
+              {
+                name: "action",
+                header: () => <span>Action</span>,
+                sortable: false,
+                renderCell: ({ row }: any) => {
+                  return (
+                    <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                      {local.can_edit ? (
+                        <ButtonLink
+                          href={`/d/master-data/document-checking/${row.id}/edit`}
+                        >
+                          <div className="flex items-center gap-x-2">
+                            <HiOutlinePencilAlt className="text-lg" />
+                          </div>
+                        </ButtonLink>
+                      ) : (
+                        <ButtonLink
+                          className="bg-primary"
+                          href={`/d/master-data/document-checking/${row.id}/view`}
+                        >
+                          <div className="flex items-center gap-x-2">
+                            <IoEye className="text-lg" />
+                          </div>
+                        </ButtonLink>
+                      )}
+                    </div>
+                  );
+                },
+              },
+            ]}
+            onLoad={async (param: any) => {
+              const params = await events("onload-param", param);
+              const result: any = await apix({
+                port: "recruitment",
+                value: "data.data.document_verifications",
+                path: `/api/document-verifications${params}`,
+                validate: "array",
+              });
+              return result;
+            }}
+            onCount={async () => {
+              const result: any = await apix({
+                port: "recruitment",
+                value: "data.data.total",
+                path: `/api/document-verifications?page=1&page_size=1`,
+                validate: "object",
+              });
+              return getNumber(result);
+            }}
+            onInit={async (list: any) => {}}
+          />
+        </div>
       </div>
     </div>
   );

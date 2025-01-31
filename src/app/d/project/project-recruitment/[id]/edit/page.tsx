@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -12,12 +11,12 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
-import { cloneFM } from "@/lib/utils/cloneFm";
 import { actionToast } from "@/lib/utils/action";
 import get from "lodash.get";
-import { TableList } from "@/lib/components/tablelist/TableList";
 import { normalDate } from "@/lib/utils/date";
 import { generateLineActivity } from "@/app/lib/job-posting";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import { TableList } from "@/lib/components/tablelist/TableList";
 
 function Page() {
   const id = getParams("id");
@@ -63,7 +62,7 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_edit && (
+              {fm?.data?.status === "DRAFT" && local.can_edit && (
                 <Alert
                   type={"save"}
                   msg={"Are you sure you want to save this record?"}
@@ -77,15 +76,40 @@ function Page() {
                   </ButtonContainer>
                 </Alert>
               )}
+              {fm?.data?.status === "DRAFT" && (
+                <Alert
+                  type={"save"}
+                  msg={"Are you sure you want to save this record?"}
+                  onClick={() => {
+                    fm.data.status = "IN PROGRESS";
+                    fm.submit();
+                  }}
+                >
+                  <ButtonContainer className={"bg-primary"}>
+                    <IoMdSave className="text-xl" />
+                    Submit
+                  </ButtonContainer>
+                </Alert>
+              )}
               {local.can_delete && (
                 <Alert
                   type={"delete"}
                   msg={"Are you sure you want to delete this record?"}
                   onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/template-questions/${id}`,
-                      method: "delete",
+                    await actionToast({
+                      task: async () => {
+                        await apix({
+                          port: "recruitment",
+                          path: `/api/project-recruitment-headers/${id}`,
+                          method: "delete",
+                        });
+                      },
+                      after: () => {
+                        navigate("/d/project/project-recruitment");
+                      },
+                      msg_load: "Delete ",
+                      msg_error: "Delete ",
+                      msg_succes: "Delete successfully! ",
                     });
                   }}
                 >
@@ -162,10 +186,14 @@ function Page() {
         let lines = lineData || [];
         let del_ids = [];
         if (Array.isArray(line) && line.length) {
-          const result = line.map((e) => {
+          const result = line.map((e, idx) => {
             return {
               template_activity_line_id: e?.id,
               name: e?.name,
+              order:
+                e?.template_question?.form_type === "ADMINISTRATIVE_SELECTION"
+                  ? 1
+                  : idx + 1,
             };
           });
           if (
@@ -175,9 +203,10 @@ function Page() {
             del_ids = lines.map((e: any) => e?.id) || [];
             lines = result;
           } else {
-            lines = lines.map((e: any) => {
+            lines = lines.map((e: any, idx: number) => {
               return {
                 ...e,
+                template_activity_line_id: e?.template_activity_id,
                 name: e?.template_activity_line?.name,
                 end_date: normalDate(e?.end_date),
                 start_date: normalDate(e?.start_date),
@@ -249,6 +278,7 @@ function Page() {
                             id,
                             fm?.data?.template_activity_id
                           );
+                          fm.reload();
                         }
                       };
                       run();
@@ -326,10 +356,12 @@ function Page() {
             <div className="w-full flex flex-row">
               <div className="flex flex-grow flex-col h-[350px]">
                 <TableList
+                  name="line"
+                  delete_name="deleted_line_ids"
+                  style="common"
                   align="top"
                   mode="form"
                   fm={fm}
-                  name="line"
                   disabledHoverRow={true}
                   disabledPagination={true}
                   header={{
@@ -353,7 +385,9 @@ function Page() {
                                         fm.data?.template_activity_id
                                       );
                                     },
-                                    after: () => {},
+                                    after: () => {
+                                      fm.reload();
+                                    },
                                     msg_load: "Saving ",
                                     msg_error: "Saving failed ",
                                     msg_succes: "Saving success ",
@@ -386,27 +420,18 @@ function Page() {
                   column={[
                     {
                       name: "name",
+                      sortable: false,
                       header: () => <span>Name</span>,
-                      renderCell: ({ row, name, idx, fm_row }: any) => {
-                        return (
-                          <>
-                            <Field
-                              fm={fm_row}
-                              hidden_label={true}
-                              name={"name"}
-                              label={""}
-                              disabled={true}
-                              type={"text"}
-                            />
-                          </>
-                        );
+                      renderCell: ({ fm_row }: any) => {
+                        return <>{labelDocumentType(fm_row?.data?.name)}</>;
                       },
                     },
                     {
                       name: "pic",
-                      width: 100,
+                      width: 200,
+                      sortable: false,
                       header: () => <span>PIC</span>,
-                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
+                      renderCell: ({ fm_row }: any) => {
                         return (
                           <div
                             className={cx(
@@ -420,10 +445,7 @@ function Page() {
                               hidden_label={true}
                               name={"pic"}
                               label={""}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
+                              onChange={() => {}}
                               onLoad={async () => {
                                 const res: any = await apix({
                                   port: "portal",
@@ -444,8 +466,9 @@ function Page() {
                     },
                     {
                       name: "start_date",
+                      sortable: false,
                       header: () => <span>Start Date</span>,
-                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
+                      renderCell: ({ fm_row, name }: any) => {
                         return (
                           <>
                             <Field
@@ -453,10 +476,6 @@ function Page() {
                               hidden_label={true}
                               name={name}
                               label={""}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
                               type={"date"}
                             />
                           </>
@@ -465,8 +484,9 @@ function Page() {
                     },
                     {
                       name: "end_date",
+                      sortable: false,
                       header: () => <span>End Date</span>,
-                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
+                      renderCell: ({ fm_row, name }: any) => {
                         return (
                           <>
                             <Field
@@ -474,10 +494,6 @@ function Page() {
                               hidden_label={true}
                               name={name}
                               label={""}
-                              onChange={() => {
-                                fm.data.line[idx] = fm_row?.data;
-                                fm.render();
-                              }}
                               type={"date"}
                             />
                           </>
@@ -485,7 +501,6 @@ function Page() {
                       },
                     },
                   ]}
-                  onLoad={fm.data.line}
                   onInit={async (list: any) => {}}
                 />
               </div>

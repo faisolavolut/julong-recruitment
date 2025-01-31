@@ -7,13 +7,12 @@ import { useLocal } from "@/lib/utils/use-local";
 import api from "@/lib/utils/axios";
 import { userRoleMe } from "@/lib/utils/getAccess";
 import { filterMenuByPermission } from "@/lib/utils/filterMenuByPermission";
-import NavFlow from "@/lib/components/partials/NavbarFlow";
 import { Skeleton } from "@/lib/components/ui/Skeleton";
 import { SidebarProvider } from "@/lib/context/SidebarContext";
-import SidebarTree from "@/lib/components/partials/Sidebar";
 import { Navbar } from "flowbite-react";
-import { HiMenuAlt1 } from "react-icons/hi";
 import { siteurl } from "@/lib/utils/siteurl";
+import SidebarBetterTree from "@/lib/components/partials/SidebarBetter";
+
 interface RootLayoutProps {
   children: React.ReactNode;
 }
@@ -64,8 +63,8 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
   return (
     <div className="flex h-screen flex-row">
       <div className="flex flex-col p-3 bg-layer ">
-        <div className="flex flex-col flex-grow rounded-2xl overflow-hidden">
-          <Navbar fluid className="pb-0 bg-primary">
+        <div className="flex flex-col flex-grow rounded-2xl shadow-md">
+          <Navbar fluid className="pb-0 bg-white relative rounded-t-2xl">
             <div className="w-full p-1 pb-0">
               <div
                 className={`flex items-center ${
@@ -76,17 +75,12 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
                   className={`flex items-center ${mini && "justify-center"}`}
                 >
                   {true && (
-                    <div
-                      onClick={() => {
-                        setMini(!mini);
-                        localStorage.setItem("mini", !mini ? "true" : "false");
-                      }}
-                      className={` ${
-                        !mini && "mr-3"
-                      } cursor-pointer rounded p-2 text-white  lg:inline`}
-                    >
-                      <span className="sr-only">Toggle sidebar</span>
-                      <HiMenuAlt1 className="h-6 w-6" />
+                    <div className="w-12 h-12">
+                      <img
+                        src={siteurl("/google.jpg")}
+                        alt="John Cena"
+                        className="rounded-full w-full h-full object-cover border-2 border-white"
+                      />
                     </div>
                   )}
                   {!mini && (
@@ -133,7 +127,7 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
             </div>
           ) : (
             <SidebarProvider>
-              <SidebarTree
+              <SidebarBetterTree
                 data={local.data}
                 minimaze={() => {
                   setMini(!mini);
@@ -145,18 +139,12 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
         </div>
       </div>
       <div className="flex  bg-layer flex-grow flex-col py-3">
-        <NavFlow
-          minimaze={() => {
-            setMini(!mini);
-            localStorage.setItem("mini", !mini ? "true" : "false");
-          }}
-        />
         <div className="flex flex-row flex-grow  flex-grow">
           <div
             id="main-content"
             className="flex-grow  relative overflow-y-auto flex flex-row"
           >
-            <div className="w-full h-full absolute top-0 lef-0 flex flex-row  p-4 pb-0 pt-4 pr-6 pl-3">
+            <div className="w-full h-full absolute top-0 lef-0 flex flex-row  p-4 pb-0 pt-0 pr-6 pl-3">
               {isClient ? (
                 <main className="flex-grow flex flex-col">{children}</main>
               ) : (

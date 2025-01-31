@@ -86,7 +86,7 @@ function HomePage() {
         )}
       >
         <div className="flex flex-grow max-w-screen-xl justify-center">
-          <div className="flex  w-3/4 bg-white shadow-md rounded-full">
+          <div className="flex  w-3/4 bg-gradient-white shadow-md rounded-full">
             <Form
               onSubmit={async (fm: any) => {}}
               onLoad={async () => {

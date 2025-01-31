@@ -175,7 +175,6 @@ function Page() {
                 ...result,
               },
             });
-            // if (res) navigate(`${urlPage}/${res?.id}/edit`);
           }}
           onLoad={async () => {
             const data = await apix({

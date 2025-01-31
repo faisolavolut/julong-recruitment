@@ -1,24 +1,15 @@
 "use client";
 import get from "lodash.get";
-import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocal } from "@/lib/utils/use-local";
-import { siteurl } from "@/lib/utils/siteurl";
 import { Form } from "@/lib/components/form/Form";
 import { Field } from "@/lib/components/form/Field";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
 import { PinterestLayout } from "@/lib/components/ui/PinterestLayout";
-import Link from "next/link";
-import { FaArrowRight } from "react-icons/fa";
-import ServerErrorPage from "@/lib/components/comp/500";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
 import JobCard from "@/app/components/JobCard";
-import TestimonialsCard from "@/app/components/testimoni";
 import FlowbiteFooterSection from "@/app/components/flowbite-footer";
-import { PaginationDemo } from "../components/pagination";
-import DetailJobs from "../components/DetailJobs";
-import CardCompanyProfile from "../components/CardCompanyProfile";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { apix } from "@/lib/utils/apix";
 import {
@@ -27,10 +18,7 @@ import {
   AccordionItem,
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
-import {
-  Pagination,
-  PaginationPage,
-} from "@/lib/components/tablelist/TableList";
+import { PaginationPage } from "@/lib/components/tablelist/TableList";
 import { getNumber } from "@/lib/utils/getNumber";
 import { get_user } from "@/lib/utils/get_user";
 

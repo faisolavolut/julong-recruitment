@@ -1,4 +1,3 @@
-import { ButtonBetter } from "@/lib/components/ui/button";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { userToken } from "@/lib/helpers/user";
 import api from "@/lib/utils/axios";
@@ -81,13 +80,12 @@ const DefaultHeaderNavigation: FC = function () {
             </>
           ) : (
             <>
-              <ButtonLink
-                href={`${process.env.NEXT_PUBLIC_API_PORTAL}/login`}
-                variant={"noline"}
-              >
+              <ButtonLink href={`${siteurl("/auth/login")}`} variant={"noline"}>
                 Log in
               </ButtonLink>
-              <ButtonLink href="/">Sign up</ButtonLink>
+              <ButtonLink href={`${siteurl("/auth/register")}`}>
+                Sign up
+              </ButtonLink>
             </>
           )}
         </div>

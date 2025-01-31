@@ -1,37 +1,22 @@
 "use client";
-import get from "lodash.get";
-import { notFound, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useLocal } from "@/lib/utils/use-local";
 import { siteurl } from "@/lib/utils/siteurl";
-import { Form } from "@/lib/components/form/Form";
-import { Field } from "@/lib/components/form/Field";
-import { ButtonBetter } from "@/lib/components/ui/button";
-import { IoIosSearch } from "react-icons/io";
-import { PinterestLayout } from "@/lib/components/ui/PinterestLayout";
-import Link from "next/link";
-import { FaArrowRight } from "react-icons/fa";
-import ServerErrorPage from "@/lib/components/comp/500";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
-import JobCard from "@/app/components/JobCard";
-import TestimonialsCard from "@/app/components/testimoni";
-import FlowbiteFooterSection from "@/app/components/flowbite-footer";
-import { PaginationDemo } from "../components/pagination";
-import DetailJobs from "../components/DetailJobs";
-import CardCompanyProfile from "../components/CardCompanyProfile";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { apix } from "@/lib/utils/apix";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
-import {
-  Pagination,
-  PaginationPage,
-} from "@/lib/components/tablelist/TableList";
 import { getNumber } from "@/lib/utils/getNumber";
+import { events } from "@/lib/utils/event";
+import { ButtonLink } from "@/lib/components/ui/button-link";
+import { getValue } from "@/lib/utils/getValue";
+import { dayDate } from "@/lib/utils/date";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
+import ProfileCard from "../components/ProfileCard";
+import { TableListBetter } from "@/lib/components/tablelist/TableListBetter";
+import { ButtonBetter } from "@/lib/components/ui/button";
+import { Field } from "@/lib/components/form/Field";
+import { IoIosSearch } from "react-icons/io";
+import { Form } from "@/lib/components/form/Form";
 
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
@@ -81,15 +66,15 @@ function HomePage() {
   };
   useEffect(() => {}, []);
   return (
-    <div className="flex flex-col max-w-screen bg-white">
+    <div className="flex flex-col max-w-screen min-h-screen bg-white">
       <DefaultHeaderNavigation />
       <div
         className={cx(
-          "h-64 relative mb-8 flex flex-row items-center justify-center bg-primary"
+          "h-64 max-h-64 py-8 relative flex flex-row items-center justify-center bg-primary"
         )}
       >
         <div className="flex flex-grow max-w-screen-xl justify-center">
-          <div className="flex  w-3/4 bg-white shadow-md rounded-full">
+          <div className="flex  w-3/4 bg-gradient-white shadow-md rounded-full">
             <Form
               onSubmit={async (fm: any) => {}}
               onLoad={async () => {
@@ -151,335 +136,181 @@ function HomePage() {
           </div>
         </div>
       </div>
-      <div className="relative flex flex-col flex-grow">
-        <div className="flex flex-col justify-center items-center">
-          <div className="flex-grow grid grid-cols-5 p-8 max-w-screen-xl">
-            <div>
-              <Form
-                onSubmit={async (fm: any) => {}}
-                onLoad={async () => {
-                  return {
-                    priority: "recent",
-                  };
+      <div
+        className={cx(
+          "flex-grow relative flex flex-row  justify-center w-full"
+        )}
+      >
+        <div className="flex flex-row flex-grow max-w-screen-xl justify-center">
+          <div className="p-6">
+            <ProfileCard />
+          </div>
+          <div className="flex p-4 flex-col flex-grow  rounded-lg ">
+            <div
+              className={cx(
+                "w-full flex flex-row flex-grow   overflow-hidden",
+                css`
+                  .tbl-search {
+                    display: none;
+                  }
+                  .table-head-list {
+                    background: #f1f2f4 !important;
+                  }
+                  thead {
+                    color: #474c54;
+                  }
+
+                  tbody tr {
+                    background: transparent !important;
+                  }
+                  .table-bg {
+                    background: transparent !important;
+                  }
+                  .container-table {
+                    height: 400px;
+                  }
+                `
+              )}
+            >
+              <TableListBetter
+                name="period"
+                header={{
+                  sideLeft: (data: any) => {
+                    return (
+                      <>
+                        <div className="flex flex-row flex-grow">
+                          <h2 className="text-xl font-semibold text-gray-900 ">
+                            <span className="">
+                              Applied Jobs ({formatMoney(data?.count)})
+                            </span>
+                          </h2>
+                        </div>
+                      </>
+                    );
+                  },
                 }}
-                showResize={false}
-                header={(fm: any) => {
-                  return <></>;
-                }}
-                children={(fm: any) => {
-                  return (
-                    <>
-                      <div className={cx("flex flex-row flex-wrap px-4 py-2")}>
-                        <div className="flex-grow grid gap-4 grid-cols-1">
-                          <div className="col-span-2">
-                            <Accordion
-                              type="single"
-                              collapsible
-                              className="w-full"
-                              defaultValue={"Prioritise By"}
-                            >
-                              <AccordionItem value="Prioritise By">
-                                <AccordionTriggerCustom
-                                  className="flex flex-row items-center"
-                                  onRightLabel={() => {
-                                    return (
-                                      <div className="mx-2 flex flex-row gap-x-1"></div>
-                                    );
-                                  }}
-                                >
-                                  Prioritise By
-                                </AccordionTriggerCustom>
-                                <AccordionContent>
-                                  <div className="grid grid-cols-1">
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <ButtonBetter
-                                        className="rounded-full w-full px-6 text-sm"
-                                        variant={
-                                          fm?.data?.priority === "relevent"
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          fm.data.priority = "relevent";
-                                          fm.render();
-                                        }}
-                                      >
-                                        Relevant
-                                      </ButtonBetter>
-                                      <ButtonBetter
-                                        className="rounded-full w-full px-6 "
-                                        variant={
-                                          fm?.data?.priority === "recent"
-                                            ? "default"
-                                            : "outline"
-                                        }
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          fm.data.priority = "recent";
-                                          fm.render();
-                                        }}
-                                      >
-                                        Recent
-                                      </ButtonBetter>
-                                    </div>
-                                  </div>
-                                </AccordionContent>
-                              </AccordionItem>
-                            </Accordion>
-                          </div>
-                          <div className="col-span-2">
-                            <Accordion
-                              type="single"
-                              collapsible
-                              className="w-full"
-                              defaultValue={"Job Type"}
-                            >
-                              <AccordionItem value="Job Type">
-                                <AccordionTriggerCustom
-                                  className="flex flex-row items-center"
-                                  onRightLabel={() => {
-                                    return (
-                                      <div className="mx-2 flex flex-row gap-x-1"></div>
-                                    );
-                                  }}
-                                >
-                                  Job Type
-                                </AccordionTriggerCustom>
-                                <AccordionContent>
-                                  <div className="grid grid-cols-1">
-                                    <div>
-                                      <Field
-                                        fm={fm}
-                                        hidden_label={true}
-                                        name={"job_type"}
-                                        label={"Option"}
-                                        type={"checkbox"}
-                                        onLoad={() => {
-                                          return [
-                                            {
-                                              label: "Management Trainee",
-                                              value: "MT_Management Trainee",
-                                            },
-                                            {
-                                              label: "Personal Hire",
-                                              value: "PH_Professional Hire",
-                                            },
-                                            {
-                                              label: "Non Staff",
-                                              value: "NS_Non Staff to Staff",
-                                            },
-                                          ];
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </AccordionContent>
-                              </AccordionItem>
-                            </Accordion>
+                column={[
+                  {
+                    name: "name",
+                    sortable: false,
+                    resize: false,
+                    header: () => <span>Jobs</span>,
+                    renderCell: ({ row, name, cell }: any) => {
+                      return (
+                        <div className="flex items-center py-4 space-x-4">
+                          {/* Icon */}
+                          <div className="flex-shrink-0">
+                            <div
+                              className={cx(
+                                "w-10 h-10 bg-green-500 flex items-center justify-center rounded bg-no-repeat bg-cover	bg-center",
+                                css`
+                                  background-image: url("${siteurl(
+                                    "/dog.jpg"
+                                  )}");
+                                `
+                              )}
+                            ></div>
                           </div>
 
-                          <div className="col-span-2">
-                            <Accordion
-                              type="single"
-                              collapsible
-                              className="w-full"
-                              defaultValue={"Experience"}
-                            >
-                              <AccordionItem value="Experience">
-                                <AccordionTriggerCustom
-                                  className="flex flex-row items-center"
-                                  onRightLabel={() => {
-                                    return (
-                                      <div className="mx-2 flex flex-row gap-x-1"></div>
-                                    );
-                                  }}
-                                >
-                                  Experience
-                                </AccordionTriggerCustom>
-                                <AccordionContent>
-                                  <div className="grid grid-cols-1">
-                                    <div>
-                                      <Field
-                                        fm={fm}
-                                        hidden_label={true}
-                                        name={"experience"}
-                                        label={"Option"}
-                                        type={"checkbox"}
-                                        onLoad={() => {
-                                          return [
-                                            {
-                                              label: "No Experience",
-                                              value: "0",
-                                            },
-                                            {
-                                              label: "< 1 Year",
-                                              value: "less_1",
-                                            },
-                                            {
-                                              label: "1-3 Year",
-                                              value: "1-3 year",
-                                            },
-                                            {
-                                              label: "3-5 Year",
-                                              value: "3-5",
-                                            },
-                                            {
-                                              label: "> 5 Year",
-                                              value: "gte_5",
-                                            },
-                                          ];
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </AccordionContent>
-                              </AccordionItem>
-                            </Accordion>
-                          </div>
-                          <div className="col-span-2">
-                            <Accordion
-                              type="single"
-                              collapsible
-                              className="w-full"
-                              defaultValue={"Salary"}
-                            >
-                              <AccordionItem value="Salary">
-                                <AccordionTriggerCustom
-                                  className="flex flex-row items-center"
-                                  onRightLabel={() => {
-                                    return (
-                                      <div className="mx-2 flex flex-row gap-x-1"></div>
-                                    );
-                                  }}
-                                >
-                                  Salary
-                                </AccordionTriggerCustom>
-                                <AccordionContent>
-                                  <div className="grid grid-cols-1 gap-4">
-                                    <div>
-                                      <Field
-                                        fm={fm}
-                                        name={"min"}
-                                        label={"Min"}
-                                        type={"money"}
-                                        placeholder="Minimum Salary"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Field
-                                        fm={fm}
-                                        name={"max"}
-                                        label={"Max"}
-                                        type={"money"}
-                                        placeholder="Maximum Salary"
-                                      />
-                                    </div>
-                                  </div>
-                                </AccordionContent>
-                              </AccordionItem>
-                            </Accordion>
+                          {/* Job Details */}
+                          <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-gray-800">
+                              {getValue(row, "job_name")}
+                            </h3>
+                            <div className="flex items-center space-x-2 text-sm text-gray-500">
+                              <div className="flex flex-row gap-x-1 items-center">
+                                <MdOutlineLocationOn />
+                                {getValue(row, "for_organization_location")}
+                              </div>
+                              <div className="flex flex-row gap-x-0.5 items-center">
+                                <div className="text-sm">Rp</div>
+                                {formatMoney(
+                                  getNumber(getValue(row, "salary_min"))
+                                )}
+                                -
+                                {formatMoney(
+                                  getNumber(getValue(row, "salary_max"))
+                                )}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                        <div className="flex flex-row items-center justify-end py-4 w-full">
-                          <ButtonBetter className="rounded-full w-full px-6 ">
-                            Apply Filter
-                          </ButtonBetter>
+                      );
+                    },
+                  },
+                  {
+                    name: "form_type",
+                    sortable: false,
+                    resize: false,
+                    header: () => <span>Date Applied</span>,
+                    renderCell: ({ row, name, cell }: any) => {
+                      return dayDate(new Date());
+                    },
+                  },
+                  {
+                    name: "status",
+                    sortable: false,
+                    resize: false,
+                    header: () => <span>Status</span>,
+                    renderCell: ({ row, name, cell }: any) => {
+                      return <div className="text-red-500">Close</div>;
+                      return <div className="text-green-500">In Progress</div>;
+                      switch (getValue(row, name)) {
+                        case "ACTIVE":
+                          return "Active";
+                          break;
+                        default:
+                          return "Inactive";
+                      }
+                    },
+                  },
+                  {
+                    name: "action",
+                    header: () => <span>Action</span>,
+                    sortable: false,
+                    renderCell: ({ row, name, cell }: any) => {
+                      return (
+                        <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                          <ButtonLink
+                            href={`/d/master-data/question/${row.id}/edit`}
+                            className={
+                              "bg-gray-100 shadow-none font-bold text-primary hover:bg-primary hover:text-white"
+                            }
+                          >
+                            <div className="flex items-center gap-x-2">
+                              View Detail
+                            </div>
+                          </ButtonLink>
                         </div>
-                      </div>
-                    </>
-                  );
+                      );
+                    },
+                  },
+                ]}
+                onLoad={async (param: any) => {
+                  const params = await events("onload-param", param);
+                  const result: any = await apix({
+                    port: "recruitment",
+                    value: "data.data",
+                    path: `/api/job-postings/applied${params}`,
+                    validate: "array",
+                  });
+                  return [{}, {}];
                 }}
+                onCount={async () => {
+                  const result: any = await apix({
+                    port: "recruitment",
+                    value: "data.data.total",
+                    path: `/api/job-postings/applied?page=1&page_size=1`,
+                    validate: "object",
+                  });
+                  return getNumber(result);
+                }}
+                onInit={async (list: any) => {}}
               />
             </div>
-            <div className="flex-grow flex flex-col p-8 col-span-4 pt-0">
-              <div className="flex flex-row items-center pb-4  w-full">
-                <p className="font-bold text-3xl">Jobs</p>
-              </div>
-              <div className="flex flex-grow pb-4">
-                <PinterestLayout
-                  gap={4}
-                  data={local.data}
-                  child={(item, idx, data, key) => {
-                    return <JobCard data={item} />;
-                  }}
-                  col={3}
-                />
-              </div>
-              {local?.maxPage <= 1 ? (
-                <></>
-              ) : (
-                <PaginationPage
-                  list={local}
-                  count={local.count}
-                  onNextPage={() => {
-                    local.page = local.page + 1;
-                    local.render();
-                    gotoPage();
-                  }}
-                  onPrevPage={() => {
-                    local.page = local.page - 1;
-                    local.render();
-                    gotoPage();
-                  }}
-                  disabledNextPage={
-                    getNumber(get(local, "page")) ===
-                      getNumber(get(local, "maxPage")) ||
-                    getNumber(get(local, "maxPage")) === 1
-                  }
-                  disabledPrevPage={getNumber(get(local, "page")) === 1}
-                  page={getNumber(get(local, "page"))}
-                  setPage={(page: any) => {}}
-                  countPage={1}
-                  countData={local.count}
-                  take={15}
-                  onChangePage={(page: number) => {
-                    local.page = page;
-                    local.render();
-                    gotoPage();
-                  }}
-                />
-              )}
-            </div>
           </div>
-        </div>
-        <div className="flex flex-col">
-          <FlowbiteFooterSection />
         </div>
       </div>
-      {/* <div className="relative flex flex-col flex-grow">
-        <div className="flex-grow flex flex-col p-8 ">
-          <div className="flex flex-row items-center justify-between pb-4">
-            <p className="font-bold text-3xl">All Jobs</p>
-          </div>
-          <div className="flex flex-row flex-grow">
-            <div>
-              <PinterestLayout
-                gap={4}
-                data={[1, 2, 3, 4, 1]}
-                child={() => {
-                  return <JobCard />;
-                }}
-                col={1}
-              />
-            </div>
-            <div className="relative flex flex-row flex-grow overflow-y-scroll">
-              <div className="absolute top-0 left-0 flex-grow flex flex-col p-8 ">
-                <DetailJobs />
-                <CardCompanyProfile />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row items-center py-4">
-            <PaginationDemo />
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <FlowbiteFooterSection />
-        </div>
-      </div> */}
     </div>
   );
 }

@@ -21,7 +21,13 @@
     --foreground: #171717;
   }
 }
-
+.bg-gradient-white {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+}
 body {
   color: var(--foreground);
   background: var(--background);
@@ -273,55 +279,6 @@ body {
   background-color: transparent !important;
 }
 
-::-webkit-scrollbar {
-  width: 11px !important;
-  height: 11px !important;
-}
-
-::-webkit-scrollbar-track {
-  background: #d5d5d5; /* Warna latar belakang track */
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #888; /* Warna scrollbar */
-  border-radius: 10px; /* Membulatkan scrollbar */
-  border: 3px solid #d5d5d5;
-}
-
-/* Untuk scrollbar horizontal (opsional) */
-::-webkit-scrollbar-horizontal {
-  height: 11px !important;
-}
-
-::-webkit-scrollbar-vertical {
-  width: 11px !important;
-}
-
-::-webkit-scrollbar-track-horizontal {
-  background: #d5d5d5; /* Warna latar belakang track horizontal */
-}
-
-::-webkit-scrollbar-thumb-horizontal {
-  background: #888; /* Warna scrollbar horizontal */
-  border-radius: 10px; /* Membulatkan scrollbar horizontal */
-}
-
-.sidebar > div::-webkit-scrollbar-track {
-  background: transparent !important; /* Warna latar belakang track */
-  border-radius: 10px;
-}
-
-.sidebar > div::-webkit-scrollbar-thumb {
-  background: #d5d5d5; /* Warna scrollbar */
-  border-radius: 5px; /* Membulatkan scrollbar */
-  border: 3px solid transparent;
-}
-.sidebar > div::-webkit-scrollbar {
-  width: 0px !important;
-  height: 5px !important;
-}
-
 .vertical-rounded-tab {
   --r: 22px; /* control the radius */
 
@@ -334,4 +291,62 @@ body {
     conic-gradient(#000 0 0) padding-box;
   /* background: #00a0b0 border-box; */
   /* width: fit-content; */
+}
+
+.slanted-edge {
+  --p: 25px; /* control the shape (can be percentage) */
+  height: 50px;
+  aspect-ratio: 1;
+  clip-path: polygon(0 0, calc(100% - var(--p)) 0, 100% 100%, 0 100%);
+  background: #c44d58;
+}
+/* HTML: <div class="parallelogram"></div> */
+.parallelogram {
+  --p: 25px; /* control the shape (can be percentage) */
+  height: 50px;
+  aspect-ratio: 3/2;
+  clip-path: polygon(0 0, calc(100% - var(--p)) 0, 100% 100%, var(--p) 100%);
+  background: #d95b43;
+}
+/* HTML: <div class="triangle"></div> */
+.triangle {
+  aspect-ratio: 1;
+  clip-path: polygon(0 100%, 0 0, 100% 100%);
+  background: linear-gradient(45deg, #fa6900, #c02942);
+}
+
+.data-[state="active"]:slanted-edge {
+  --p: 25px; /* control the shape (can be percentage) */
+  height: 50px;
+  aspect-ratio: 1;
+  clip-path: polygon(0 0, calc(100% - var(--p)) 0, 100% 100%, 0 100%);
+  background: #c44d58;
+}
+.data-[state="active"].parallelogram {
+  --p: 25px; /* control the shape (can be percentage) */
+  height: 50px;
+  aspect-ratio: 3/2;
+  clip-path: polygon(0 0, calc(100% - var(--p)) 0, 100% 100%, var(--p) 100%);
+  background: #d95b43;
+}
+.data-\[state\=active\]\:slanted-edge[data-state="active"] {
+  --p: 25px; /* control the shape (can be percentage) */
+  height: 50px;
+  aspect-ratio: 1;
+  clip-path: polygon(0 0, calc(100% - var(--p)) 0, 100% 100%, 0 100%);
+}
+.data-\[state\=active\]\:parallelogram[data-state="active"] {
+  --p: 25px; /* control the shape (can be percentage) */
+  height: 50px;
+  aspect-ratio: 3/2;
+  clip-path: polygon(0 0, calc(100% - var(--p)) 0, 100% 100%, var(--p) 100%);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
 }
