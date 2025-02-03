@@ -36,6 +36,8 @@ export default {
           "linear-gradient(90deg, rgba(195,213,255,0.6) 0%, rgba(195,213,255,0.4) 100%)",
         "linear-sidebar-active":
           "linear-gradient(90deg, rgba(62,62,97,1) 0%, rgba(46,46,72,1) 100%)",
+        "linear-primary":
+          "linear-gradient(90deg, rgba(62,62,97,1) 0%, rgba(46,46,72,1) 100%)",
       },
       fontFamily: {
         body: [

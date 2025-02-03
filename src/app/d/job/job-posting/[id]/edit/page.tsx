@@ -238,6 +238,7 @@ function Page() {
                       const data = item?.data;
                       fm.data["job_id"] = data?.job_id;
                       fm.data["job_name"] = data?.job_name;
+                      fm.data["minimum_experience"] = data?.minimum_experience;
                       fm.data["for_organization_location_id"] =
                         data?.for_organization_location_id;
                       const template = `<p>Description Post</p><p></p><p>1. Job Description </p><p>{job_description}</p><p></p><p>2. Required Qualification </p><p>{required_qualification}</p><p></p><p>3. Work Experience </p><p>{experiences}</p><p></p><p>4. Specific Skills </p><p>{specific_skills}</p><p></p><p>5. Benefits</p><p></p>`;

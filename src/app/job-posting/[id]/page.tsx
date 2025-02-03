@@ -1,21 +1,14 @@
 "use client";
-
 import { getParams } from "@/lib/utils/get-params";
 
-import { Field } from "@/lib/components/form/Field";
-import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
-import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
-import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { BsSuitcaseLg, BsSuitcaseLgFill } from "react-icons/bs";
 
 import FlowbiteFooterSection from "@/app/components/flowbite-footer";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
-import { GoVerified } from "react-icons/go";
 import { siteurl } from "@/lib/utils/siteurl";
 import get from "lodash.get";
 import { formatMoney } from "@/lib/components/form/field/TypeInput";
@@ -101,8 +94,11 @@ function Page() {
                       Applied
                     </ButtonBetter>
                   ) : (
-                    <ButtonBetter
-                      className="bg-second text-black hover:bg-second"
+                    <Alert
+                      type={"save"}
+                      msg={
+                        "Are you sure you want to apply for this job? Please review your application before submitting. You can still make changes as long as the application form remains open."
+                      }
                       onClick={async () => {
                         await actionToast({
                           task: async () => {
@@ -116,25 +112,27 @@ function Page() {
                             local.applied = true;
                             local.render();
                           },
-                          msg_load: "Apply Position ",
-                          msg_error: "Apply Position failed ",
-                          msg_succes: "Apply Position success ",
+                          msg_load: "Apply job ",
+                          msg_error: "Apply job failed ",
+                          msg_succes: "Apply job success ",
                         });
                       }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width={20}
-                        height={20}
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M19 6.5h-3v-1a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3m-9-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.05h3v1.05a1 1 0 0 0 2 0v-1.05h6v1.05a1 1 0 0 0 2 0v-1.05h3Zm0-7H4v-2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
-                        ></path>
-                      </svg>
-                      Apply for this position
-                    </ButtonBetter>
+                      <ButtonContainer className={"bg-primary"}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={20}
+                          height={20}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M19 6.5h-3v-1a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3m-9-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.05h3v1.05a1 1 0 0 0 2 0v-1.05h6v1.05a1 1 0 0 0 2 0v-1.05h3Zm0-7H4v-2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
+                          ></path>
+                        </svg>
+                        Apply for this position
+                      </ButtonContainer>
+                    </Alert>
                   )}
                   <div className="flex flex-row">
                     <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
