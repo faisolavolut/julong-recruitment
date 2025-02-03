@@ -16,6 +16,7 @@ import { getNumber } from "@/lib/utils/getNumber";
 import { events } from "@/lib/utils/event";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
+import { actionToast } from "@/lib/utils/action";
 
 function Page() {
   const id = getParams("id");
@@ -80,10 +81,20 @@ function Page() {
                   type={"delete"}
                   msg={"Are you sure you want to delete this record?"}
                   onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings/${id}`,
-                      method: "delete",
+                    await actionToast({
+                      task: async () => {
+                        await apix({
+                          port: "recruitment",
+                          path: `/api/job-postings/${id}`,
+                          method: "delete",
+                        });
+                      },
+                      after: () => {
+                        navigate(urlPage);
+                      },
+                      msg_load: "Delete ",
+                      msg_error: "Delete failed ",
+                      msg_succes: "Delete success ",
                     });
                   }}
                 >

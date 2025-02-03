@@ -10,25 +10,28 @@ import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
+import { access } from "@/lib/utils/getAccess";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import get from "lodash.get";
 
 function Page() {
   const labelPage = "Schedule Test";
   const urlPage = `/d/test-selection/schedule-test`;
   const local = useLocal({
-    can_add: false,
+    can_view: true,
     ready: false as boolean,
   });
 
   useEffect(() => {
     const run = async () => {
-      local.can_add = true;
+      local.can_view = access("create-schedule-test");
       local.ready = true;
       local.render();
     };
     run();
   }, []);
 
-  if (local.ready && !local.can_add) return notFound();
+  if (!local.can_view) return notFound();
 
   return (
     <FormBetter
@@ -72,7 +75,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/schedule-test",
+          path: "/api/test-schedule-headers",
           method: "post",
           data: {
             ...fm.data,
@@ -81,7 +84,15 @@ function Page() {
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
-        return {};
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/test-schedule-headers/document-number",
+        });
+        return {
+          status: "DRAFT",
+          document_number: res,
+        };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -115,7 +126,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"select_test_type"}
+                    name={"test_type_id"}
                     label={"Select Test Type"}
                     type={"dropdown"}
                     onLoad={async () => {
@@ -135,27 +146,66 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"project_number"}
+                    required={true}
+                    name={"project_recruitment_header_id"}
                     label={"Project Number"}
-                    type={"text"}
-                    disabled={true}
+                    onChange={() => {
+                      fm.data.start_date = null;
+                      fm.data.end_date = null;
+                      fm.data.template_activity_line_id = null;
+                      fm.data.job_posting_id = null;
+                      fm.render();
+                      if (
+                        typeof fm?.fields?.job_posting_id?.reload === "function"
+                      ) {
+                        fm?.fields?.job_posting_id?.reload();
+                      }
+                    }}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.project_recruitment_headers",
+                        path: "/api/project-recruitment-headers?status=IN PROGRESS",
+                        validate: "dropdown",
+                        keys: {
+                          label: "document_number",
+                        },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"activity"}
+                    name={"template_activity_line_id"}
                     label={"Activity"}
                     type={"dropdown"}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    onChange={(row: any) => {
+                      console.log(row);
+                      fm.data.start_date = row?.data?.start_date;
+                      fm.data.end_date = row?.data?.end_date;
+                      fm.render();
+                    }}
+                    required={true}
                     onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/template-questions/form-types",
+                        path:
+                          "/api/project-recruitment-lines/header/" +
+                          fm?.data?.project_recruitment_header_id,
                         validate: "dropdown",
                         keys: {
-                          label: "value",
-                          value: "value",
+                          label: (row: any) =>
+                            labelDocumentType(
+                              get(row, "template_activity_line.name")
+                            ) || "",
                         },
                       });
                       return res;
@@ -207,9 +257,25 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"job_name"}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    name={"job_posting_id"}
                     label={"Job Name"}
-                    type={"text"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.job_postings",
+                        path: `/api/job-postings?status=IN PROGRESS`,
+                        validate: "dropdown",
+                        keys: {
+                          label: "document_number",
+                        },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div className="col-span-2">
@@ -230,6 +296,27 @@ function Page() {
                 </div>
                 <div>
                   <Field
+                    fm={fm}
+                    name={"platform"}
+                    label={"Platform"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.job_postings",
+                        path: `/api/job-postings?status=IN PROGRESS`,
+                        validate: "dropdown",
+                        keys: {
+                          label: "document_number",
+                        },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    disabled={true}
                     fm={fm}
                     name={"status"}
                     label={"Status"}

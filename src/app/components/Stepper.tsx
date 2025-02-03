@@ -13,7 +13,7 @@ const steps = [
 ];
 
 const Stepper = () => {
-  const [currentStep, setCurrentStep] = useState(5); // Contoh step aktif di "Test"
+  const [currentStep, setCurrentStep] = useState(0); // Contoh step aktif di "Test"
   const [progress, setProgress] = useState(0);
   const startRef = useRef<HTMLDivElement | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);

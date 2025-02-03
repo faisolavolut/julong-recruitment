@@ -16,16 +16,12 @@ import { cloneFM } from "@/lib/utils/cloneFm";
 import { siteurl } from "@/lib/utils/siteurl";
 import { access } from "@/lib/utils/getAccess";
 import notFound from "@/app/not-found";
-import { Alert } from "@/lib/components/ui/alert";
-import { ButtonContainer } from "@/lib/components/ui/button";
-import { IoCheckmarkOutline } from "react-icons/io5";
-import { X } from "lucide-react";
 
 function Page() {
   const id = getParams("id_user");
   const id_parent = getParams("id");
   const labelPage = "Candidate";
-  const urlPage = `/d/administrative/selection-setup/${id_parent}/view`;
+  const urlPage = `/d/test-selection/schedule-test/${id_parent}/view`;
   const local = useLocal({
     can_approve: false,
     view: true,
@@ -34,7 +30,6 @@ function Page() {
 
   useEffect(() => {
     const run = async () => {
-      local.can_approve = access("approval-applicant-document-selection");
       local.view = access("view-profile-applicant");
       local.ready = true;
       local.render();
@@ -56,7 +51,7 @@ function Page() {
               <BreadcrumbBetterLink
                 data={[
                   {
-                    title: `List Selection Setup`,
+                    title: `List Schedule Test`,
                     url: "/d/administrative/selection-setup",
                   },
                   {
@@ -64,49 +59,12 @@ function Page() {
                     url: urlPage,
                   },
                   {
-                    title: "view",
+                    title: "View",
                   },
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center">
-              {local.can_approve &&
-                !["APPROVED", "REJECTED"].includes(fm.data?.status) && (
-                  <>
-                    <Alert
-                      type={"save"}
-                      msg={
-                        "Are you sure you approve this applicant? This decision is final and cannot be reversed."
-                      }
-                      onClick={() => {
-                        fm.data.status = "APPROVED";
-                        fm.submit();
-                      }}
-                    >
-                      <ButtonContainer className={"bg-primary"}>
-                        <IoCheckmarkOutline className="text-xl" />
-                        Approved
-                      </ButtonContainer>
-                    </Alert>
-                    <Alert
-                      type={"delete"}
-                      msg={
-                        "Are you certain you want to reject this applicant? This decision is final and cannot be reversed."
-                      }
-                      onClick={async () => {
-                        fm.data.status = "REJECTED";
-
-                        fm.submit();
-                      }}
-                    >
-                      <ButtonContainer variant={"destructive"}>
-                        <X className="text-xl" />
-                        Rejected
-                      </ButtonContainer>
-                    </Alert>
-                  </>
-                )}
-            </div>
+            <div className="flex flex-row space-x-2 items-center"></div>
           </div>
         );
       }}

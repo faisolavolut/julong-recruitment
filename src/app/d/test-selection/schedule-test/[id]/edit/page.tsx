@@ -1,9 +1,8 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonContainer } from "@/lib/components/ui/button";
 import { Alert } from "@/lib/components/ui/alert";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
@@ -12,35 +11,47 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
-import { Applicant } from "../Application";
 import { getNumber } from "@/lib/utils/getNumber";
 import { events } from "@/lib/utils/event";
 import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
 import { X } from "lucide-react";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
+import { access } from "@/lib/utils/getAccess";
+import { TooltipBetter } from "@/lib/components/ui/tooltip-better";
+import { ButtonLink } from "@/lib/components/ui/button-link";
+import { actionToast } from "@/lib/utils/action";
+import { FilePreview } from "@/lib/components/form/field/FilePreview";
+import {
+  detectUniqueExperience,
+  getTotalExperience,
+} from "@/app/lib/workExperiences";
+import { sortEducationLevels } from "@/app/lib/education-level";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import get from "lodash.get";
 
 function Page() {
   const id = getParams("id");
   const labelPage = "Schedule Test";
   const urlPage = `/d/test-selection/schedule-test`;
   const local = useLocal({
-    can_edit: false,
+    can_edit: true,
     can_delete: false,
+    can_selection: false,
     ready: false as boolean,
   });
 
   useEffect(() => {
     const run = async () => {
-      local.can_edit = true;
-      local.can_delete = true;
+      local.can_edit = access("edit-schedule-test");
+      local.can_selection = access("approval-applicant-test-selection");
       local.ready = true;
       local.render();
     };
     run();
   }, []);
 
-  if (local.ready && !local.can_edit && !local.can_delete) return notFound();
+  if (!local.can_edit) return notFound();
 
   return (
     <FormBetter
@@ -64,37 +75,59 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_edit && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoMdSave className="text-xl" />
-                    Save
-                  </ButtonContainer>
-                </Alert>
-              )}
-              {local.can_delete && (
-                <Alert
-                  type={"delete"}
-                  msg={"Are you sure you want to delete this record?"}
-                  onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings/${id}`,
-                      method: "delete",
-                    });
-                  }}
-                >
-                  <ButtonContainer variant={"destructive"}>
-                    <MdDelete className="text-xl" />
-                    Delete
-                  </ButtonContainer>
-                </Alert>
+              {local.can_edit && fm.data?.status !== "COMPLETED" && (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to submit this record?"}
+                    onClick={() => {
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Submit
+                    </ButtonContainer>
+                  </Alert>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Save
+                    </ButtonContainer>
+                  </Alert>
+                  <Alert
+                    type={"delete"}
+                    msg={"Are you sure you want to delete this record?"}
+                    onClick={async () => {
+                      await actionToast({
+                        task: async () => {
+                          await apix({
+                            port: "recruitment",
+                            path: `/api/test-schedule-headers/${id}`,
+                            method: "delete",
+                          });
+                        },
+                        after: () => {
+                          navigate(urlPage);
+                        },
+                        msg_load: "Delete ",
+                        msg_error: "Delete failed ",
+                        msg_succes: "Delete success ",
+                      });
+                    }}
+                  >
+                    <ButtonContainer variant={"destructive"}>
+                      <MdDelete className="text-xl" />
+                      Delete
+                    </ButtonContainer>
+                  </Alert>
+                </>
               )}
             </div>
           </div>
@@ -104,7 +137,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/job-postings",
+          path: "/api/test-schedule-headers/update",
           method: "put",
           data: {
             ...fm.data,
@@ -112,13 +145,25 @@ function Page() {
         });
       }}
       onLoad={async () => {
+        // sekedar testing
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/job-postings/${id}`,
+          path: `/api/administrative-selections/${id}`,
           validate: "object",
         });
-        return data;
+        return {
+          ...data,
+          activity: "Administration Selection",
+          project_number: data?.job_posting?.document_number,
+        };
+        // const data: any = await apix({
+        //   port: "recruitment",
+        //   value: "data.data",
+        //   path: `/api/test-schedule-headers/${id}`,
+        //   validate: "object",
+        // });
+        // return data;
       }}
       showResize={false}
       header={(fm: any) => {
@@ -152,7 +197,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"select_test_type"}
+                    name={"test_type_id"}
                     label={"Select Test Type"}
                     type={"dropdown"}
                     onLoad={async () => {
@@ -172,27 +217,66 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"project_number"}
+                    required={true}
+                    name={"project_recruitment_header_id"}
                     label={"Project Number"}
-                    type={"text"}
-                    disabled={true}
+                    onChange={() => {
+                      fm.data.start_date = null;
+                      fm.data.end_date = null;
+                      fm.data.template_activity_line_id = null;
+                      fm.data.job_posting_id = null;
+                      fm.render();
+                      if (
+                        typeof fm?.fields?.job_posting_id?.reload === "function"
+                      ) {
+                        fm?.fields?.job_posting_id?.reload();
+                      }
+                    }}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.project_recruitment_headers",
+                        path: "/api/project-recruitment-headers?status=IN PROGRESS",
+                        validate: "dropdown",
+                        keys: {
+                          label: "document_number",
+                        },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"activity"}
+                    name={"template_activity_line_id"}
                     label={"Activity"}
                     type={"dropdown"}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    onChange={(row: any) => {
+                      console.log(row);
+                      fm.data.start_date = row?.data?.start_date;
+                      fm.data.end_date = row?.data?.end_date;
+                      fm.render();
+                    }}
+                    required={true}
                     onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/template-questions/form-types",
+                        path:
+                          "/api/project-recruitment-lines/header/" +
+                          fm?.data?.project_recruitment_header_id,
                         validate: "dropdown",
                         keys: {
-                          label: "value",
-                          value: "value",
+                          label: (row: any) =>
+                            labelDocumentType(
+                              get(row, "template_activity_line.name")
+                            ) || "",
                         },
                       });
                       return res;
@@ -244,9 +328,25 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"job_name"}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    name={"job_posting_id"}
                     label={"Job Name"}
-                    type={"text"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.job_postings",
+                        path: `/api/job-postings?status=IN PROGRESS`,
+                        validate: "dropdown",
+                        keys: {
+                          label: "document_number",
+                        },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div className="col-span-2">
@@ -268,13 +368,26 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"total_candidate"}
-                    label={"Total Candidate"}
-                    type={"money"}
+                    name={"platform"}
+                    label={"Platform"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.job_postings",
+                        path: `/api/job-postings?status=IN PROGRESS`,
+                        validate: "dropdown",
+                        keys: {
+                          label: "document_number",
+                        },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div>
                   <Field
+                    disabled={true}
                     fm={fm}
                     name={"status"}
                     label={"Status"}
@@ -282,7 +395,12 @@ function Page() {
                   />
                 </div>
                 <div>
-                  <Applicant fm={fm} />
+                  <Field
+                    fm={fm}
+                    name={"total_candidate"}
+                    label={"Total Candidate"}
+                    type={"money"}
+                  />
                 </div>
               </div>
             </div>
@@ -296,8 +414,9 @@ function Page() {
             <div className="w-full flex flex-row">
               <div className="flex flex-grow flex-col h-[350px]">
                 <TableList
+                  selectionPaging={true}
                   name="job-posting"
-                  feature={["checkbox"]}
+                  feature={local.can_selection ? ["checkbox"] : []}
                   header={{
                     sideLeft: (data: any) => {
                       return (
@@ -307,30 +426,80 @@ function Page() {
                             <>
                               <Alert
                                 type={"save"}
-                                msg={`Are you sure you want to approve ${
-                                  data?.selection?.all
-                                    ? "All"
-                                    : `${data?.selection?.partial?.length}`
-                                } profile?`}
-                                onClick={() => {}}
+                                msg={`Are you sure you want to save ${data?.selection?.partial?.length} profile?`}
+                                onClick={async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      const listData = data?.data;
+                                      const result = {
+                                        administrative_results: listData.map(
+                                          (e: any) => {
+                                            return {
+                                              ...e,
+                                              user: null,
+                                              user_profile: null,
+                                            };
+                                          }
+                                        ),
+                                        administrative_selection_id: id,
+                                        deleted_administrative_result_ids: [],
+                                      };
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        value: "data.data",
+                                        path: "/api/administrative-results",
+                                        method: "post",
+                                        data: {
+                                          ...result,
+                                        },
+                                      });
+                                    },
+                                    after: () => {},
+                                    msg_load: "Saving selection ",
+                                    msg_error: "Failed to save selection ",
+                                    msg_succes:
+                                      "Your selection has been saved successfully! ",
+                                  });
+                                }}
                               >
                                 <ButtonContainer className={"bg-primary"}>
                                   <IoCheckmarkOutline className="text-xl" />
-                                  Approve
+                                  Save
                                 </ButtonContainer>
                               </Alert>
                               <Alert
                                 type={"delete"}
-                                msg={`Are you sure you want to reject ${
-                                  data?.selection?.all
-                                    ? "All"
-                                    : `${data?.selection?.partial?.length}`
-                                } profile?`}
-                                onClick={async () => {}}
+                                msg={`Are you sure you want to delete ${data?.selection?.partial?.length} profile?`}
+                                onClick={async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      const result = {
+                                        administrative_results: [],
+                                        administrative_selection_id: id,
+                                        deleted_administrative_result_ids:
+                                          data?.selection?.partial,
+                                      };
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        value: "data.data",
+                                        path: "/api/job-postings",
+                                        method: "post",
+                                        data: {
+                                          ...result,
+                                        },
+                                      });
+                                    },
+                                    after: () => {},
+                                    msg_load: "Delete selection ",
+                                    msg_error: "Failed to delete selection ",
+                                    msg_succes:
+                                      "Your selection has been deleted successfully! ",
+                                  });
+                                }}
                               >
                                 <ButtonContainer variant={"destructive"}>
                                   <X className="text-xl" />
-                                  Reject
+                                  Delete
                                 </ButtonContainer>
                               </Alert>
                             </>
@@ -350,56 +519,133 @@ function Page() {
                       },
                     },
                     {
-                      name: "name",
+                      name: "user_profile.name",
                       header: () => <span>Applicant Name</span>,
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
-                      name: "age",
-                      header: () => <span>Age</span>,
+                      name: "gpa",
+                      header: () => <span>GPA</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {getNumber(
+                              sortEducationLevels(
+                                getValue(row, "user_profile.educations"),
+                                "gpa"
+                              )
+                            )}
+                          </>
+                        );
+                      },
+                    },
+                    {
+                      name: "major",
+                      header: () => <span>Major</span>,
+                      renderCell: ({ row, name }: any) => {
+                        const major = sortEducationLevels(
+                          getValue(row, "user_profile.educations"),
+                          "major"
+                        );
+                        return <>{major ? major : "-"}</>;
                       },
                     },
                     {
                       name: "job_name",
                       header: () => <span>Job Name</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {detectUniqueExperience(
+                              getValue(row, "user_profile.work_experience")
+                            )}
+                          </>
+                        );
                       },
                     },
                     {
-                      name: "work_experience",
-                      header: () => <span>Work Experience (month)</span>,
+                      name: "job_experience",
+                      header: () => <span>Job Experience</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {detectUniqueExperience(
+                              getValue(row, "user_profile.work_experience"),
+                              "company_name",
+                              "company experiences"
+                            )}
+                          </>
+                        );
                       },
                     },
                     {
-                      name: "cv",
+                      name: "user_profile.work_experience",
+                      header: () => <span>Work Experience (Year)</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return <>{getTotalExperience(getValue(row, name))}</>;
+                      },
+                    },
+                    {
+                      name: "user_profile.curriculum_vitae",
                       header: () => <span>CV</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <FilePreview
+                            url={
+                              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                            }
+                            disabled={true}
+                            limit_name={10}
+                          />
+                        );
                       },
                     },
                     {
-                      name: "status_selection",
+                      name: "status",
+                      sortable: false,
                       header: () => <span>Status Selection</span>,
+                      renderCell: ({ row, render }: any) => {
+                        if (row.status === "APPROVED") {
+                          return (
+                            <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Approved
+                            </div>
+                          );
+                        } else if (row.status === "REJECTED") {
+                          return (
+                            <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Rejected
+                            </div>
+                          );
+                        }
+                        if (!local.can_selection) {
+                          return (
+                            <div className="bg-gray-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Pending
+                            </div>
+                          );
+                        }
+                      },
+                    },
+                    {
+                      name: "action",
+                      header: () => <span>Action</span>,
+                      sortable: false,
                       renderCell: ({ row }: any) => {
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                            <ButtonBetter>
-                              <div className="flex items-center gap-x-2">
-                                <IoCheckmarkOutline className="text-lg" />
-                              </div>
-                            </ButtonBetter>
-                            <ButtonBetter variant={"destructive"}>
-                              <div className="flex items-center gap-x-2">
-                                <X className="text-lg" />
-                              </div>
-                            </ButtonBetter>
+                            <TooltipBetter content="View Profile Applicant">
+                              <ButtonLink
+                                className="bg-primary"
+                                href={`/d/test-selection/schedule-test/${id}/${row.id}/applicant`}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <IoEye className="text-lg" />
+                                </div>
+                              </ButtonLink>
+                            </TooltipBetter>
                           </div>
                         );
                       },
@@ -409,8 +655,8 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.user_profiles",
-                      path: `/api/user-profiles${params}`,
+                      value: "data.data.administrative_results",
+                      path: `/api/administrative-results/administrative-selection/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -419,7 +665,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/user-profiles?page=1&page_size=1`,
+                      path: `/api/administrative-results/administrative-selection/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

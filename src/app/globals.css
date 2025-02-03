@@ -350,3 +350,39 @@ body {
   -webkit-backdrop-filter: blur(5px);
   border: 1px solid rgba(0, 0, 0, 0.3);
 }
+
+.spinner-better {
+  width: 65px;
+  height: 65px;
+  display: grid;
+  border: 4.5px solid #0000;
+  border-radius: 50%;
+  border-color: #c3d5ff #0000;
+  animation: spinner-e04l1k 1s infinite linear;
+}
+
+.spinner-better::before,
+.spinner-better::after {
+  content: "";
+  grid-area: 1/1;
+  margin: 2.2px;
+  border: inherit;
+  border-radius: 50%;
+}
+
+.spinner-better::before {
+  border-color: #313678 #0000;
+  animation: inherit;
+  animation-duration: 0.5s;
+  animation-direction: reverse;
+}
+
+.spinner-better::after {
+  margin: 8.9px;
+}
+
+@keyframes spinner-e04l1k {
+  100% {
+    transform: rotate(1turn);
+  }
+}

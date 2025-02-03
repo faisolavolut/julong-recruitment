@@ -1,4 +1,3 @@
-import { TableList } from "@/lib/components/tablelist/TableList";
 import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import {
   Dialog,
@@ -10,15 +9,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/lib/components/ui/dialog";
+import * as XLSX from "xlsx";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
-import { events } from "@/lib/utils/event";
-import { getNumber } from "@/lib/utils/getNumber";
-import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
 import { FC } from "react";
-import { HiPlus } from "react-icons/hi";
-import { toast } from "sonner";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 
 export const ImportResult: FC<any> = ({ fm }) => {
@@ -30,7 +25,32 @@ export const ImportResult: FC<any> = ({ fm }) => {
   const handleFileChange = (event: any) => {
     const file = event.target.files[0];
     if (file) {
-      console.log("Selected file:", file.name);
+      const reader = new FileReader();
+      function arrayBufferToBinaryString(buffer: ArrayBuffer): string {
+        const bytes = new Uint8Array(buffer);
+        return String.fromCharCode.apply(null, Array.from(bytes));
+      }
+
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target && e.target.result) {
+          const binaryStr =
+            typeof e.target.result === "string"
+              ? e.target.result
+              : arrayBufferToBinaryString(e.target.result);
+          const workbook = XLSX.read(binaryStr, { type: "binary" });
+
+          const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          console.log(jsonData);
+        }
+      };
+      if (file) {
+        if (typeof reader.readAsArrayBuffer === "function") {
+          reader.readAsArrayBuffer(file);
+        } else {
+          reader.readAsBinaryString(file);
+        }
+      }
     }
   };
   return (

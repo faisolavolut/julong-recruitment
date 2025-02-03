@@ -9,7 +9,6 @@ import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { IoEye } from "react-icons/io5";
-import get from "lodash.get";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
 import { ButtonBetterTooltip } from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
@@ -18,14 +17,10 @@ import { RiAiGenerate } from "react-icons/ri";
 import { normalDate } from "@/lib/utils/date";
 
 function Page() {
-  const list = [
-    { id: "on_going", name: "On Going", count: 0 },
-    { id: "completed", name: "Completed", count: 0 },
-  ];
   const local = useLocal({
     can_add: false,
     can_edit: false,
-    tab: get(list, "[0].id"),
+    tab: "on_going",
     list: [
       { id: "on_going", name: "On Going", count: 0 },
       { id: "completed", name: "Completed", count: 0 },
@@ -49,7 +44,6 @@ function Page() {
         path: `/api/mp-requests?page=1&page_size=1`,
         validate: "object",
       });
-      console.log(result);
       local.list = [
         { id: "on_going", name: "On Going", count: getNumber(result) },
         { id: "completed", name: "Completed", count: getNumber(completed) },

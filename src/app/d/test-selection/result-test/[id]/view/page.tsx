@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -9,17 +8,19 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoMdSave } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
 import { events } from "@/lib/utils/event";
-import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
+import { IoCheckmarkOutline } from "react-icons/io5";
 import { X } from "lucide-react";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
-import { AiOutlineCloudUpload } from "react-icons/ai";
 import { ImportResult } from "../ImportResult";
+import get from "lodash.get";
+import { IoMdSave } from "react-icons/io";
+import { RiDownloadCloudLine } from "react-icons/ri";
+import { ButtonLink } from "@/lib/components/ui/button-link";
+import { siteurl } from "@/lib/utils/siteurl";
 
 function Page() {
   const id = getParams("id");
@@ -69,7 +70,9 @@ function Page() {
       onSubmit={async (fm: any) => {}}
       mode="view"
       onLoad={async () => {
-        const data: any = await apix({
+        const data: any = {};
+        return { id: "LOL", select_test_type: get(data, "test_type.name") };
+        const data1: any = await apix({
           port: "recruitment",
           value: "data.data",
           path: `/api/job-postings/${id}`,
@@ -111,19 +114,7 @@ function Page() {
                     fm={fm}
                     name={"select_test_type"}
                     label={"Select Test Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/test-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
-                      });
-                      return res;
-                    }}
+                    type={"text"}
                   />
                 </div>
                 <div>
@@ -140,20 +131,7 @@ function Page() {
                     fm={fm}
                     name={"activity"}
                     label={"Activity"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/template-questions/form-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: "value",
-                          value: "value",
-                        },
-                      });
-                      return res;
-                    }}
+                    type={"text"}
                   />
                 </div>
                 <div>
@@ -248,7 +226,34 @@ function Page() {
         if (!fm?.data?.id) return <></>;
         return (
           <div className={cx()}>
-            <div className="w-full flex flex-row">
+            <div className="w-full flex flex-col">
+              <div className="flex flex-row px-2 w-full items-center">
+                <div className="grid grid-cols-2 flex-grow border-b border-gray-300 text-sm font-bold py-1">
+                  <div className="flex flex-grow items-center">Test Result</div>
+                  <div className="flex flex-grow  flex-row gap-x-2 justify-end">
+                    <Alert
+                      type={"save"}
+                      msg={`Are you sure you want to save result test?`}
+                      onClick={() => {}}
+                    >
+                      <ButtonContainer className={"bg-primary"}>
+                        <IoMdSave className="text-xl" />
+                        Save
+                      </ButtonContainer>
+                    </Alert>
+                    <Alert
+                      type={"save"}
+                      msg={`Are you sure you want to submit result test?`}
+                      onClick={() => {}}
+                    >
+                      <ButtonContainer className={"bg-primary"}>
+                        <IoMdSave className="text-xl" />
+                        Submit
+                      </ButtonContainer>
+                    </Alert>
+                  </div>
+                </div>
+              </div>
               <div className="flex flex-grow flex-col h-[350px]">
                 <TableList
                   name="job-posting"
@@ -256,48 +261,22 @@ function Page() {
                   header={{
                     sideLeft: (data: any) => {
                       return (
-                        <div className="flex flex-row flex-grow gap-x-2">
-                          {data?.selection?.all ||
-                          data?.selection?.partial?.length ? (
-                            <>
-                              <Alert
-                                type={"save"}
-                                msg={`Are you sure you want to approve ${
-                                  data?.selection?.all
-                                    ? "All"
-                                    : `${data?.selection?.partial?.length}`
-                                } profile?`}
-                                onClick={() => {}}
-                              >
-                                <ButtonContainer className={"bg-primary"}>
-                                  <IoCheckmarkOutline className="text-xl" />
-                                  Approve
-                                </ButtonContainer>
-                              </Alert>
-                              <Alert
-                                type={"delete"}
-                                msg={`Are you sure you want to reject ${
-                                  data?.selection?.all
-                                    ? "All"
-                                    : `${data?.selection?.partial?.length}`
-                                } profile?`}
-                                onClick={async () => {}}
-                              >
-                                <ButtonContainer variant={"destructive"}>
-                                  <X className="text-xl" />
-                                  Reject
-                                </ButtonContainer>
-                              </Alert>
-                            </>
-                          ) : (
-                            <></>
-                          )}
-                        </div>
+                        <div className="flex flex-row flex-grow gap-x-2"></div>
                       );
                     },
                     sideRight: (data: any) => {
                       return (
                         <div className="flex flex-row flex-grow gap-x-2 ml-4">
+                          <ButtonLink
+                            className={"bg-primary"}
+                            target="_blank"
+                            href={siteurl(
+                              "https://file-examples.com/wp-content/storage/2017/02/file_example_XLS_10.xls"
+                            )}
+                          >
+                            <RiDownloadCloudLine className="text-xl" />
+                            Export Template
+                          </ButtonLink>
                           <ImportResult fm={fm} />
                         </div>
                       );

@@ -1,8 +1,6 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import { TableList } from "@/lib/components/tablelist/TableList";
 import {
   Accordion,
   AccordionContent,
@@ -12,22 +10,21 @@ import {
 } from "@/lib/components/ui/accordion";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
-import { ButtonLink } from "@/lib/components/ui/button-link";
+import {
+  ButtonBetter,
+  ButtonBetterTooltip,
+  ButtonContainer,
+} from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
-import { labelDocumentType } from "@/lib/utils/document_type";
-import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
-import { getNumber } from "@/lib/utils/getNumber";
-import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoMdSave } from "react-icons/io";
+import { IoEye } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
 
 function Page() {
@@ -76,6 +73,24 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
+              {["TEST", "INTERVIEW", "FGD", "FINAL_INTERVIEW"].includes(
+                fm?.data?.form_type
+              ) ? (
+                <ButtonBetterTooltip
+                  tooltip={"View Form Question"}
+                  className="bg-primary"
+                  onClick={() => {
+                    navigate(`/form/${id}/preview`);
+                  }}
+                >
+                  <div className="flex items-center gap-x-2">
+                    <IoEye className="text-lg" />
+                    Preview
+                  </div>
+                </ButtonBetterTooltip>
+              ) : (
+                <></>
+              )}
               <Alert
                 type={"delete"}
                 msg={"Are you sure you want to save this record?"}
@@ -679,219 +694,6 @@ function Page() {
           </>
         );
       }}
-      // onFooter={(fm: any) => {
-      //   if (!fm?.data?.id) return <></>;
-      //   return (
-      //     <div
-      //       className={cx(
-      //         ["CONTRACT_DOCUMENT", "OFFERING_LETTER"].includes(
-      //           fm?.data?.form_type
-      //         )
-      //           ? css`
-      //               .tbl-search {
-      //                 display: none !important;
-      //                 padding-left: 2rem;
-      //               }
-      //             `
-      //           : css`
-      //               .tbl-search {
-      //                 display: none !important;
-      //               }
-      //               .tbl-pagination {
-      //                 display: none !important;
-      //               }
-      //             `
-      //       )}
-      //     >
-      //       <div className="w-full flex flex-row">
-      //         <div className="flex flex-grow flex-col h-[350px]">
-      //           {["DOCUMENT_CHECKING"].includes(fm?.data?.form_type) && (
-      //             <>
-      //               <TableList
-      //                 disabledHoverRow={true}
-      //                 disabledPagination={true}
-      //                 header={{
-      //                   sideLeft: (tbl: any) => {
-      //                     if (true)
-      //                       return (
-      //                         <>
-      //                           <div className="flex flex-row gap-x-2 items-center">
-      //                             <div className="flex flex-row flex-grow space-x-2">
-      //                               <ButtonBetter
-      //                                 className="bg-primary"
-      //                                 onClick={() => {
-      //                                   tbl.addRow({});
-      //                                   tbl.render();
-      //                                   fm.render();
-      //                                 }}
-      //                               >
-      //                                 <div className="flex items-center gap-x-0.5">
-      //                                   <HiPlus className="text-md" />
-      //                                   <span className="capitalize">
-      //                                     Add New
-      //                                   </span>
-      //                                 </div>
-      //                               </ButtonBetter>
-      //                             </div>
-      //                           </div>
-      //                         </>
-      //                       );
-      //                     return <></>;
-      //                   },
-      //                   sideRight: (tbl: any) => {
-      //                     return (
-      //                       <>
-      //                         <div className="flex flex-row gap-x-2 items-center">
-      //                           <div className="flex flex-row flex-grow space-x-2">
-      //                             <ButtonBetter
-      //                               onClick={async (event) => {
-      //                                 event.preventDefault();
-      //                                 event.stopPropagation();
-      //                                 const data = fm.data?.document_checking;
-      //                                 await actionToast({
-      //                                   task: async () => {
-      //                                     let result = await apix({
-      //                                       port: "recruitment",
-      //                                       value: "data.data",
-      //                                       path: "/api/questions",
-      //                                       method: "post",
-      //                                       data: {
-      //                                         template_question_id: id,
-      //                                         data: data,
-      //                                         deleted_question_ids:
-      //                                           get(
-      //                                             fm,
-      //                                             "data.deleted_line_checking_ids"
-      //                                           ) || [],
-      //                                       },
-      //                                     });
-      //                                   },
-      //                                   after: () => {},
-      //                                   msg_load: "Saving ",
-      //                                   msg_error: "Saving failed ",
-      //                                   msg_succes: "Saving success ",
-      //                                 });
-      //                               }}
-      //                             >
-      //                               <svg
-      //                                 xmlns="http://www.w3.org/2000/svg"
-      //                                 width={25}
-      //                                 height={25}
-      //                                 viewBox="0 0 24 24"
-      //                               >
-      //                                 <path
-      //                                   fill="none"
-      //                                   stroke="currentColor"
-      //                                   strokeLinecap="round"
-      //                                   strokeLinejoin="round"
-      //                                   strokeWidth={1.5}
-      //                                   d="M7.558 3.75H7.25a3.5 3.5 0 0 0-3.5 3.5v9.827a3.173 3.173 0 0 0 3.173 3.173v0m.635-16.5v2.442a2 2 0 0 0 2 2h2.346a2 2 0 0 0 2-2V3.75m-6.346 0h6.346m0 0h.026a3 3 0 0 1 2.122.879l3.173 3.173a3.5 3.5 0 0 1 1.025 2.475v6.8a3.173 3.173 0 0 1-3.173 3.173v0m-10.154 0V15a3 3 0 0 1 3-3h4.154a3 3 0 0 1 3 3v5.25m-10.154 0h10.154"
-      //                                 ></path>
-      //                               </svg>
-      //                               Save
-      //                             </ButtonBetter>
-      //                           </div>
-      //                         </div>
-      //                       </>
-      //                     );
-      //                   },
-      //                 }}
-      //                 column={[
-      //                   {
-      //                     name: "name",
-      //                     header: () => <span>Document Name</span>,
-      //                     renderCell: ({ row, name, cell, tbl }: any) => {
-      //                       const fm_row = cloneFM(fm, row);
-      //                       return (
-      //                         <>
-      //                           <Field
-      //                             fm={cloneFM(fm, row)}
-      //                             hidden_label={true}
-      //                             name={"name"}
-      //                             label={""}
-      //                             type={"text"}
-      //                           />
-      //                         </>
-      //                       );
-      //                     },
-      //                   },
-      //                   {
-      //                     name: "format",
-      //                     header: () => <span>Format</span>,
-      //                     width: 150,
-      //                     renderCell: ({ row, name, cell }: any) => {
-      //                       const fm_row = cloneFM(fm, row);
-      //                       return (
-      //                         <>
-      //                           <Field
-      //                             fm={cloneFM(fm, row)}
-      //                             hidden_label={true}
-      //                             name={"format"}
-      //                             label={""}
-      //                             type={"text"}
-      //                             onLoad={async () => {
-      //                               return [
-      //                                 {
-      //                                   label: "",
-      //                                 },
-      //                               ];
-      //                             }}
-      //                           />
-      //                         </>
-      //                       );
-      //                     },
-      //                   },
-      //                   {
-      //                     name: "action",
-      //                     header: () => <span>Action</span>,
-      //                     sortable: false,
-      //                     renderCell: ({ row, name, cell, tbl }: any) => {
-      //                       if (false) return <></>;
-      //                       return (
-      //                         <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-      //                           <ButtonBetter
-      //                             className="bg-red-500"
-      //                             onClick={() => {
-      //                               const deleted_line_ids: any[] =
-      //                                 Array.isArray(
-      //                                   fm.data?.deleted_line_checking_ids
-      //                                 )
-      //                                   ? fm.data?.deleted_line_checking_ids
-      //                                   : [];
-      //                               if (row?.id) {
-      //                                 deleted_line_ids.push(row.id);
-      //                               }
-      //                               fm.data["deleted_line_checking_ids"] =
-      //                                 deleted_line_ids;
-      //                               tbl.removeRow(row);
-      //                               fm.data.document_line =
-      //                                 fm.data.document_line.filter(
-      //                                   (e: any) => e !== row
-      //                                 );
-      //                               fm.render();
-      //                             }}
-      //                           >
-      //                             <div className="flex items-center">
-      //                               <MdDelete />
-      //                             </div>
-      //                           </ButtonBetter>
-      //                         </div>
-      //                       );
-      //                     },
-      //                   },
-      //                 ]}
-      //                 onLoad={async (param: any) => {
-      //                   return fm.data.document_checking || [];
-      //                 }}
-      //                 onInit={async (list: any) => {}}
-      //               />
-      //             </>
-      //           )}
-      //         </div>
-      //       </div>
-      //     </div>
-      //   );
-      // }}
     />
   );
 }

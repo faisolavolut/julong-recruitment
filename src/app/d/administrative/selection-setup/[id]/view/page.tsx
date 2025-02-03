@@ -2,7 +2,10 @@
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import {
+  ButtonBetterTooltip,
+  ButtonContainer,
+} from "@/lib/components/ui/button";
 import { Alert } from "@/lib/components/ui/alert";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
@@ -17,6 +20,15 @@ import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { X } from "lucide-react";
 import { events } from "@/lib/utils/event";
+import { sortEducationLevels } from "@/app/lib/education-level";
+import {
+  detectUniqueExperience,
+  getTotalExperience,
+} from "@/app/lib/workExperiences";
+import { FilePreview } from "@/lib/components/form/field/FilePreview";
+import { TooltipBetter } from "@/lib/components/ui/tooltip-better";
+import { access } from "@/lib/utils/getAccess";
+import { actionToast } from "@/lib/utils/action";
 
 function Page() {
   const id = getParams("id");
@@ -25,6 +37,9 @@ function Page() {
   const local = useLocal({
     can_edit: false,
     can_delete: false,
+    can_view: true,
+    can_selection: false,
+    can_submit: false,
     ready: false as boolean,
   });
 
@@ -32,13 +47,16 @@ function Page() {
     const run = async () => {
       local.can_edit = true;
       local.can_delete = true;
+      local.can_submit = access("submit-administrative-selection-setup");
+      local.can_selection = access("approval-applicant-document-selection");
+      local.can_view = access("read-administrative-selection-setup");
       local.ready = true;
       local.render();
     };
     run();
   }, []);
 
-  if (local.ready && !local.can_edit && !local.can_delete) return notFound();
+  if (!local.can_view) return notFound();
 
   return (
     <FormBetter
@@ -62,19 +80,34 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_edit && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoMdSave className="text-xl" />
-                    Save
-                  </ButtonContainer>
-                </Alert>
+              {local.can_submit && fm.data?.status === "IN PROGRESS" && (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Save
+                    </ButtonContainer>
+                  </Alert>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to submit this record?"}
+                    onClick={() => {
+                      fm.data.status = "COMPLETED";
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Submit
+                    </ButtonContainer>
+                  </Alert>
+                </>
               )}
             </div>
           </div>
@@ -84,7 +117,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/job-postings",
+          path: "/api/administrative-selections/" + id,
           method: "put",
           data: {
             ...fm.data,
@@ -211,7 +244,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"total_candidate"}
+                    name={"total_applicants"}
                     label={"Total Candidate"}
                     type={"money"}
                   />
@@ -229,8 +262,9 @@ function Page() {
             <div className="w-full flex flex-row">
               <div className="flex flex-grow flex-col h-[350px]">
                 <TableList
+                  selectionPaging={true}
                   name="job-posting"
-                  feature={["checkbox"]}
+                  feature={local.can_selection ? ["checkbox"] : []}
                   header={{
                     sideLeft: (data: any) => {
                       return (
@@ -240,30 +274,80 @@ function Page() {
                             <>
                               <Alert
                                 type={"save"}
-                                msg={`Are you sure you want to approve ${
-                                  data?.selection?.all
-                                    ? "All"
-                                    : `${data?.selection?.partial?.length}`
-                                } profile?`}
-                                onClick={() => {}}
+                                msg={`Are you sure you want to save ${data?.selection?.partial?.length} profile?`}
+                                onClick={async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      const listData = data?.data;
+                                      const result = {
+                                        administrative_results: listData.map(
+                                          (e: any) => {
+                                            return {
+                                              ...e,
+                                              user: null,
+                                              user_profile: null,
+                                            };
+                                          }
+                                        ),
+                                        administrative_selection_id: id,
+                                        deleted_administrative_result_ids: [],
+                                      };
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        value: "data.data",
+                                        path: "/api/administrative-results",
+                                        method: "post",
+                                        data: {
+                                          ...result,
+                                        },
+                                      });
+                                    },
+                                    after: () => {},
+                                    msg_load: "Saving selection ",
+                                    msg_error: "Failed to save selection ",
+                                    msg_succes:
+                                      "Your selection has been saved successfully! ",
+                                  });
+                                }}
                               >
                                 <ButtonContainer className={"bg-primary"}>
                                   <IoCheckmarkOutline className="text-xl" />
-                                  Approve
+                                  Save
                                 </ButtonContainer>
                               </Alert>
                               <Alert
                                 type={"delete"}
-                                msg={`Are you sure you want to reject ${
-                                  data?.selection?.all
-                                    ? "All"
-                                    : `${data?.selection?.partial?.length}`
-                                } profile?`}
-                                onClick={async () => {}}
+                                msg={`Are you sure you want to delete ${data?.selection?.partial?.length} profile?`}
+                                onClick={async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      const result = {
+                                        administrative_results: [],
+                                        administrative_selection_id: id,
+                                        deleted_administrative_result_ids:
+                                          data?.selection?.partial,
+                                      };
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        value: "data.data",
+                                        path: "/api/job-postings",
+                                        method: "post",
+                                        data: {
+                                          ...result,
+                                        },
+                                      });
+                                    },
+                                    after: () => {},
+                                    msg_load: "Delete selection ",
+                                    msg_error: "Failed to delete selection ",
+                                    msg_succes:
+                                      "Your selection has been deleted successfully! ",
+                                  });
+                                }}
                               >
                                 <ButtonContainer variant={"destructive"}>
                                   <X className="text-xl" />
-                                  Reject
+                                  Delete
                                 </ButtonContainer>
                               </Alert>
                             </>
@@ -283,7 +367,7 @@ function Page() {
                       },
                     },
                     {
-                      name: "name",
+                      name: "user_profile.name",
                       header: () => <span>Applicant Name</span>,
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
@@ -293,60 +377,152 @@ function Page() {
                       name: "gpa",
                       header: () => <span>GPA</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {getNumber(
+                              sortEducationLevels(
+                                getValue(row, "user_profile.educations"),
+                                "gpa"
+                              )
+                            )}
+                          </>
+                        );
                       },
                     },
                     {
                       name: "major",
                       header: () => <span>Major</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        const major = sortEducationLevels(
+                          getValue(row, "user_profile.educations"),
+                          "major"
+                        );
+                        return <>{major ? major : "-"}</>;
                       },
                     },
                     {
                       name: "job_name",
                       header: () => <span>Job Name</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {detectUniqueExperience(
+                              getValue(row, "user_profile.work_experience")
+                            )}
+                          </>
+                        );
                       },
                     },
                     {
                       name: "job_experience",
                       header: () => <span>Job Experience</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {detectUniqueExperience(
+                              getValue(row, "user_profile.work_experience"),
+                              "company_name",
+                              "company experiences"
+                            )}
+                          </>
+                        );
                       },
                     },
                     {
-                      name: "work_experience",
-                      header: () => <span>Work Experience (month)</span>,
+                      name: "user_profile.work_experience",
+                      header: () => <span>Work Experience (Year)</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return <>{getTotalExperience(getValue(row, name))}</>;
                       },
                     },
                     {
-                      name: "cv",
+                      name: "user_profile.curriculum_vitae",
                       header: () => <span>CV</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <FilePreview
+                            url={
+                              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                            }
+                            disabled={true}
+                            limit_name={10}
+                          />
+                        );
                       },
                     },
                     {
-                      name: "status_selection",
+                      name: "status",
+                      sortable: false,
                       header: () => <span>Status Selection</span>,
-                      renderCell: ({ row }: any) => {
+                      renderCell: ({ row, render }: any) => {
+                        if (row.status === "APPROVED") {
+                          return (
+                            <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Approved
+                            </div>
+                          );
+                        } else if (row.status === "REJECTED") {
+                          return (
+                            <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Rejected
+                            </div>
+                          );
+                        }
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                            <ButtonBetter>
-                              <div className="flex items-center gap-x-2">
-                                <IoCheckmarkOutline className="text-lg" />
-                              </div>
-                            </ButtonBetter>
-                            <ButtonBetter variant={"destructive"}>
-                              <div className="flex items-center gap-x-2">
-                                <X className="text-lg" />
-                              </div>
-                            </ButtonBetter>
+                            <Alert
+                              type={"save"}
+                              msg={`Are you sure you want to approve this applicant?`}
+                              onClick={async () => {
+                                await actionToast({
+                                  task: async () => {
+                                    row.status = "APPROVED";
+                                    render();
+                                  },
+                                  after: () => {},
+                                  msg_load: "Saving result selection ",
+                                  msg_error: "Failed to save result selection ",
+                                  msg_succes:
+                                    "Your result selection has been saved successfully! ",
+                                });
+                              }}
+                            >
+                              <ButtonBetterTooltip
+                                typeButton="container"
+                                tooltip={"Approve applicant"}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <IoCheckmarkOutline className="text-lg" />
+                                </div>
+                              </ButtonBetterTooltip>
+                            </Alert>
+                            <Alert
+                              type={"save"}
+                              msg={`Are you sure you want to reject this applicant?`}
+                              onClick={async () => {
+                                await actionToast({
+                                  task: async () => {
+                                    row.status = "REJECTED";
+                                    render();
+                                  },
+                                  after: () => {},
+                                  msg_load: "Saving result selection ",
+                                  msg_error: "Failed to save result selection ",
+                                  msg_succes:
+                                    "Your result selection has been saved successfully! ",
+                                });
+                              }}
+                            >
+                              <ButtonBetterTooltip
+                                typeButton="container"
+                                tooltip={"Approve applicant"}
+                                variant={"destructive"}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <X className="text-lg" />
+                                </div>
+                              </ButtonBetterTooltip>
+                            </Alert>
                           </div>
                         );
                       },
@@ -358,14 +534,16 @@ function Page() {
                       renderCell: ({ row }: any) => {
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                            <ButtonLink
-                              className="bg-primary"
-                              href={`/d/administrative/selection-setup/${id}/candidate/${row.id}/view`}
-                            >
-                              <div className="flex items-center gap-x-2">
-                                <IoEye className="text-lg" />
-                              </div>
-                            </ButtonLink>
+                            <TooltipBetter content="View Profile Applicant">
+                              <ButtonLink
+                                className="bg-primary"
+                                href={`/d/administrative/selection-setup/${id}/candidate/${row.id}/view`}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <IoEye className="text-lg" />
+                                </div>
+                              </ButtonLink>
+                            </TooltipBetter>
                           </div>
                         );
                       },
@@ -375,7 +553,7 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.user_profiles",
+                      value: "data.data.administrative_results",
                       path: `/api/administrative-results/administrative-selection/${id}${params}`,
                       validate: "array",
                     });

@@ -1,5 +1,4 @@
 "use client";
-import localFont from "next/font/local";
 import "@/app/globals.css";
 import Header from "@/lib/components/partials/Header";
 import Script from "@/lib/components/partials/Script";
@@ -11,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
 import dotenv from "dotenv";
+import { userRoleMe } from "@/lib/utils/getAccess";
+import { useLocal } from "@/lib/utils/use-local";
 dotenv.config();
 
 interface RootLayoutProps {
@@ -21,18 +22,26 @@ globalThis.css = css;
 globalThis.uuid = uuidv4;
 globalThis.navigate = navigate;
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+  const local = useLocal({
+    ready: false,
+  });
   const routerInstance = useRouter();
   useEffect(() => {
     const run = async () => {
-      // await
+      try {
+        const roles = await userRoleMe();
+        globalThis.userRole = roles;
+      } catch (ex) {}
+      local.ready = true;
+      local.render();
     };
-    run();
     globalThis.router = routerInstance;
     const user = localStorage.getItem("user");
     if (user) {
       const w = window as any;
       w.user = JSON.parse(user);
     }
+    run();
   }, []);
 
   return (
@@ -55,7 +64,13 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           ></iframe>
         </noscript>
         <Toaster position="top-right" />
-        {children}
+        {local.ready ? (
+          children
+        ) : (
+          <div className="h-screen w-screen flex flex-row items-center justify-center">
+            <div className="spinner-better"></div>
+          </div>
+        )}
         <Script />
       </body>
     </html>

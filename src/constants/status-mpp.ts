@@ -13,10 +13,11 @@ export const statusMpp = [
   { value: "not_open", label: "Not Open" },
   { value: "OFF_BUDGET", label: "Off Budget" },
   { value: "ON_BUDGET", label: "On Budget" },
+  { value: "APPLIED", label: "Applied" },
 ];
 export const getStatusLabel = (value: string) => {
   const status = statusMpp.find(
     (item) => item.value.toLowerCase() === value.toLowerCase()
   );
-  return status ? status.label : null;
+  return status ? status.label : value;
 };

@@ -1,38 +1,16 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { Form } from "@/lib/components/form/Form";
-import { FormBetter } from "@/lib/components/form/FormBetter";
-import { TableList } from "@/lib/components/tablelist/TableList";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
-import { Alert } from "@/lib/components/ui/alert";
-import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
-import { ButtonLink } from "@/lib/components/ui/button-link";
+import { ButtonBetter } from "@/lib/components/ui/button";
 import { Skeleton } from "@/lib/components/ui/Skeleton";
 import { userToken } from "@/lib/helpers/user";
-import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
-import { labelDocumentType } from "@/lib/utils/document_type";
-import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
-import { getNumber } from "@/lib/utils/getNumber";
-import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
-import { IoMdSave } from "react-icons/io";
-import { IoEye } from "react-icons/io5";
-import { MdDelete } from "react-icons/md";
 
 function Page() {
   const id = getParams("id");

@@ -253,15 +253,12 @@ function HomePage() {
                     resize: false,
                     header: () => <span>Status</span>,
                     renderCell: ({ row, name, cell }: any) => {
-                      return <div className="text-red-500">Close</div>;
-                      return <div className="text-green-500">In Progress</div>;
-                      switch (getValue(row, name)) {
-                        case "ACTIVE":
-                          return "Active";
-                          break;
-                        default:
-                          return "Inactive";
+                      if (row?.[name] === "IN PROGRESS") {
+                        return (
+                          <div className="text-green-500">In Progress</div>
+                        );
                       }
+                      return <div className="text-red-500">Close</div>;
                     },
                   },
                   {
@@ -272,7 +269,7 @@ function HomePage() {
                       return (
                         <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                           <ButtonLink
-                            href={`/d/master-data/question/${row.id}/edit`}
+                            href={`/applied-jobs/${row.id}`}
                             className={
                               "bg-gray-100 shadow-none font-bold text-primary hover:bg-primary hover:text-white"
                             }
@@ -294,7 +291,7 @@ function HomePage() {
                     path: `/api/job-postings/applied${params}`,
                     validate: "array",
                   });
-                  return [{}, {}];
+                  return result;
                 }}
                 onCount={async () => {
                   const result: any = await apix({

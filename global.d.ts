@@ -4,6 +4,7 @@ declare global {
   var cx: typeof classnames;
   var css: typeof css;
   var uuid: typeof uuidv4;
+  var userRole: any;
   var navigate: (url: string) => void;
   var router: useRouter;
   var headerTitle: string;

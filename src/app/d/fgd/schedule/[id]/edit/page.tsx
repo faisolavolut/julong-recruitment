@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -15,8 +14,8 @@ import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
 import { events } from "@/lib/utils/event";
 import { getValue } from "@/lib/utils/getValue";
-import { ImportResult } from "@/app/d/test-selection/result-test/[id]/ImportResult";
 import { TableList } from "@/lib/components/tablelist/TableList";
+import { actionToast } from "@/lib/utils/action";
 
 function Page() {
   const id = getParams("id");
@@ -91,10 +90,20 @@ function Page() {
                   type={"delete"}
                   msg={"Are you sure you want to delete this record?"}
                   onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings/${id}`,
-                      method: "delete",
+                    await actionToast({
+                      task: async () => {
+                        await apix({
+                          port: "recruitment",
+                          path: `/api/job-postings/${id}`,
+                          method: "delete",
+                        });
+                      },
+                      after: () => {
+                        navigate(urlPage);
+                      },
+                      msg_load: "Delete ",
+                      msg_error: "Delete failed ",
+                      msg_succes: "Delete success ",
                     });
                   }}
                 >

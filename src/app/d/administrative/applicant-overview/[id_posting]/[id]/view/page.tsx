@@ -2,7 +2,6 @@
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { getParams } from "@/lib/utils/get-params";
@@ -14,28 +13,36 @@ import {
 } from "@/lib/components/ui/accordion";
 import { cloneFM } from "@/lib/utils/cloneFm";
 import { siteurl } from "@/lib/utils/siteurl";
-import { access } from "@/lib/utils/getAccess";
-import notFound from "@/app/not-found";
+import { apix } from "@/lib/utils/apix";
 import { Alert } from "@/lib/components/ui/alert";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { X } from "lucide-react";
+import { access } from "@/lib/utils/getAccess";
+import notFound from "@/app/not-found";
 
 function Page() {
-  const id = getParams("id_user");
-  const id_parent = getParams("id");
+  const id = getParams("id");
+  const id_posting = getParams("id_posting");
   const labelPage = "Candidate";
-  const urlPage = `/d/administrative/selection-setup/${id_parent}/view`;
   const local = useLocal({
     can_approve: false,
+    can_reject: false,
     view: true,
     ready: false as boolean,
+    data: null as any,
   });
-
   useEffect(() => {
     const run = async () => {
       local.can_approve = access("approval-applicant-document-selection");
       local.view = access("view-profile-applicant");
+      const data: any = await apix({
+        port: "recruitment",
+        value: "data.data",
+        path: `/api/job-postings/${id_posting}`,
+        validate: "object",
+      });
+      local.data = data;
       local.ready = true;
       local.render();
     };
@@ -56,12 +63,12 @@ function Page() {
               <BreadcrumbBetterLink
                 data={[
                   {
-                    title: `List Selection Setup`,
-                    url: "/d/administrative/selection-setup",
+                    title: `List Job Posting`,
+                    url: `/d/administrative/applicant-overview`,
                   },
                   {
-                    title: `List ${labelPage}`,
-                    url: urlPage,
+                    title: `${local.data?.document_number}`,
+                    url: `/d/administrative/applicant-overview/${id_posting}`,
                   },
                   {
                     title: "view",
@@ -123,7 +130,7 @@ function Page() {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/user-profiles/${id}`,
+          path: `/api/applicants/me?job_posting_id=${id_posting}&user_id=${id}`,
           validate: "object",
         });
         return {
