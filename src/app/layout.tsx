@@ -12,6 +12,7 @@ import { Toaster } from "sonner";
 import dotenv from "dotenv";
 import { userRoleMe } from "@/lib/utils/getAccess";
 import { useLocal } from "@/lib/utils/use-local";
+import { userToken } from "@/lib/helpers/user";
 dotenv.config();
 
 interface RootLayoutProps {
@@ -28,6 +29,9 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const routerInstance = useRouter();
   useEffect(() => {
     const run = async () => {
+      try {
+        await userToken();
+      } catch (ex) {}
       try {
         const roles = await userRoleMe();
         globalThis.userRole = roles;
