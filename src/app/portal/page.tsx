@@ -1,16 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import get from "lodash.get";
-import { configMenu } from "../d/config-menu";
 import { useLocal } from "@/lib/utils/use-local";
 import { get_params_url } from "@/lib/utils/getParamsUrl";
 import api from "@/lib/utils/axios";
 import { userRoleMe } from "@/lib/utils/getAccess";
-import {
-  filterMenuByPermission,
-  getFirstMenuWithUrl,
-} from "@/lib/utils/filterMenuByPermission";
 import ServerErrorPage from "@/lib/components/comp/500";
 
 function Portal() {

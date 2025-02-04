@@ -25,9 +25,9 @@
   // FORM NEW
   {
     "mode": "new",
-    "name": "final-interview-result",
-    "title": "Final Interview Result",
-    "url_root": "/d/final-interview",
+    "name": "offering-letter-document",
+    "title": "Offering Letter Document",
+    "url_root": "/d/offering-letter",
     "apix": {
       "port": "recruitment",
       "value": "data.data",
@@ -35,19 +35,52 @@
       "validate": "object"
     },
     "field": [
-      ["name", "Name", "text"],
-      ["job_position", "Job Position", "text"],
-      ["id_applicant", "ID Applicant", "text"],
-      ["penilaian_keseluruhan", "Penilaian Keseluruhan", "text"],
+      ["document_number", "Document Number", "text"], // disabled
+      ["document_date", "Document Date", "date"],
       [
-        "hasil_interview",
-        "Hasil Interview",
+        "job_posting_id",
+        "Job Name",
+        "dropdown",
+        {
+          "apix": {
+            "port": "recruitment",
+            "value": "data.data.job_postings",
+            "path": "/api/job-postings?status=IN PROGRESS",
+            "keys": {
+              "label": "job_name"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+
+      [
+        "recruitment_type",
+        "Recruitment Type",
         "dropdown",
         {
           "apix": {
             "port": "recruitment",
             "value": "data.data",
-            "path": "/api/interview-results",
+            "path": "/api/recruitment-types",
+            "keys": {
+              "value": "value",
+              "label": "value"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+      ["project_number", "Project Number", "text"],
+      [
+        "organization_name",
+        "Organization Name",
+        "dropdown",
+        {
+          "apix": {
+            "port": "portal",
+            "value": "data.data.organizations",
+            "path": "/api/organizations",
             "keys": {
               "label": "name"
             },
@@ -55,8 +88,39 @@
           }
         }
       ],
-      ["final_interview_date", "Final Interview Date", "date"],
-      ["description", "Description", "textarea"]
+      [
+        "project_recruitment_line_id",
+        "Activity",
+        "dropdown",
+        {
+          "apix": {
+            "port": "recruitment",
+            "value": "data.data",
+            "path": "/api/project-recruitment-lines/header/",
+            "keys": {
+              "label": "name"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+      [
+        "document_setup_id",
+        "Document Type",
+        "dropdown",
+        {
+          "apix": {
+            "port": "recruitment",
+            "value": "data.data.document_setups",
+            "path": "/api/document-setup",
+            "keys": {
+              "label": "name"
+            },
+            "validate": "dropdown"
+          }
+        }
+      ],
+      ["status", "Status", "text"]
     ]
   },
 

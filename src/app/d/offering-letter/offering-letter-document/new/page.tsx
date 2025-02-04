@@ -1,26 +1,36 @@
 "use client";
+
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
+import { Alert } from "@/lib/components/ui/alert";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
+import { access } from "@/lib/utils/getAccess";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import get from "lodash.get";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTriggerCustom,
+} from "@/lib/components/ui/accordion";
 
 function Page() {
-  const labelPage = "Document Checking";
-  const urlPage = `/d/master-data/document-checking`;
+  const labelPage = "Offering Letter Document";
+  const urlPage = "/d/offering-letter/offering-letter-document";
   const local = useLocal({
-    can_add: false,
+    can_add: true as boolean,
     ready: false as boolean,
   });
 
   useEffect(() => {
     const run = async () => {
-      local.can_add = true;
+      local.can_add = access("create-offering-letter-document");
       local.ready = true;
       local.render();
     };
@@ -71,7 +81,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-verifications",
+          path: "/api/final-interview-result",
           method: "post",
           data: {
             ...fm.data,
@@ -80,7 +90,15 @@ function Page() {
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
-        return {};
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/job-postings/document-number",
+        });
+        return {
+          status: "DRAFT",
+          document_number: res,
+        };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -92,35 +110,199 @@ function Page() {
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
-                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
-                </div>
-                <div>
                   <Field
                     fm={fm}
-                    name={"format"}
-                    label={"Format"}
+                    name={"document_number"}
+                    label={"Document Number"}
                     type={"text"}
+                    disabled={true}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_question_id"}
-                    label={"Template"}
+                    name={"document_date"}
+                    label={"Document Date"}
+                    required={true}
+                    type={"date"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"job_posting_id"}
+                    label={"Job Name"}
+                    required={true}
                     type={"dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data.template_questions",
-                        path: "/api/template-questions",
+                        value: "data.data.job_postings",
+                        path: "/api/job-postings?status=IN PROGRESS",
+                        validate: "dropdown",
+                        keys: { label: "job_name" },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"recruitment_type"}
+                    label={"Recruitment Type"}
+                    required={true}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: "/api/recruitment-types",
+                        validate: "dropdown",
+                        keys: { value: "value", label: "value" },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"project_number"}
+                    label={"Project Number"}
+                    type={"text"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"organization_name"}
+                    label={"Organization Name"}
+                    required={true}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "portal",
+                        value: "data.data.organizations",
+                        path: "/api/organizations",
+                        validate: "dropdown",
+                        keys: { label: "name" },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"project_recruitment_line_id"}
+                    label={"Activity"}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    required={true}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path:
+                          "/api/project-recruitment-lines/header/" +
+                          fm?.data?.project_recruitment_header_id,
                         validate: "dropdown",
                         keys: {
-                          label: "name",
+                          label: (row: any) =>
+                            labelDocumentType(
+                              get(row, "template_activity_line.name")
+                            ) || "",
                         },
                       });
                       return res;
                     }}
                   />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"document_setup_id"}
+                    label={"Document Type"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.document_setups",
+                        path: "/api/document-setup",
+                        validate: "dropdown",
+                        keys: { label: "title" },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"status"}
+                    label={"Status"}
+                    type={"text"}
+                    disabled={true}
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full"
+                    defaultValue={"item-1"}
+                  >
+                    <AccordionItem value="item-1">
+                      <AccordionTriggerCustom className="flex flex-row items-center">
+                        Detail Question
+                      </AccordionTriggerCustom>
+                      <AccordionContent>
+                        <div className="grid grid-cols-2">
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"name"}
+                              label={"Question"}
+                              type={"dropdown"}
+                              onLoad={async () => {
+                                const res: any = await apix({
+                                  port: "recruitment",
+                                  value: "data.data.document_setups",
+                                  path: "/api/document-setup",
+                                  validate: "dropdown",
+                                  keys: { label: "title" },
+                                });
+                                return res;
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"email"}
+                              label={"Email"}
+                              type={"text"}
+                              disabled={true}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"name"}
+                              label={"Question"}
+                              type={"text"}
+                            />
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
               </div>
             </div>

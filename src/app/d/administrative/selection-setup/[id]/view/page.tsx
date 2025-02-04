@@ -29,6 +29,7 @@ import { FilePreview } from "@/lib/components/form/field/FilePreview";
 import { TooltipBetter } from "@/lib/components/ui/tooltip-better";
 import { access } from "@/lib/utils/getAccess";
 import { actionToast } from "@/lib/utils/action";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id");
@@ -99,6 +100,7 @@ function Page() {
                     msg={"Are you sure you want to submit this record?"}
                     onClick={() => {
                       fm.data.status = "COMPLETED";
+                      fm.render();
                       fm.submit();
                     }}
                   >
@@ -122,6 +124,7 @@ function Page() {
           method: "put",
           data: {
             ...fm.data,
+            document_date: normalDate(fm?.data?.document_date),
           },
         });
       }}
@@ -265,7 +268,13 @@ function Page() {
                 <TableList
                   selectionPaging={true}
                   name="job-posting"
-                  feature={local.can_selection ? ["checkbox"] : []}
+                  feature={
+                    fm.data.status === "COMPLETED"
+                      ? []
+                      : local.can_selection
+                      ? ["checkbox"]
+                      : []
+                  }
                   header={{
                     sideLeft: (data: any) => {
                       return (
@@ -482,6 +491,12 @@ function Page() {
                           return (
                             <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
                               Rejected
+                            </div>
+                          );
+                        } else if (!local.can_selection) {
+                          return (
+                            <div className="bg-gray-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Pending
                             </div>
                           );
                         }

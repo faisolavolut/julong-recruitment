@@ -1,5 +1,5 @@
 import { Progress } from "@/lib/components/ui/Progress";
-import { useEffect, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { FaCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 
@@ -12,8 +12,8 @@ const steps = [
   { id: 6, label: "Final Result" },
 ];
 
-const Stepper = () => {
-  const [currentStep, setCurrentStep] = useState(0); // Contoh step aktif di "Test"
+const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
+  const [currentStep, setCurrentStep] = useState(step); // Contoh step aktif di "Test"
   const [progress, setProgress] = useState(0);
   const startRef = useRef<HTMLDivElement | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);

@@ -30,7 +30,7 @@ function Page() {
 
   return (
     <TableUI
-      title="Offering Letter"
+      title="Offering Letter Document"
       name="offering-letter"
       header={{
         sideLeft: (data: any) => {
@@ -39,7 +39,7 @@ function Page() {
             <div className="flex flex-row flex-grow">
               <ButtonLink
                 className="bg-primary"
-                href={"/d/offering-letter/new"}
+                href={"/d/offering-letter/offering-letter-document/new"}
               >
                 <div className="flex items-center gap-x-0.5">
                   <HiPlus className="text-xl" />
@@ -108,7 +108,9 @@ function Page() {
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                 {local.can_edit ? (
-                  <ButtonLink href={`/d/offering-letter/${row.id}/edit`}>
+                  <ButtonLink
+                    href={`/d/offering-letter/offering-letter-document/${row.id}/edit`}
+                  >
                     <div className="flex items-center gap-x-2">
                       <HiOutlinePencilAlt className="text-lg" />
                     </div>
@@ -116,7 +118,7 @@ function Page() {
                 ) : (
                   <ButtonLink
                     className="bg-primary"
-                    href={`/d/offering-letter/${row.id}/view`}
+                    href={`/d/offering-letter/offering-letter-document/${row.id}/view`}
                   >
                     <div className="flex items-center gap-x-2">
                       <IoEye className="text-lg" />
