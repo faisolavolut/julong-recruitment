@@ -29,6 +29,7 @@ import {
 import { sortEducationLevels } from "@/app/lib/education-level";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id");
@@ -137,10 +138,19 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/test-schedule-headers/update",
-          method: "put",
+          path: "/api/test-schedule-headers",
+          method: "post",
           data: {
             ...fm.data,
+            start_date: normalDate(fm?.data?.start_date),
+            end_date: normalDate(fm?.data?.end_date),
+            schedule_date: normalDate(fm?.data?.schedule_date),
+            start_time: normalDate(fm?.data?.start_date)
+              ? `${normalDate(fm?.data?.start_date)} ${fm.data.start_time}:00`
+              : null,
+            end_time: normalDate(fm?.data?.end_date)
+              ? `${normalDate(fm?.data?.end_date)} ${fm.data.end_time}:00`
+              : null,
           },
         });
       }}
@@ -149,7 +159,7 @@ function Page() {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/administrative-selections/${id}`,
+          path: `/api/test-schedule-headers/${id}`,
           validate: "object",
         });
         return {

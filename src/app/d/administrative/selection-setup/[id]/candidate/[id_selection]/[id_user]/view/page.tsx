@@ -23,6 +23,7 @@ import { X } from "lucide-react";
 
 function Page() {
   const id = getParams("id_user");
+  const id_selection = getParams("id_selection");
   const id_parent = getParams("id");
   const labelPage = "Candidate";
   const urlPage = `/d/administrative/selection-setup/${id_parent}/view`;
@@ -79,7 +80,7 @@ function Page() {
                         "Are you sure you approve this applicant? This decision is final and cannot be reversed."
                       }
                       onClick={() => {
-                        fm.data.status = "APPROVED";
+                        fm.data.status = "ACCEPTED";
                         fm.submit();
                       }}
                     >
@@ -110,9 +111,28 @@ function Page() {
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {}}
+      onSubmit={async (fm: any) => {
+        await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/administrative-results",
+          method: "post",
+          data: {
+            administrative_results: [
+              {
+                id: id_selection,
+                user_profile_id: id,
+                status: fm?.data?.status,
+              },
+            ],
+            administrative_selection_id: id,
+            deleted_administrative_result_ids: [],
+          },
+        });
+      }}
       onLoad={async () => {
         // sekedar testing data, nanti dihapus jika sudah ada
+
         const res = await apix({
           port: "recruitment",
           value: "data.data",

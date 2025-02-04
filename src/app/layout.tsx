@@ -32,15 +32,15 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         const roles = await userRoleMe();
         globalThis.userRole = roles;
       } catch (ex) {}
+      globalThis.router = routerInstance;
+      const user = localStorage.getItem("user");
+      if (user) {
+        const w = window as any;
+        w.user = JSON.parse(user);
+      }
       local.ready = true;
       local.render();
     };
-    globalThis.router = routerInstance;
-    const user = localStorage.getItem("user");
-    if (user) {
-      const w = window as any;
-      w.user = JSON.parse(user);
-    }
     run();
   }, []);
 

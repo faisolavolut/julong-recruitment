@@ -1,10 +1,9 @@
 "use client";
-import { notFound, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useLocal } from "@/lib/utils/use-local";
 import ServerErrorPage from "../lib/components/comp/500";
 import DefaultHeaderNavigation from "./components/navbarHeader";
-import { siteurl } from "@/lib/utils/siteurl";
 import { Form } from "@/lib/components/form/Form";
 import { Field } from "@/lib/components/form/Field";
 import { ButtonBetter } from "@/lib/components/ui/button";
@@ -34,6 +33,7 @@ function HomePage() {
           path: "/api/no-auth/job-postings?page=1&page_size=8&status=IN PROGRESS",
           method: "get",
         });
+        console.log(res);
         local.jobs = res;
         local.render();
       } catch (ex) {}

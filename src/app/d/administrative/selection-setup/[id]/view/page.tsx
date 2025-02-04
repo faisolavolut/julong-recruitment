@@ -114,10 +114,11 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        //  + id
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/administrative-selections/" + id,
+          path: "/api/administrative-selections/update",
           method: "put",
           data: {
             ...fm.data,
@@ -278,21 +279,25 @@ function Page() {
                                 onClick={async () => {
                                   await actionToast({
                                     task: async () => {
-                                      const listData = data?.data;
+                                      const listData = data?.data || [];
+                                      const short = listData.filter(
+                                        (e: any) => e?.status === "PENDING"
+                                      );
                                       const result = {
-                                        administrative_results: listData.map(
+                                        administrative_results: short.map(
                                           (e: any) => {
                                             return {
-                                              ...e,
-                                              user: null,
-                                              user_profile: null,
+                                              id: e.id,
+                                              status: "SHORTLISTED",
+                                              user_profile_id:
+                                                e?.user_profile?.id,
                                             };
                                           }
                                         ),
                                         administrative_selection_id: id,
                                         deleted_administrative_result_ids: [],
                                       };
-                                      const res = await apix({
+                                      await apix({
                                         port: "recruitment",
                                         value: "data.data",
                                         path: "/api/administrative-results",
@@ -321,16 +326,28 @@ function Page() {
                                 onClick={async () => {
                                   await actionToast({
                                     task: async () => {
+                                      const listData = data?.data || [];
+                                      const short = listData.filter(
+                                        (e: any) => e?.status === "PENDING"
+                                      );
                                       const result = {
-                                        administrative_results: [],
+                                        administrative_results: short.map(
+                                          (e: any) => {
+                                            return {
+                                              id: e.id,
+                                              status: "PENDING",
+                                              user_profile_id:
+                                                e?.user_profile?.id,
+                                            };
+                                          }
+                                        ),
                                         administrative_selection_id: id,
-                                        deleted_administrative_result_ids:
-                                          data?.selection?.partial,
+                                        deleted_administrative_result_ids: [],
                                       };
-                                      const res = await apix({
+                                      await apix({
                                         port: "recruitment",
                                         value: "data.data",
-                                        path: "/api/job-postings",
+                                        path: "/api/administrative-results",
                                         method: "post",
                                         data: {
                                           ...result,
@@ -338,10 +355,10 @@ function Page() {
                                       });
                                     },
                                     after: () => {},
-                                    msg_load: "Delete selection ",
-                                    msg_error: "Failed to delete selection ",
+                                    msg_load: "Saving selection ",
+                                    msg_error: "Failed to save selection ",
                                     msg_succes:
-                                      "Your selection has been deleted successfully! ",
+                                      "Your selection has been saved successfully! ",
                                   });
                                 }}
                               >
@@ -455,10 +472,10 @@ function Page() {
                       sortable: false,
                       header: () => <span>Status Selection</span>,
                       renderCell: ({ row, render }: any) => {
-                        if (row.status === "APPROVED") {
+                        if (row.status === "ACCEPTED") {
                           return (
                             <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
-                              Approved
+                              Accepted
                             </div>
                           );
                         } else if (row.status === "REJECTED") {
@@ -476,7 +493,25 @@ function Page() {
                               onClick={async () => {
                                 await actionToast({
                                   task: async () => {
-                                    row.status = "APPROVED";
+                                    await apix({
+                                      port: "recruitment",
+                                      value: "data.data",
+                                      path: "/api/administrative-results",
+                                      method: "post",
+                                      data: {
+                                        administrative_results: [
+                                          {
+                                            id: row.id,
+                                            status: "ACCEPTED",
+                                            user_profile_id:
+                                              row?.user_profile?.id,
+                                          },
+                                        ],
+                                        administrative_selection_id: id,
+                                        deleted_administrative_result_ids: [],
+                                      },
+                                    });
+                                    row.status = "ACCEPTED";
                                     render();
                                   },
                                   after: () => {},
@@ -502,6 +537,24 @@ function Page() {
                               onClick={async () => {
                                 await actionToast({
                                   task: async () => {
+                                    await apix({
+                                      port: "recruitment",
+                                      value: "data.data",
+                                      path: "/api/administrative-results" + id,
+                                      method: "put",
+                                      data: {
+                                        administrative_results: [
+                                          {
+                                            id: row.id,
+                                            status: "REJECTED",
+                                            user_profile_id:
+                                              row?.user_profile?.id,
+                                          },
+                                        ],
+                                        administrative_selection_id: id,
+                                        deleted_administrative_result_ids: [],
+                                      },
+                                    });
                                     row.status = "REJECTED";
                                     render();
                                   },
@@ -537,7 +590,7 @@ function Page() {
                             <TooltipBetter content="View Profile Applicant">
                               <ButtonLink
                                 className="bg-primary"
-                                href={`/d/administrative/selection-setup/${id}/candidate/${row.id}/view`}
+                                href={`/d/administrative/selection-setup/${id}/candidate/${row?.id}/${row?.user_profile?.id}/view`}
                               >
                                 <div className="flex items-center gap-x-2">
                                   <IoEye className="text-lg" />

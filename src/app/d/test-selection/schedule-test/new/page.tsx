@@ -13,6 +13,7 @@ import { IoMdSave } from "react-icons/io";
 import { access } from "@/lib/utils/getAccess";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const labelPage = "Schedule Test";
@@ -79,6 +80,15 @@ function Page() {
           method: "post",
           data: {
             ...fm.data,
+            start_date: normalDate(fm?.data?.start_date),
+            end_date: normalDate(fm?.data?.end_date),
+            schedule_date: normalDate(fm?.data?.schedule_date),
+            start_time: normalDate(fm?.data?.start_date)
+              ? `${normalDate(fm?.data?.start_date)} ${fm.data.start_time}:00`
+              : null,
+            end_time: normalDate(fm?.data?.end_date)
+              ? `${normalDate(fm?.data?.end_date)} ${fm.data.end_time}:00`
+              : null,
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
@@ -152,8 +162,9 @@ function Page() {
                     onChange={() => {
                       fm.data.start_date = null;
                       fm.data.end_date = null;
-                      fm.data.template_activity_line_id = null;
+                      fm.data.project_recruitment_line_id = null;
                       fm.data.job_posting_id = null;
+                      fm.data.template_activity_line_id = null;
                       fm.render();
                       if (
                         typeof fm?.fields?.job_posting_id?.reload === "function"
@@ -179,7 +190,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_activity_line_id"}
+                    name={"project_recruitment_line_id"}
                     label={"Activity"}
                     type={"dropdown"}
                     disabled={
@@ -189,6 +200,8 @@ function Page() {
                       console.log(row);
                       fm.data.start_date = row?.data?.start_date;
                       fm.data.end_date = row?.data?.end_date;
+                      fm.data.template_activity_line_id =
+                        row.data?.template_activity_line_id;
                       fm.render();
                     }}
                     required={true}
@@ -267,11 +280,11 @@ function Page() {
                       if (!fm?.data?.project_recruitment_header_id) return [];
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data.job_postings",
-                        path: `/api/job-postings?status=IN PROGRESS`,
+                        value: "data.data",
+                        path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}?status=IN PROGRESS`,
                         validate: "dropdown",
                         keys: {
-                          label: "document_number",
+                          label: "job_name",
                         },
                       });
                       return res;
@@ -310,7 +323,16 @@ function Page() {
                           label: "document_number",
                         },
                       });
-                      return res;
+                      return [
+                        {
+                          value: "link",
+                          label: "link",
+                        },
+                        {
+                          value: "by apps",
+                          label: "by apps",
+                        },
+                      ];
                     }}
                   />
                 </div>

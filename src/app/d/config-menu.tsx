@@ -1,9 +1,11 @@
-import { GoProject } from "react-icons/go";
+import { GoCommentDiscussion, GoProject } from "react-icons/go";
 import { HiCubeTransparent, HiDocumentText } from "react-icons/hi";
-import { RiCalendarScheduleLine, RiTeamFill } from "react-icons/ri";
 import { GoVerified } from "react-icons/go";
-import { FaClipboardQuestion } from "react-icons/fa6";
-import { SiTeamspeak } from "react-icons/si";
+import { FaChartSimple, FaClipboardQuestion } from "react-icons/fa6";
+import { SlEnvolopeLetter } from "react-icons/sl";
+import { TbContract } from "react-icons/tb";
+import { TiDocumentText } from "react-icons/ti";
+import { MdGroups, MdOutlineViewDay } from "react-icons/md";
 
 export const configMenu = [
   {
@@ -145,7 +147,7 @@ export const configMenu = [
   },
   {
     title: "Interview",
-    icon: <SiTeamspeak />,
+    icon: <GoCommentDiscussion />,
     children: [
       {
         title: "Schedule Interview",
@@ -162,7 +164,7 @@ export const configMenu = [
   },
   {
     title: "FGD Test",
-    icon: <SiTeamspeak />,
+    icon: <MdGroups />,
     children: [
       {
         title: "FGD Schedule",
@@ -179,7 +181,7 @@ export const configMenu = [
   },
   {
     title: "Final Interview",
-    icon: <SiTeamspeak />,
+    icon: <GoCommentDiscussion />,
     children: [
       {
         title: "Calendar",
@@ -191,11 +193,6 @@ export const configMenu = [
         href: "/d/final-interview/result-interview",
         permision: ["read-final-interview-recruitment"],
       },
-      // {
-      //   title: "Schedule & Result",
-      //   href: "/d/final-interview/result",
-      //   permision: ["read-final-interview-result"],
-      // },
     ],
     permision: [
       "read-final-interview-calender",
@@ -205,31 +202,59 @@ export const configMenu = [
   },
   {
     title: "Offering Letter",
-    icon: <SiTeamspeak />,
-    href: "/d/offering-letter",
-    permision: ["read-offering-letter"],
+    icon: <SlEnvolopeLetter />,
+    children: [
+      {
+        title: "Sending Document",
+        href: "/d/offering-letter/offering-letter-document",
+        permision: ["read-offering-letter-document"],
+      },
+      {
+        title: "Candidate Agreement",
+        href: "/d/offering-letter/offering-letter-agreement",
+        permision: ["read-offering-letter-agreement"],
+      },
+    ],
+    permision: [
+      "read-offering-letter-document",
+      "read-offering-letter-agreement",
+    ],
   },
   {
     title: "Contract Document",
-    icon: <SiTeamspeak />,
-    href: "/d/contract-document",
-    permision: ["read-contract-document"],
+    icon: <TbContract />,
+    children: [
+      {
+        title: "Sending Document",
+        href: "/d/contract-document/contract-document",
+        permision: ["read-contract-document-document"],
+      },
+      {
+        title: "Candidate Agreement",
+        href: "/d/contract-document/document-agreement",
+        permision: ["read-contract-document-agreement"],
+      },
+    ],
+    permision: [
+      "read-contract-document-document",
+      "read-contract-document-agreement",
+    ],
   },
   {
     title: "Applicant Document",
-    icon: <SiTeamspeak />,
+    icon: <TiDocumentText />,
     href: "/d/applicant-document",
     permision: ["read-applicant-document"],
   },
   {
     title: "Dashboard",
-    icon: <SiTeamspeak />,
+    icon: <FaChartSimple />,
     href: "/d/dashboard",
     permision: ["read-dashboard"],
   },
   {
     title: "Applicant Result",
-    icon: <SiTeamspeak />,
+    icon: <MdOutlineViewDay />,
     href: "/d/applicant-result",
     permision: ["read-applicant-result"],
   },
