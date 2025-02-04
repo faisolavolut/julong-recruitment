@@ -14,6 +14,7 @@ import { access } from "@/lib/utils/getAccess";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
 import { normalDate } from "@/lib/utils/date";
+import { get_user } from "@/lib/utils/get_user";
 
 function Page() {
   const labelPage = "Schedule Test";
@@ -128,10 +129,17 @@ function Page() {
                     name={"schedule_date"}
                     label={"Schedule Date"}
                     type={"date"}
+                    required={true}
                   />
                 </div>
                 <div>
-                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
+                  <Field
+                    fm={fm}
+                    name={"name"}
+                    label={"Name"}
+                    type={"text"}
+                    required={true}
+                  />
                 </div>
                 <div>
                   <Field
@@ -151,6 +159,7 @@ function Page() {
                       });
                       return res;
                     }}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -165,6 +174,7 @@ function Page() {
                       fm.data.project_recruitment_line_id = null;
                       fm.data.job_posting_id = null;
                       fm.data.template_activity_line_id = null;
+                      fm.data.project_pic_id = null;
                       fm.render();
                       if (
                         typeof fm?.fields?.job_posting_id?.reload === "function"
@@ -176,8 +186,8 @@ function Page() {
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data.project_recruitment_headers",
-                        path: "/api/project-recruitment-headers?status=IN PROGRESS",
+                        value: "data.data",
+                        path: "/api/project-recruitment-headers/pic?status=IN PROGRESS",
                         validate: "dropdown",
                         keys: {
                           label: "document_number",
@@ -197,7 +207,11 @@ function Page() {
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     onChange={(row: any) => {
-                      console.log(row);
+                      const pic = row?.data.project_pics || [];
+                      const id_pic = pic.find(
+                        (e: any) => e?.employee_id === get_user("employee.id")
+                      );
+                      fm.data.project_pic_id = id_pic?.id;
                       fm.data.start_date = row?.data?.start_date;
                       fm.data.end_date = row?.data?.end_date;
                       fm.data.template_activity_line_id =
@@ -211,7 +225,7 @@ function Page() {
                         port: "recruitment",
                         value: "data.data",
                         path:
-                          "/api/project-recruitment-lines/header/" +
+                          "/api/project-recruitment-lines/header-pic/" +
                           fm?.data?.project_recruitment_header_id,
                         validate: "dropdown",
                         keys: {
@@ -249,6 +263,7 @@ function Page() {
                     name={"start_time"}
                     label={"Start Time"}
                     type={"time"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -257,6 +272,7 @@ function Page() {
                     name={"end_time"}
                     label={"End Time"}
                     type={"time"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -289,6 +305,7 @@ function Page() {
                       });
                       return res;
                     }}
+                    required={true}
                   />
                 </div>
                 <div className="col-span-2">
@@ -302,7 +319,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"link_test"}
+                    name={"link"}
                     label={"Link Test"}
                     type={"text"}
                   />

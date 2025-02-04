@@ -30,6 +30,8 @@ import { sortEducationLevels } from "@/app/lib/education-level";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
 import { normalDate } from "@/lib/utils/date";
+import { get_user } from "@/lib/utils/get_user";
+import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
 
 function Page() {
   const id = getParams("id");
@@ -76,12 +78,14 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_edit && fm.data?.status !== "COMPLETED" && (
+              {local.can_edit && fm.data?.status === "DRAFT" && (
                 <>
                   <Alert
                     type={"save"}
                     msg={"Are you sure you want to submit this record?"}
                     onClick={() => {
+                      fm.data.status = "IN PROGRESS";
+                      fm.render();
                       fm.submit();
                     }}
                   >
@@ -135,24 +139,46 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        console.log({
+          ...fm.data,
+          start_date: normalDate(fm?.data?.start_date),
+          end_date: normalDate(fm?.data?.end_date),
+          schedule_date: normalDate(fm?.data?.schedule_date),
+          start_time: normalDate(fm?.data?.start_date)
+            ? `${normalDate(fm?.data?.start_date)} ${convertToTimeOnly(
+                fm.data.start_time
+              )}:00`
+            : null,
+          end_time: normalDate(fm?.data?.end_date)
+            ? `${normalDate(fm?.data?.end_date)} ${convertToTimeOnly(
+                fm.data.end_time
+              )}:00`
+            : null,
+        });
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/test-schedule-headers",
-          method: "post",
+          path: "/api/test-schedule-headers/update",
+          method: "put",
           data: {
             ...fm.data,
             start_date: normalDate(fm?.data?.start_date),
             end_date: normalDate(fm?.data?.end_date),
             schedule_date: normalDate(fm?.data?.schedule_date),
             start_time: normalDate(fm?.data?.start_date)
-              ? `${normalDate(fm?.data?.start_date)} ${fm.data.start_time}:00`
+              ? `${normalDate(fm?.data?.start_date)} ${convertToTimeOnly(
+                  fm.data.start_time
+                )}:00`
               : null,
             end_time: normalDate(fm?.data?.end_date)
-              ? `${normalDate(fm?.data?.end_date)} ${fm.data.end_time}:00`
+              ? `${normalDate(fm?.data?.end_date)} ${convertToTimeOnly(
+                  fm.data.end_time
+                )}:00`
               : null,
           },
         });
+        if (fm.data?.status !== "DRAFT")
+          navigate(`/d/test-selection/schedule-test/${id}/view`);
       }}
       onLoad={async () => {
         // sekedar testing
@@ -162,18 +188,22 @@ function Page() {
           path: `/api/test-schedule-headers/${id}`,
           validate: "object",
         });
+        console.log({
+          ...data,
+          project_recruitment_header_id: data?.project_recruitment_header?.id,
+          template_activity_line_id: data?.template_activity_line_id,
+          job_posting_id: data?.job_posting?.id,
+          activity: "Administration Selection",
+          project_number: data?.job_posting?.document_number,
+        });
         return {
           ...data,
+          project_recruitment_header_id: data?.project_recruitment_header?.id,
+          project_recruitment_line_id: data?.project_recruitment_line?.id,
+          job_posting_id: data?.job_posting?.id,
           activity: "Administration Selection",
           project_number: data?.job_posting?.document_number,
         };
-        // const data: any = await apix({
-        //   port: "recruitment",
-        //   value: "data.data",
-        //   path: `/api/test-schedule-headers/${id}`,
-        //   validate: "object",
-        // });
-        // return data;
       }}
       showResize={false}
       header={(fm: any) => {
@@ -199,10 +229,17 @@ function Page() {
                     name={"schedule_date"}
                     label={"Schedule Date"}
                     type={"date"}
+                    required={true}
                   />
                 </div>
                 <div>
-                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
+                  <Field
+                    fm={fm}
+                    name={"name"}
+                    label={"Name"}
+                    type={"text"}
+                    required={true}
+                  />
                 </div>
                 <div>
                   <Field
@@ -222,6 +259,7 @@ function Page() {
                       });
                       return res;
                     }}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -235,6 +273,7 @@ function Page() {
                       fm.data.end_date = null;
                       fm.data.template_activity_line_id = null;
                       fm.data.job_posting_id = null;
+                      fm.data.project_pic_id = null;
                       fm.render();
                       if (
                         typeof fm?.fields?.job_posting_id?.reload === "function"
@@ -260,16 +299,22 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_activity_line_id"}
+                    name={"project_recruitment_line_id"}
                     label={"Activity"}
                     type={"dropdown"}
                     disabled={
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     onChange={(row: any) => {
-                      console.log(row);
+                      const pic = row?.data.project_pics || [];
+                      const id_pic = pic.find(
+                        (e: any) => e?.employee_id === get_user("employee.id")
+                      );
+                      fm.data.project_pic_id = id_pic?.id;
                       fm.data.start_date = row?.data?.start_date;
                       fm.data.end_date = row?.data?.end_date;
+                      fm.data.template_activity_line_id =
+                        row.data?.template_activity_line_id;
                       fm.render();
                     }}
                     required={true}
@@ -317,6 +362,7 @@ function Page() {
                     name={"start_time"}
                     label={"Start Time"}
                     type={"time"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -325,6 +371,7 @@ function Page() {
                     name={"end_time"}
                     label={"End Time"}
                     type={"time"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -357,6 +404,7 @@ function Page() {
                       });
                       return res;
                     }}
+                    required={true}
                   />
                 </div>
                 <div className="col-span-2">
@@ -370,7 +418,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"link_test"}
+                    name={"link"}
                     label={"Link Test"}
                     type={"text"}
                   />
@@ -381,6 +429,7 @@ function Page() {
                     name={"platform"}
                     label={"Platform"}
                     type={"dropdown"}
+                    required={true}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
@@ -665,8 +714,8 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.administrative_results",
-                      path: `/api/administrative-results/administrative-selection/${id}${params}`,
+                      value: "data.data.test_applicants",
+                      path: `/api/test-applicants/test-schedule-header/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -675,7 +724,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/administrative-results/administrative-selection/${id}?page=1&page_size=1`,
+                      path: `/api/test-applicants/test-schedule-header/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

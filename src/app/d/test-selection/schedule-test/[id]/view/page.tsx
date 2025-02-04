@@ -194,7 +194,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_activity_line_id"}
+                    name={"project_recruitment_line_id"}
                     label={"Activity"}
                     type={"dropdown"}
                     disabled={
@@ -304,7 +304,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"link_test"}
+                    name={"link"}
                     label={"Link Test"}
                     type={"text"}
                   />

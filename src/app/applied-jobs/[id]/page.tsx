@@ -317,12 +317,56 @@ function Page() {
                           </p>
                           <p className=" flex flex-row gap-x-2 items-center">
                             <IoLinkOutline />
-
+                            <a
+                              target="_blank"
+                              href={
+                                true
+                                  ? "https://julong-recruitment.avolut.com/form/dbc9830a-4e02-4e97-9b8e-9af5f52decbe" +
+                                    "/" +
+                                    id +
+                                    "/form"
+                                  : "https://docs.google.com/forms/d/e/1FAIpQLSeZ-gMNpMxbJd6Ilqeu-u05FoOqeW034BQKEZRkhQ_idFSQAw/viewform"
+                              }
+                            >
+                              Link Test
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                        <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                          Congratulations{" "}
+                          <LuPartyPopper className="text-pink-500" />
+                        </div>
+                        <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                          You've Passed to the Next Stage! Please stay tuned and
+                          check your email regularly for updates.
+                        </div>
+                        <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                          <p className="font-bold">Schedule Interview:</p>
+                          <p className=" flex flex-row gap-x-2 items-center">
+                            <RiCalendarScheduleLine />
                             {dayDate(new Date()) === dayDate(new Date())
                               ? dayDate(new Date())
                               : `${dayDate(new Date())} - ${dayDate(
                                   new Date()
                                 )}`}
+                          </p>
+                          <p className=" flex flex-row gap-x-2 items-center">
+                            <GoClock />
+                            {`${formatTime(new Date())} - ${formatTime(
+                              new Date()
+                            )}`}
+                          </p>
+                          <p className=" flex flex-row gap-x-2 items-center">
+                            <IoLinkOutline />
+                            <a
+                              className="text-primary cursor-pointer underline"
+                              target="_blank"
+                              href={"https://meet.google.com/jrb-mxxj-yda"}
+                            >
+                              link meet
+                            </a>
                           </p>
                         </div>
                       </div>
