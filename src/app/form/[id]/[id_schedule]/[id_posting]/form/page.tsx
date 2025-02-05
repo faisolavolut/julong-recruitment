@@ -1,31 +1,45 @@
 "use client";
 import { Field } from "@/lib/components/form/Field";
-import { formatMoney } from "@/lib/components/form/field/TypeInput";
+import {
+  convertToTimeOnly,
+  formatMoney,
+} from "@/lib/components/form/field/TypeInput";
 import { Form } from "@/lib/components/form/Form";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { Progress } from "@/lib/components/ui/Progress";
 import { ScrollArea } from "@/lib/components/ui/scroll-area";
 import { userToken } from "@/lib/helpers/user";
 import { apix } from "@/lib/utils/apix";
-import { dayDate, formatTime } from "@/lib/utils/date";
+import { dayDate, formatTime, normalDate } from "@/lib/utils/date";
 import { formatHoursTime } from "@/lib/utils/formatTime";
 import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
 import { siteurl } from "@/lib/utils/siteurl";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
-import { notFound } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaAngleLeft, FaAngleRight, FaPlay } from "react-icons/fa6";
 import { IoMdSave } from "react-icons/io";
 import { LuPartyPopper } from "react-icons/lu";
 import { BsArrowReturnRight } from "react-icons/bs";
+import { actionToast } from "@/lib/utils/action";
 
 function Page() {
   const id = getParams("id");
   const id_posting = getParams("id_posting");
-  const labelPage = "Template";
-  const urlPage = "/d/master-data/question";
+  const id_schedule = getParams("id_schedule");
+
+  const [startTime, setStartTime] = useState<Date | null>(null);
+  const [endTime, setEndTime] = useState<Date | null>(null);
+  const [duration, setDuration] = useState<number>(0);
+  const [startForm, setStartForm] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [examEndTime, setExamEndTime] = useState<number | null>(null);
+  const [isDone, setIsDone] = useState<boolean>(false);
+  const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [expired, setExpired] = useState<boolean>(false);
+  const [reminder, setReminder] = useState<boolean>(false);
+
   const local = useLocal({
     can_add: false,
     can_edit: false,
@@ -42,6 +56,9 @@ function Page() {
     jobposting: null as any,
     start: false,
     end: true,
+    detail: null as any,
+    id_applicant: null as any,
+    header: null as any,
   });
   const config = {
     document_checking: "document_checking",
@@ -62,47 +79,155 @@ function Page() {
         });
         local.id_profile = res.id;
       } catch (ex) {}
+      let startTime = null as any;
+      let listQuestion = [] as any[];
       try {
-        const data: any = await apix({
+        const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/template-questions/" + id,
-          validate: "object",
+          path: `/api/test-schedule-headers/my-schedule?job_posting_id=${id_posting}&project_recruitment_line_id=a9c8920d-a74a-4258-a262-a1bfe6d91b54
+`,
+          method: "get",
         });
-        const question = data?.questions?.length
-          ? data.questions.map((e: any) => {
-              return {
-                ...e,
-                answer_type_name: e?.answer_types?.name,
-                question_options: e?.question_options?.length
-                  ? e.question_options.map((e: any) => e.option_text)
-                  : [],
-              };
-            })
-          : [];
-        local.maxPage = question?.length;
-        local.data = { ...data, questions: question };
+        console.log({ res });
+        local.header = res;
+        local.id_applicant = local.header?.test_applicants?.id;
+        startTime = res?.test_applicants?.started_time;
+        listQuestion =
+          get(
+            res,
+            "project_recruitment_line.template_activity_line.template_question.questions"
+          ) || [];
+        listQuestion = listQuestion.map((e: any) => {
+          const typeAnswer = e?.answer_types?.name.toLowerCase();
+          const answer = e?.question_responses;
+          return {
+            ...e,
+            deleted_ids: answer.map((e: any) => e?.id),
+            answer:
+              typeAnswer === "checkbox"
+                ? answer.map((e: any) => e?.answer)
+                : typeAnswer === "attachment"
+                ? answer?.[0]?.answer_file
+                : answer?.[0]?.answer,
+            answer_type_name: e?.answer_types?.name,
+            question_options: e?.question_options?.length
+              ? e.question_options.map((e: any) => e.option_text)
+              : [],
+          };
+        });
+        if (res?.test_applicants?.assessment_status === "COMPLETED")
+          setIsDone(true);
       } catch (ex) {}
-      if (w?.user) {
+      local.render();
+      if (!isDone) {
+        try {
+          const schedule = await apix({
+            port: "recruitment",
+            value: "data.data",
+            path:
+              "/api/test-schedule-headers/" +
+              local.header?.test_applicants?.test_schedule_header_id,
+            validate: "object",
+          });
+          const result = {
+            ...schedule,
+            start_date: new Date(
+              `${normalDate(schedule?.start_date)} ${convertToTimeOnly(
+                schedule?.start_time
+              )}`
+            ),
+            end_date: new Date(
+              `${normalDate(schedule?.end_date)} ${convertToTimeOnly(
+                schedule?.end_time
+              )}`
+            ),
+          };
+          local.detail = result;
+          setStartTime(new Date(result.start_date));
+          setEndTime(new Date(result.end_date));
+          setExpired(
+            result.end_date
+              ? Date.now() > new Date(result.end_date).getTime()
+              : true
+          );
+        } catch (ex) {}
         try {
           const data: any = await apix({
             port: "recruitment",
             value: "data.data",
-            path: `/api/job-postings/${id_posting}`,
+            path: "/api/template-questions/" + id,
             validate: "object",
           });
-          local.jobposting = data;
-          local.access = data?.is_applied;
+
+          setDuration(data.duration);
+          if (startTime) {
+            const startFormTime = new Date(startTime).getTime();
+            setStartForm(startFormTime);
+            setExamEndTime(startFormTime + data?.duration * 60000);
+            setIsStarted(true);
+          }
+          console.log({ data });
+          const question = data?.questions?.length
+            ? data.questions.map((e: any) => {
+                return {
+                  ...e,
+                  answer_type_name: e?.answer_types?.name,
+                  question_options: e?.question_options?.length
+                    ? e.question_options.map((e: any) => e.option_text)
+                    : [],
+                  // answer:
+                };
+              })
+            : [];
+          local.maxPage = question?.length;
+          local.data = {
+            ...data,
+            questions: listQuestion,
+          };
         } catch (ex) {}
+        if (w?.user) {
+          try {
+            const data: any = await apix({
+              port: "recruitment",
+              value: "data.data",
+              path: `/api/job-postings/${id_posting}`,
+              validate: "object",
+            });
+            local.jobposting = data;
+            local.access = data?.is_applied;
+          } catch (ex) {}
+        }
       }
-      local.can_add = true;
       local.ready = true;
       local.render();
       local.render();
     };
     run();
   }, []);
-  if (local.ready && !local.can_add) return notFound();
+  useEffect(() => {
+    if (!isStarted || !examEndTime) return;
+    const timer = setInterval(() => {
+      const left = Math.max(0, examEndTime - Date.now());
+      setTimeLeft(left);
+      if (left <= 0) {
+        setExpired(true);
+      } else {
+        setExpired(false);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [examEndTime, isStarted]);
+  const formatTimeLeft = () => {
+    if (timeLeft <= 0) return "00:00";
+    const hours = Math.floor(timeLeft / 3600000);
+    const minutes = Math.floor((timeLeft % 3600000) / 60000);
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}`;
+  };
   if (!local.ready)
     return (
       <div className="flex flex-col flex-grow min-h-screen bg-white">
@@ -152,15 +277,48 @@ function Page() {
     );
   return (
     <div className="flex flex-col flex-grow min-h-screen bg-white">
-      <div className="flex flex-row p-4 bg-primary text-white font-bold">
+      <div className="flex flex-row p-4 bg-primary text-white font-bold relative">
         <img
           src={siteurl("/jobsuit-white.png")}
           className="mr-3 h-3 rounded"
           alt="Flowbite Logo"
         />
+        {isStarted && !isDone ? (
+          <div
+            className={cx(
+              "absolute  bg-white px-2 text-sm rounded-full",
+              css`
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+              `,
+              timeLeft <= 300000 ? "text-red-500" : "text-primary"
+            )}
+          >
+            {timeLeft <= 3000 ? "Time's up!" : formatTimeLeft()}
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
       <div className="w-full flex-grow flex flex-row">
-        {false ? (
+        {isDone ? (
+          <>
+            <div className="flex flex-col flex-grow ">
+              <div className="bg-gray-100 text-sm  flex items-center justify-center p-6 flex-grow">
+                <div className="max-w-2xl bg-white shadow-lg rounded-lg p-6">
+                  <h1 className="text-2xl font-bold text-center text-indigo-700">
+                    Thanks
+                  </h1>
+                  <p className="mt-4 text-gray-700 text-center">
+                    Your response has been recorded. Thank you for your
+                    submission!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : !expired && !isStarted ? (
           <>
             <div className="flex flex-col flex-grow ">
               <div className="bg-gray-100 text-sm  flex items-center justify-center p-6 flex-grow">
@@ -207,13 +365,19 @@ function Page() {
                     <p className="text-gray-700">
                       Date:{" "}
                       <span className="font-semibold">
-                        {dayDate(new Date())}
+                        {dayDate(get(local, "detail.start_date")) ===
+                        dayDate(get(local, "detail.end_date"))
+                          ? dayDate(get(local, "detail.start_date"))
+                          : `${dayDate(
+                              get(local, "detail.start_date")
+                            )} - ${dayDate(get(local, "detail.end_date"))}`}
                       </span>
                     </p>
                     <p className="text-gray-700">
                       Time:{" "}
                       <span className="font-semibold">
-                        {formatTime(new Date())} - {formatTime(new Date())}
+                        {formatTime(get(local, "detail.start_date"))} -{" "}
+                        {formatTime(get(local, "detail.end_date"))}
                       </span>
                     </p>
                     <p className="text-gray-700">
@@ -225,8 +389,34 @@ function Page() {
                   </div>
                   <div className="flex flex-row items-center justify-center py-2">
                     <ButtonBetter
+                      onClick={async () => {
+                        await actionToast({
+                          task: async () => {
+                            await apix({
+                              port: "recruitment",
+                              path: `/api/test-applicants/update-status`,
+                              method: "put",
+                              data: {
+                                id: local.id_applicant,
+                                status: "IN_PROGRESS",
+                              },
+                            });
+                          },
+                          after: () => {
+                            setIsStarted(true);
+                          },
+                          msg_load: "Start ",
+                          msg_error: "Start failed ",
+                          msg_succes: "Start success ",
+                        });
+                      }}
                       className="text-sm flex flex-row gap-x-1"
-                      disabled={true}
+                      disabled={
+                        !startTime ||
+                        !endTime ||
+                        Date.now() < startTime.getTime() ||
+                        Date.now() > endTime.getTime()
+                      }
                     >
                       <FaPlay />
                       Start
@@ -236,7 +426,7 @@ function Page() {
               </div>
             </div>
           </>
-        ) : false ? (
+        ) : expired ? (
           <>
             <div className="flex flex-col flex-grow ">
               <div className="bg-gray-100 text-sm  flex items-center justify-center p-6 flex-grow">
@@ -344,53 +534,94 @@ function Page() {
                     <div className="w-full flex flex-col py-2 ">
                       <Form
                         onSubmit={async (fm: any) => {
-                          const typeField =
-                            fm?.data?.answer_type_name.toLowerCase();
-                          let data: any = {
-                            question_id: fm.data.id,
-                          };
-                          const question = fm?.data || [];
-                          const formData = new FormData();
-                          formData.append("question_id", fm.data.id as any);
-                          formData.append(
-                            "answers.job_posting_id",
-                            id_posting as any
-                          );
-                          formData.append(
-                            "answers.user_profile_id",
-                            local.id_profile
-                          );
-                          if (
-                            Array.isArray(question?.answer) &&
-                            question?.answer?.length
-                          ) {
-                            question?.answer.map((e: any) => {
-                              formData.append("answers.answer", e);
+                          console.log(fm.data.update);
+                          if (fm.data?.update) {
+                            const typeField =
+                              fm?.data?.answer_type_name.toLowerCase();
+                            const question = fm?.data || [];
+                            const formData = new FormData();
+                            formData.append("question_id", fm.data.id as any);
+                            if (fm?.data?.deleted_ids?.length) {
+                              fm?.data?.deleted_ids.map((e: any) => {
+                                formData.append("deleted_answer_ids[]", e);
+                              });
+                            }
+                            if (
+                              Array.isArray(question?.answer) &&
+                              question?.answer?.length
+                            ) {
+                              question?.answer.map((e: any) => {
+                                formData.append(
+                                  "answers.job_posting_id",
+                                  id_posting as any
+                                );
+                                formData.append(
+                                  "answers.user_profile_id",
+                                  local.id_profile
+                                );
+                                formData.append("answers.answer", e);
+                              });
+                            } else if (typeField === "attachment") {
+                              formData.append(
+                                "answers.job_posting_id",
+                                id_posting as any
+                              );
+                              formData.append(
+                                "answers.user_profile_id",
+                                local.id_profile
+                              );
+                              formData.append(
+                                "answers[][answer_file]",
+                                question?.answer
+                              );
+                            } else {
+                              formData.append(
+                                "answers.job_posting_id",
+                                id_posting as any
+                              );
+                              formData.append(
+                                "answers.user_profile_id",
+                                local.id_profile
+                              );
+                              formData.append(
+                                "answers.answer",
+                                question?.answer
+                              );
+                            }
+                            await apix({
+                              port: "recruitment",
+                              value: "data.data",
+                              method: "post",
+                              path: `/api/question-responses`,
+                              validate: "object",
+                              data: formData,
+                              header: "form",
                             });
-                          } else if (typeField === "attachment") {
-                            formData.append(
-                              "answers[][answer_file]",
-                              question?.answer
-                            );
                           } else {
-                            formData.append("answers.answer", question?.answer);
                           }
-                          await apix({
-                            port: "recruitment",
-                            value: "data.data",
-                            method: "post",
-                            path: `/api/question-responses`,
-                            validate: "object",
-                            data: formData,
-                            header: "form",
-                          });
-                          if (typeof fm?.data?.tab === "number") {
-                            local.tab = fm.data.tab;
-                            local.render();
+                          if (fm.data?.status === "COMPLETED") {
+                            await apix({
+                              port: "recruitment",
+                              path: `/api/test-applicants/update-status`,
+                              method: "put",
+                              data: {
+                                id: local.id_applicant,
+                                status: "COMPLETED",
+                              },
+                            });
+                            setIsDone(true);
+                          } else {
+                            if (typeof fm?.data?.tab === "number") {
+                              local.tab = fm.data.tab;
+                              local.render();
+                            }
+                            fm.reload();
                           }
-                          fm.reload();
                         }}
                         onLoad={async () => {
+                          console.log(
+                            get(local, `data.questions[${local.tab}]`)
+                          );
                           return get(local, `data.questions[${local.tab}]`);
                         }}
                         showResize={false}
@@ -431,6 +662,10 @@ function Page() {
                                                 label={"Option"}
                                                 type={"upload"}
                                                 placeholder="Your Answer"
+                                                onChange={() => {
+                                                  fm.data.update = true;
+                                                  fm.render();
+                                                }}
                                               />
                                             ) : (
                                               <Field
@@ -446,6 +681,11 @@ function Page() {
                                                     ? "textarea"
                                                     : "text"
                                                 }
+                                                onChange={() => {
+                                                  fm.data.update = true;
+                                                  fm.render();
+                                                  console.log(fm.data.update);
+                                                }}
                                                 placeholder="Your Answer"
                                               />
                                             )}
@@ -477,6 +717,10 @@ function Page() {
                                                   : "dropdown"
                                               }
                                               placeholder="Choose"
+                                              onChange={() => {
+                                                fm.data.update = true;
+                                                fm.render();
+                                              }}
                                               onLoad={() => {
                                                 const data =
                                                   fm?.data?.question_options ||
@@ -504,11 +748,19 @@ function Page() {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             e.preventDefault();
-                                            fm.data.tab = local.tab - 1;
-                                            fm.render();
-                                            fm.submit();
-                                            local.done = false;
-                                            local.render();
+                                            if (!fm.data.update) {
+                                              local.tab = local.tab - 1;
+                                              local.render();
+                                              fm.reload();
+                                              local.done = false;
+                                              local.render();
+                                            } else {
+                                              fm.data.tab = local.tab - 1;
+                                              fm.render();
+                                              fm.submit();
+                                              local.done = false;
+                                              local.render();
+                                            }
                                           }}
                                         >
                                           <FaAngleLeft /> Prev
@@ -527,11 +779,19 @@ function Page() {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             e.preventDefault();
-                                            fm.data.tab = local.tab + 1;
-                                            fm.render();
-                                            fm.submit();
-                                            local.done = false;
-                                            local.render();
+                                            if (!fm.data.update) {
+                                              local.tab = local.tab + 1;
+                                              local.render();
+                                              fm.reload();
+                                              local.done = false;
+                                              local.render();
+                                            } else {
+                                              fm.data.tab = local.tab + 1;
+                                              fm.render();
+                                              fm.submit();
+                                              local.done = false;
+                                              local.render();
+                                            }
                                           }}
                                         >
                                           Next <FaAngleRight />
@@ -547,6 +807,7 @@ function Page() {
                                           onClick={(e) => {
                                             e.stopPropagation();
                                             e.preventDefault();
+                                            fm.data.status = "COMPLETED";
                                             fm.render();
                                             fm.submit();
                                             local.done = false;

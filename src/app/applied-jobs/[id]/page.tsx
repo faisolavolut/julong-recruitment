@@ -94,7 +94,6 @@ function Page() {
       const stepNow = steps.find((e: any) => e?.id === now);
       const stepName = stepNow?.name;
       if (stepName === "TEST") {
-        console.log({ stepNow });
         const test = await apix({
           port: "recruitment",
           value: "data.data",
@@ -106,7 +105,7 @@ function Page() {
         const regex = /form\/[a-f0-9-]+/;
         const isMatch = regex.test(url);
         if (isMatch) {
-          url = `${url}/${id}/form`;
+          url = `${url}/${stepNow?.id_line}/${id}/form`;
         }
         let detail = {
           ...test,
