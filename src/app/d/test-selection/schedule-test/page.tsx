@@ -126,7 +126,7 @@ function Page() {
           renderCell: ({ row }: any) => {
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                {local.can_edit ? (
+                {row?.status === "DRAFT" && local.can_edit ? (
                   <ButtonLink
                     href={`/d/test-selection/schedule-test/${row.id}/edit`}
                   >
@@ -150,24 +150,14 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        // sekedar testing
         const params = await events("onload-param", param);
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.administrative_selections",
-          path: `/api/administrative-selections${params}`,
+          value: "data.data.test_schedule_headers",
+          path: `/api/test-schedule-headers${params}`,
           validate: "array",
         });
         return result;
-        //
-        // const params = await events("onload-param", param);
-        // const result: any = await apix({
-        //   port: "recruitment",
-        //   value: "data.data.test_schedule_headers",
-        //   path: `/api/test-schedule-headers${params}`,
-        //   validate: "array",
-        // });
-        // return result;
       }}
       onCount={async () => {
         const result: any = await apix({

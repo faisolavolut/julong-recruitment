@@ -5,10 +5,10 @@ import { Form } from "@/lib/components/form/Form";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { Progress } from "@/lib/components/ui/Progress";
 import { ScrollArea } from "@/lib/components/ui/scroll-area";
-import { Skeleton } from "@/lib/components/ui/Skeleton";
 import { userToken } from "@/lib/helpers/user";
 import { apix } from "@/lib/utils/apix";
 import { dayDate, formatTime } from "@/lib/utils/date";
+import { formatHoursTime } from "@/lib/utils/formatTime";
 import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
 import { siteurl } from "@/lib/utils/siteurl";
@@ -16,9 +16,10 @@ import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import { FaAngleLeft, FaAngleRight, FaPlay } from "react-icons/fa6";
 import { IoMdSave } from "react-icons/io";
 import { LuPartyPopper } from "react-icons/lu";
+import { BsArrowReturnRight } from "react-icons/bs";
 
 function Page() {
   const id = getParams("id");
@@ -39,6 +40,8 @@ function Page() {
     done: false as boolean,
     id_profile: null as any,
     jobposting: null as any,
+    start: false,
+    end: true,
   });
   const config = {
     document_checking: "document_checking",
@@ -89,7 +92,7 @@ function Page() {
             validate: "object",
           });
           local.jobposting = data;
-          local.access = data.is_applied;
+          local.access = data?.is_applied;
         } catch (ex) {}
       }
       local.can_add = true;
@@ -102,23 +105,18 @@ function Page() {
   if (local.ready && !local.can_add) return notFound();
   if (!local.ready)
     return (
-      <div className="flex flex-row flex-grow h-screen bg-second justify-center">
-        <div className="w-full flex-grow flex flex-row  rounded-lg overflow-hidden justify-center">
-          <div className="w-full max-w-xl py-2 flex flex-row flex-grow  relative">
-            <div className={cx("flex flex-col flex-wrap w-full")}>
-              <div className="flex flex-col  px-4 py-2">
-                <div className="grid gap-2 grid-cols-1">
-                  <div className="grid grid-cols-1 bg-white rounded-lg border border-gray-300 overflow-hidden">
-                    <div className="py-1 w-full bg-primary"></div>
-                    <div className="grid  gap-2 grid-cols-1 p-4">
-                      <div className="space-y-2">
-                        <Skeleton className="h-8 w-[250px]" />
-                        <Skeleton className="h-8 w-[200px]" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+      <div className="flex flex-col flex-grow min-h-screen bg-white">
+        <div className="flex flex-row p-4 bg-primary text-white font-bold">
+          <img
+            src={siteurl("/jobsuit-white.png")}
+            className="mr-3 h-3 rounded"
+            alt="Flowbite Logo"
+          />
+        </div>
+        <div className="w-full flex-grow flex flex-row">
+          <div className="flex flex-col flex-grow ">
+            <div className="bg-gray-100 text-sm  flex items-center justify-center p-6 flex-grow">
+              <div className="spinner-better"></div>
             </div>
           </div>
         </div>
@@ -126,24 +124,26 @@ function Page() {
     );
   if (!local.access)
     return (
-      <div className="flex flex-row flex-grow h-screen bg-second justify-center">
-        <div className="w-full flex-grow flex flex-row  rounded-lg overflow-hidden justify-center">
-          <div className="w-full max-w-xl py-2 flex flex-row flex-grow  relative">
-            <div className={cx("flex flex-col flex-wrap w-full")}>
-              <div className="flex flex-col  px-4 py-2">
-                <div className="grid gap-2 grid-cols-1">
-                  <div className="grid grid-cols-1 bg-white rounded-lg border border-gray-300 overflow-hidden">
-                    <div className="py-1 w-full bg-primary"></div>
-                    <div className="grid  gap-2 grid-cols-1 p-4">
-                      <div className="font-bold text-2xl">
-                        You need permission
-                      </div>
-                      <div className="whitespace-pre-wrap	py-1">
-                        This form can only be viewed by applicants.
-                      </div>
-                    </div>
-                  </div>
-                </div>
+      <div className="flex flex-col flex-grow min-h-screen bg-white">
+        <div className="flex flex-row p-4 bg-primary text-white font-bold">
+          <img
+            src={siteurl("/jobsuit-white.png")}
+            className="mr-3 h-3 rounded"
+            alt="Flowbite Logo"
+          />
+        </div>
+        <div className="w-full flex-grow flex flex-row">
+          <div className="flex flex-col flex-grow ">
+            <div className="bg-gray-100 text-sm  flex items-center justify-center p-6 flex-grow">
+              <div className="max-w-2xl bg-white shadow-lg rounded-lg p-6">
+                <h1 className="text-2xl font-bold text-center text-indigo-700">
+                  Access Denied
+                </h1>
+                <p className="mt-4 text-gray-700">
+                  You do not have the necessary permissions to view this
+                  content. Contact the administrator or support to verify if you
+                  have access to this form.
+                </p>
               </div>
             </div>
           </div>
@@ -200,11 +200,6 @@ function Page() {
                     </li>
                   </ul>
 
-                  <p className="mt-4 text-gray-700">
-                    If you experience any technical issues, please contact our
-                    support team at{" "}
-                    <span className="font-semibold">[Support Contact]</span>.
-                  </p>
                   <div className="mt-6 bg-blue-100 p-4 rounded-md text-sm">
                     <h2 className="text-lg font-semibold text-indigo-700">
                       Test Schedule
@@ -224,19 +219,34 @@ function Page() {
                     <p className="text-gray-700">
                       Duration:{" "}
                       <span className="font-semibold">
-                        {local.data.duration} Minutes
+                        {formatHoursTime(local.data.duration)}
                       </span>
                     </p>
                   </div>
-                  <p className="mt-6 text-center font-semibold text-indigo-700">
-                    Good luck!
-                  </p>
-
-                  <p className="mt-2 text-gray-700 text-center">
-                    Best regards,
-                  </p>
-                  <p className="text-gray-700 text-center font-semibold">
-                    [Company Name] Recruitment Team
+                  <div className="flex flex-row items-center justify-center py-2">
+                    <ButtonBetter
+                      className="text-sm flex flex-row gap-x-1"
+                      disabled={true}
+                    >
+                      <FaPlay />
+                      Start
+                    </ButtonBetter>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : false ? (
+          <>
+            <div className="flex flex-col flex-grow ">
+              <div className="bg-gray-100 text-sm  flex items-center justify-center p-6 flex-grow">
+                <div className="max-w-2xl bg-white shadow-lg rounded-lg p-6">
+                  <h1 className="text-2xl font-bold text-center text-indigo-700">
+                    Form Closed
+                  </h1>
+                  <p className="mt-4 text-gray-700 text-center">
+                    This form is no longer available. If you need further
+                    information, please check with the admin or support team.
                   </p>
                 </div>
               </div>
@@ -260,11 +270,11 @@ function Page() {
                   {local?.data?.questions?.length ? (
                     <>
                       {local?.data?.questions.map((e: any, idx: any) => {
-                        // {get(e, "name")}
+                        const typeField = e?.answer_type_name.toLowerCase();
                         return (
                           <div
                             className={cx(
-                              "w-full flex flex-row p-4  cursor-pointer",
+                              "w-full flex flex-col p-4  cursor-pointer",
                               local.tab === idx
                                 ? "bg-gray-100"
                                 : "hover:bg-gray-100"
@@ -274,17 +284,33 @@ function Page() {
                               local.tab = idx;
                               local.done = false;
                               local.render();
+                              if (typeof local.fm?.submit === "function") {
+                                local.fm.submit();
+                              }
+
                               if (typeof local.fm?.reload === "function") {
                                 local.fm.reload();
                               }
                             }}
                           >
-                            <p>
+                            <p className="flex-grow">
                               <span className="font-bold pr-1">
                                 Q{idx + 1}:
                               </span>
                               {get(e, "name")}
                             </p>
+                            {get(e, "answer") ? (
+                              <div className="flex flex-row gap-x-1">
+                                <div className="text-gray-500 line-clamp-1 pl-1">
+                                  <BsArrowReturnRight />
+                                </div>
+                                <p className="flex-grow text-xs text-gray-500">
+                                  {previewAnswer(get(e, "answer"), typeField)}
+                                </p>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
                           </div>
                         );
                       })}
@@ -324,7 +350,6 @@ function Page() {
                             question_id: fm.data.id,
                           };
                           const question = fm?.data || [];
-                          console.log(question);
                           const formData = new FormData();
                           formData.append("question_id", fm.data.id as any);
                           formData.append(
@@ -350,8 +375,6 @@ function Page() {
                           } else {
                             formData.append("answers.answer", question?.answer);
                           }
-                          console.log(formData);
-                          console.log({ formData });
                           await apix({
                             port: "recruitment",
                             value: "data.data",
@@ -361,41 +384,14 @@ function Page() {
                             data: formData,
                             header: "form",
                           });
-                          local.tab = fm.data.tab;
-                          local.render();
+                          if (typeof fm?.data?.tab === "number") {
+                            local.tab = fm.data.tab;
+                            local.render();
+                          }
                           fm.reload();
                         }}
                         onLoad={async () => {
                           return get(local, `data.questions[${local.tab}]`);
-                          const data: any = await apix({
-                            port: "recruitment",
-                            value: "data.data",
-                            path: "/api/template-questions/" + id,
-                            validate: "object",
-                          });
-                          const question = data?.questions?.length
-                            ? data.questions.map((e: any) => {
-                                return {
-                                  ...e,
-                                  answer_type_name: e?.answer_types?.name,
-                                  question_options: e?.question_options?.length
-                                    ? e.question_options.map(
-                                        (e: any) => e.option_text
-                                      )
-                                    : [],
-                                };
-                              })
-                            : [];
-                          const result = {
-                            id,
-                            ...data,
-                            document_setup_name: data?.document_setup?.title,
-                            document_checking: [],
-                            template_question: question || [],
-                            page: 1,
-                            maxPage: question?.length,
-                          };
-                          return result;
                         }}
                         showResize={false}
                         header={(fm: any) => {
@@ -620,4 +616,14 @@ const answerQuestion = (data: any) => {
   const answer = data.questions.filter((e: any) => e.answer);
   return answer?.length;
 };
+const previewAnswer = (data: any, type?: string) => {
+  if (Array.isArray(data)) {
+    return data.join(", ");
+  }
+  if (type === "attachment") {
+    return "Already upload file";
+  }
+  return data;
+};
+
 export default Page;

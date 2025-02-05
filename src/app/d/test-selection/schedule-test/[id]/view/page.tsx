@@ -77,37 +77,31 @@ function Page() {
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/test-schedule-headers/update",
-          method: "put",
-          data: {
-            ...fm.data,
-          },
-        });
-      }}
+      onSubmit={async (fm: any) => {}}
       onLoad={async () => {
         // sekedar testing
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/administrative-selections/${id}`,
+          path: `/api/test-schedule-headers/${id}`,
           validate: "object",
+        });
+        console.log({
+          ...data,
+          project_recruitment_header_id: data?.project_recruitment_header?.id,
+          template_activity_line_id: data?.template_activity_line_id,
+          job_posting_id: data?.job_posting?.id,
+          activity: "Administration Selection",
+          project_number: data?.job_posting?.document_number,
         });
         return {
           ...data,
+          project_recruitment_header_id: data?.project_recruitment_header?.id,
+          project_recruitment_line_id: data?.project_recruitment_line?.id,
+          job_posting_id: data?.job_posting?.id,
           activity: "Administration Selection",
           project_number: data?.job_posting?.document_number,
         };
-        // const data: any = await apix({
-        //   port: "recruitment",
-        //   value: "data.data",
-        //   path: `/api/test-schedule-headers/${id}`,
-        //   validate: "object",
-        // });
-        // return data;
       }}
       showResize={false}
       header={(fm: any) => {
@@ -599,8 +593,8 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.administrative_results",
-                      path: `/api/administrative-results/administrative-selection/${id}${params}`,
+                      value: "data.data.test_applicants",
+                      path: `/api/test-applicants/test-schedule-header/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -609,7 +603,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/administrative-results/administrative-selection/${id}?page=1&page_size=1`,
+                      path: `/api/test-applicants/test-schedule-header/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

@@ -10,7 +10,10 @@ import FlowbiteFooterSection from "@/app/components/flowbite-footer";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
 import { siteurl } from "@/lib/utils/siteurl";
 import get from "lodash.get";
-import { formatMoney } from "@/lib/components/form/field/TypeInput";
+import {
+  convertToTimeOnly,
+  formatMoney,
+} from "@/lib/components/form/field/TypeInput";
 import { getNumber } from "@/lib/utils/getNumber";
 import { actionToast } from "@/lib/utils/action";
 import Stepper from "@/app/components/Stepper";
@@ -38,6 +41,7 @@ function Page() {
     steps: [] as any[],
     step: 0,
     stepName: null as any,
+    detail: null as any,
   });
 
   useEffect(() => {
@@ -55,6 +59,8 @@ function Page() {
         validate: "array",
         path: "/api/project-recruitment-lines/header/" + id_project,
       });
+      console.log({ res });
+
       let now = 0 as number;
       try {
         const profile: any = await apix({
@@ -70,15 +76,49 @@ function Page() {
         local.profile = null;
       }
       local.render();
-      const steps = res.map((e: any) => {
+      let steps = res.map((e: any) => {
         return {
           id: e?.order,
           label: labelDocumentType(e?.template_activity_line?.name),
           name: e?.template_activity_line?.name,
+          id_line: e?.id,
         };
       });
+      if (steps?.length) {
+        steps.push({
+          id: steps?.length + 1,
+          label: "Final Result",
+          name: "final_result",
+        });
+      }
       const stepNow = steps.find((e: any) => e?.id === now);
-      local.stepName = stepNow?.name;
+      const stepName = stepNow?.name;
+      if (stepName === "TEST") {
+        console.log({ stepNow });
+        const test = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/test-schedule-headers/my-schedule?job_posting_id=${id}&project_recruitment_line_id=${stepNow?.id_line}
+`,
+          validate: "object",
+        });
+        let url = test.link;
+        const regex = /form\/[a-f0-9-]+/;
+        const isMatch = regex.test(url);
+        if (isMatch) {
+          url = `${url}/${id}/form`;
+        }
+        let detail = {
+          ...test,
+          url: url,
+          start_time: convertToTimeOnly(test?.start_time),
+          end_time: convertToTimeOnly(test?.end_date),
+        };
+        console.log({ detail });
+        local.detail = detail;
+      }
+
+      local.stepName = stepName;
       local.steps = steps;
       local.data = data;
       local.applied = data?.is_applied;
@@ -124,8 +164,6 @@ function Page() {
                   </div>
                   <div className="flex-grow"></div>
                   <div className="flex flex-col px-10 gap-x-4 gap-y-2">
-                    <div className=""></div>
-
                     {local.applied ? (
                       <ButtonBetter className="bg-second text-black hover:bg-second">
                         <svg
@@ -273,287 +311,356 @@ function Page() {
                       </div>
                       {local.stepName === "ADMINISTRATIVE_SELECTION" ? (
                         <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
-                          <div className=" flex flex-row items-center justify-center text-md gap-x-2 px-4 mx-4 py-2">
+                          <div className=" flex flex-row items-center  justify-center text-md gap-x-2 px-4 mx-4 py-2">
                             Thank you for submitting your application. We are
                             pleased to inform you that your CV is currently
-                            under review by our HR team..
+                            under review by our HR team.
+                          </div>
+                        </div>
+                      ) : local.stepName === "TEST" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations{" "}
+                            <LuPartyPopper className="text-pink-500" />
+                          </div>
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            You've Passed to the Next Stage! Please stay tuned
+                            and check your email regularly for updates.
+                          </div>
+                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                            <p className="font-bold">Schedule Test:</p>
+                            <p className=" flex flex-row gap-x-2 items-center">
+                              <RiCalendarScheduleLine />
+                              {dayDate(get(local, "detail.start_date")) ===
+                              dayDate(get(local, "detail.end_date"))
+                                ? dayDate(get(local, "detail.start_date"))
+                                : `${dayDate(
+                                    get(local, "detail.start_date")
+                                  )} - ${dayDate(
+                                    get(local, "detail.end_date")
+                                  )}`}
+                            </p>
+                            <p className=" flex flex-row gap-x-2 items-center">
+                              <GoClock />
+                              {`${get(local, "detail.start_time")} - ${get(
+                                local,
+                                "detail.end_time"
+                              )}`}
+                            </p>
+                            <p className=" flex flex-row gap-x-2 items-center">
+                              <IoLinkOutline />
+                              <a
+                                target="_blank"
+                                className="text-primary underline"
+                                href={get(local, "detail.url")}
+                              >
+                                Link Test
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      ) : local.stepName === "INTERVIEW" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations{" "}
+                            <LuPartyPopper className="text-pink-500" />
+                          </div>
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            You've Passed to the Next Stage! Please stay tuned
+                            and check your email regularly for updates.
+                          </div>
+                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                            <p className="font-bold">Schedule Interview:</p>
+                            <p className=" flex flex-row gap-x-2 items-center">
+                              <RiCalendarScheduleLine />
+                              {dayDate(new Date()) === dayDate(new Date())
+                                ? dayDate(new Date())
+                                : `${dayDate(new Date())} - ${dayDate(
+                                    new Date()
+                                  )}`}
+                            </p>
+                            <p className=" flex flex-row gap-x-2 items-center">
+                              <GoClock />
+                              {`${formatTime(new Date())} - ${formatTime(
+                                new Date()
+                              )}`}
+                            </p>
+                            <p className=" flex flex-row gap-x-2 items-center">
+                              <IoLinkOutline />
+                              <a
+                                className="text-primary cursor-pointer underline"
+                                target="_blank"
+                                href={"https://meet.google.com/jrb-mxxj-yda"}
+                              >
+                                link meet
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      ) : local.stepName === "OFFERING_LETTER" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations Your Offer Letter is Ready!{" "}
+                            <LuPartyPopper className="text-pink-500" />
+                          </div>
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            We are thrilled to inform you that you have
+                            successfully completed the recruitment process, and
+                            your offer letter has been prepared.
+                          </div>
+                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                            <Form
+                              onSubmit={async (fm: any) => {}}
+                              onLoad={async () => {
+                                return {
+                                  employee_contract:
+                                    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                };
+                              }}
+                              showResize={false}
+                              header={(fm: any) => {
+                                return <></>;
+                              }}
+                              children={(fm: any) => {
+                                return (
+                                  <>
+                                    <div
+                                      className={cx(
+                                        "flex flex-row flex-wrap py-2"
+                                      )}
+                                    >
+                                      <div className="flex-grow grid gap-4 grid-cols-1">
+                                        <div>
+                                          <div className="flex">
+                                            <Field
+                                              fm={fm}
+                                              classField={""}
+                                              name={"employee_contract"}
+                                              label={
+                                                "Upload the signed offer letter in PDF format."
+                                              }
+                                              disabled={true}
+                                              type={"upload"}
+                                              required={true}
+                                            />
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <div className="flex">
+                                            <Field
+                                              fm={fm}
+                                              hidden_label={true}
+                                              classField={""}
+                                              name={"contract"}
+                                              label={
+                                                "Upload the signed offer letter in PDF format."
+                                              }
+                                              type={"upload"}
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="flex flex-row items-center">
+                                          <ButtonBetter className=" px-6">
+                                            Submit
+                                          </ButtonBetter>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ) : local.stepName === "CONTRACT_DOCUMENT" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations{" "}
+                            <LuPartyPopper className="text-pink-500" />
+                          </div>
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            Your Contract is Ready! We are pleased to inform you
+                            that you have successfully completed the necessary
+                            steps, and your job contract is now ready.
+                          </div>
+                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                            <Form
+                              onSubmit={async (fm: any) => {}}
+                              onLoad={async () => {
+                                return {
+                                  employee_contract:
+                                    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                };
+                              }}
+                              showResize={false}
+                              header={(fm: any) => {
+                                return <></>;
+                              }}
+                              children={(fm: any) => {
+                                return (
+                                  <>
+                                    <div
+                                      className={cx(
+                                        "flex flex-row flex-wrap py-2"
+                                      )}
+                                    >
+                                      <div className="flex-grow grid gap-4 grid-cols-1">
+                                        <div>
+                                          <div className="flex">
+                                            <Field
+                                              fm={fm}
+                                              classField={""}
+                                              name={"employee_contract"}
+                                              label={
+                                                "Upload the signed offer letter in PDF format."
+                                              }
+                                              disabled={true}
+                                              type={"upload"}
+                                              required={true}
+                                            />
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <div className="flex">
+                                            <Field
+                                              fm={fm}
+                                              hidden_label={true}
+                                              classField={""}
+                                              name={"contract"}
+                                              label={
+                                                "Upload the signed offer letter in PDF format."
+                                              }
+                                              type={"upload"}
+                                            />
+                                          </div>
+                                        </div>
+                                        <div className="flex flex-row items-center">
+                                          <ButtonBetter className=" px-6">
+                                            Submit
+                                          </ButtonBetter>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ) : local.stepName === "final_result" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations{" "}
+                            <LuPartyPopper className="text-pink-500" />
+                          </div>
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            Congratulations on becoming a part of{" "}
+                            {get(local, "data.for_organization_name")}! As part
+                            of the new employee verification process, we kindly
+                            request you to submit the following documents:
+                          </div>
+                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                            <Form
+                              onSubmit={async (fm: any) => {}}
+                              onLoad={async () => {
+                                return {
+                                  employee_contract:
+                                    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                };
+                              }}
+                              showResize={false}
+                              header={(fm: any) => {
+                                return <></>;
+                              }}
+                              children={(fm: any) => {
+                                return (
+                                  <>
+                                    <div
+                                      className={cx(
+                                        "flex flex-row flex-wrap py-2"
+                                      )}
+                                    >
+                                      <div className="flex-grow grid gap-4 grid-cols-1 md:grid-cols-2">
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"ktp"}
+                                            label={"KTP"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"kartu_keluarga"}
+                                            label={"Kartu Keluarga"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"ijazah"}
+                                            label={"Ijazah"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"kartu_bpjs"}
+                                            label={"Kartu BPJS"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"surat_keterangan_kerja"}
+                                            label={"Surat Keterangan Kerja"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"surat_keterangan_kesehatan"}
+                                            label={"Surat Keterangan Kesehatan"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"skck"}
+                                            label={"SKCK"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div>
+                                          <Field
+                                            fm={fm}
+                                            name={"npwp"}
+                                            label={"NPWP"}
+                                            type={"upload"}
+                                          />
+                                        </div>
+                                        <div className="flex flex-row items-center">
+                                          <ButtonBetter className=" px-6">
+                                            Submit
+                                          </ButtonBetter>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </>
+                                );
+                              }}
+                            />
                           </div>
                         </div>
                       ) : (
                         <></>
                       )}
-                      <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
-                        <div className=" flex flex-row items-center  justify-center text-md gap-x-2 px-4 mx-4 py-2">
-                          Thank you for submitting your application. We are
-                          pleased to inform you that your CV is currently under
-                          review by our HR team.
-                        </div>
-                      </div>
-
-                      <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
-                        <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
-                          Congratulations{" "}
-                          <LuPartyPopper className="text-pink-500" />
-                        </div>
-                        <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
-                          You've Passed to the Next Stage! Please stay tuned and
-                          check your email regularly for updates.
-                        </div>
-                        <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                          <p className="font-bold">Schedule Test:</p>
-                          <p className=" flex flex-row gap-x-2 items-center">
-                            <RiCalendarScheduleLine />
-                            {dayDate(new Date()) === dayDate(new Date())
-                              ? dayDate(new Date())
-                              : `${dayDate(new Date())} - ${dayDate(
-                                  new Date()
-                                )}`}
-                          </p>
-                          <p className=" flex flex-row gap-x-2 items-center">
-                            <GoClock />
-                            {`${formatTime(new Date())} - ${formatTime(
-                              new Date()
-                            )}`}
-                          </p>
-                          <p className=" flex flex-row gap-x-2 items-center">
-                            <IoLinkOutline />
-                            <a
-                              target="_blank"
-                              href={
-                                true
-                                  ? "https://julong-recruitment.avolut.com/form/dbc9830a-4e02-4e97-9b8e-9af5f52decbe" +
-                                    "/" +
-                                    id +
-                                    "/form"
-                                  : "https://docs.google.com/forms/d/e/1FAIpQLSeZ-gMNpMxbJd6Ilqeu-u05FoOqeW034BQKEZRkhQ_idFSQAw/viewform"
-                              }
-                            >
-                              Link Test
-                            </a>
-                          </p>
-                        </div>
-                      </div>
-                      <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
-                        <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
-                          Congratulations{" "}
-                          <LuPartyPopper className="text-pink-500" />
-                        </div>
-                        <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
-                          You've Passed to the Next Stage! Please stay tuned and
-                          check your email regularly for updates.
-                        </div>
-                        <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                          <p className="font-bold">Schedule Interview:</p>
-                          <p className=" flex flex-row gap-x-2 items-center">
-                            <RiCalendarScheduleLine />
-                            {dayDate(new Date()) === dayDate(new Date())
-                              ? dayDate(new Date())
-                              : `${dayDate(new Date())} - ${dayDate(
-                                  new Date()
-                                )}`}
-                          </p>
-                          <p className=" flex flex-row gap-x-2 items-center">
-                            <GoClock />
-                            {`${formatTime(new Date())} - ${formatTime(
-                              new Date()
-                            )}`}
-                          </p>
-                          <p className=" flex flex-row gap-x-2 items-center">
-                            <IoLinkOutline />
-                            <a
-                              className="text-primary cursor-pointer underline"
-                              target="_blank"
-                              href={"https://meet.google.com/jrb-mxxj-yda"}
-                            >
-                              link meet
-                            </a>
-                          </p>
-                        </div>
-                      </div>
-                      <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
-                        <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
-                          Congratulations{" "}
-                          <LuPartyPopper className="text-pink-500" />
-                        </div>
-                        <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
-                          Your Contract is Ready! We are pleased to inform you
-                          that you have successfully completed the necessary
-                          steps, and your job contract is now ready.
-                        </div>
-                        <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                          <Form
-                            onSubmit={async (fm: any) => {}}
-                            onLoad={async () => {
-                              return {
-                                employee_contract:
-                                  "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
-                              };
-                            }}
-                            showResize={false}
-                            header={(fm: any) => {
-                              return <></>;
-                            }}
-                            children={(fm: any) => {
-                              return (
-                                <>
-                                  <div
-                                    className={cx(
-                                      "flex flex-row flex-wrap py-2"
-                                    )}
-                                  >
-                                    <div className="flex-grow grid gap-4 grid-cols-1">
-                                      <div>
-                                        <div className="flex">
-                                          <Field
-                                            fm={fm}
-                                            classField={""}
-                                            name={"employee_contract"}
-                                            label={
-                                              "Upload the signed offer letter in PDF format."
-                                            }
-                                            disabled={true}
-                                            type={"upload"}
-                                            required={true}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div>
-                                        <div className="flex">
-                                          <Field
-                                            fm={fm}
-                                            hidden_label={true}
-                                            classField={""}
-                                            name={"contract"}
-                                            label={
-                                              "Upload the signed offer letter in PDF format."
-                                            }
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                      </div>
-                                      <div className="flex flex-row items-center">
-                                        <ButtonBetter className=" px-6">
-                                          Submit
-                                        </ButtonBetter>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </>
-                              );
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
-                        <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
-                          Congratulations{" "}
-                          <LuPartyPopper className="text-pink-500" />
-                        </div>
-                        <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
-                          Congratulations on becoming a part of{" "}
-                          {get(local, "data.for_organization_name")}! As part of
-                          the new employee verification process, we kindly
-                          request you to submit the following documents:
-                        </div>
-                        <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                          <Form
-                            onSubmit={async (fm: any) => {}}
-                            onLoad={async () => {
-                              return {
-                                employee_contract:
-                                  "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
-                              };
-                            }}
-                            showResize={false}
-                            header={(fm: any) => {
-                              return <></>;
-                            }}
-                            children={(fm: any) => {
-                              return (
-                                <>
-                                  <div
-                                    className={cx(
-                                      "flex flex-row flex-wrap py-2"
-                                    )}
-                                  >
-                                    <div className="flex-grow grid gap-4 grid-cols-1 md:grid-cols-2">
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"ktp"}
-                                          label={"KTP"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"kartu_keluarga"}
-                                          label={"Kartu Keluarga"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"ijazah"}
-                                          label={"Ijazah"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"kartu_bpjs"}
-                                          label={"Kartu BPJS"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"surat_keterangan_kerja"}
-                                          label={"Surat Keterangan Kerja"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"surat_keterangan_kesehatan"}
-                                          label={"Surat Keterangan Kesehatan"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"skck"}
-                                          label={"SKCK"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div>
-                                        <Field
-                                          fm={fm}
-                                          name={"npwp"}
-                                          label={"NPWP"}
-                                          type={"upload"}
-                                        />
-                                      </div>
-                                      <div className="flex flex-row items-center">
-                                        <ButtonBetter className=" px-6">
-                                          Submit
-                                        </ButtonBetter>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </>
-                              );
-                            }}
-                          />
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
