@@ -8,9 +8,10 @@ import { Field } from "@/lib/components/form/Field";
 import { FilePreview } from "@/lib/components/form/field/FilePreview";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { TableList } from "@/lib/components/tablelist/TableList";
-import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonBetterTooltip } from "@/lib/components/ui/button";
+import { ButtonLink } from "@/lib/components/ui/button-link";
+import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
@@ -18,10 +19,10 @@ import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
-import { X } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoCheckmarkOutline } from "react-icons/io5";
+import { IoEye } from "react-icons/io5";
+import { RiAiGenerate } from "react-icons/ri";
 
 function Page() {
   const id = getParams("id");
@@ -46,6 +47,7 @@ function Page() {
 
   return (
     <FormBetter
+      mode="view"
       onTitle={(fm: any) => {
         return (
           <div className="flex flex-row w-full">
@@ -65,40 +67,7 @@ function Page() {
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center">
-              {local.can_approve && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoCheckmarkOutline className="text-xl" />
-                    Approved
-                  </ButtonContainer>
-                </Alert>
-              )}
-              {local.can_approve && (
-                <Alert
-                  type={"delete"}
-                  msg={"Are you sure you want to delete this record?"}
-                  onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings`,
-                      method: "delete",
-                    });
-                  }}
-                >
-                  <ButtonContainer variant={"destructive"}>
-                    <X className="text-xl" />
-                    Rejected
-                  </ButtonContainer>
-                </Alert>
-              )}
-            </div>
+            <div className="flex flex-row space-x-2 items-center"></div>
           </div>
         );
       }}
@@ -114,33 +83,32 @@ function Page() {
         });
       }}
       onLoad={async () => {
+        // sekedar testing
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/test-schedule-headers/${id}`,
+          path: `/api/interviews/${id}`,
           validate: "object",
         });
-
-        const question: any = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path:
-            "/api/template-questions/" + "4e39968e-2e81-4533-8a74-eb73f6b90bba",
-          validate: "object",
-        });
-        return { ...data, question };
+        const assessors = data?.interview_assessors?.map(
+          (e: any) => e?.employee_name
+        );
         return {
           ...data,
           type_name: data?.test_type?.name,
           project_recruitment_header_id: data?.project_recruitment_header?.id,
           project_recruitment_line_id: data?.project_recruitment_line?.id,
           job_posting_id: data?.job_posting?.id,
+          project_name: data?.project_recruitment_header?.name,
           project_number: data?.job_posting?.document_number,
+          start_date: data?.project_recruitment_header?.start_date,
+          end_date: data?.project_recruitment_header?.end_date,
           activity: get(
             data,
             "project_recruitment_line.template_activity_line.name"
           ),
           job_name: get(data, "job_posting.job_name"),
+          interview_assessors: assessors.join(", "),
         };
       }}
       showResize={false}
@@ -182,27 +150,6 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"type_name"}
-                    label={"Select Test Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/test-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
-                      });
-                      return res;
-                    }}
-                    required={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
                     required={true}
                     name={"project_name"}
                     label={"Project Number"}
@@ -214,6 +161,15 @@ function Page() {
                     name={"activity"}
                     label={"Activity"}
                     type={"text"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"job_name"}
+                    label={"Job Name"}
+                    type={"time"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -273,7 +229,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"pic_name"}
+                    name={"interview_assessors"}
                     label={"Interviewer"}
                     type={"text"}
                     required={true}
@@ -440,8 +396,66 @@ function Page() {
                         );
                       },
                     },
+
+                    {
+                      name: "action",
+                      header: () => <span>Action</span>,
+                      sortable: false,
+                      renderCell: ({ row }: any) => {
+                        const already_result = false;
+                        return (
+                          <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                            {already_result ? (
+                              <ButtonLink
+                                href={`${urlPage}/${id}/${row?.id}/view`}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <IoEye className="text-lg" />
+                                </div>
+                              </ButtonLink>
+                            ) : (
+                              <ButtonBetterTooltip
+                                tooltip={"Create Result Interview"}
+                                className="bg-primary"
+                                onClick={async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      if (false) {
+                                        const res = await apix({
+                                          port: "recruitment",
+                                          value: "data.data",
+                                          path: "/api/job-postings",
+                                          method: "post",
+                                          type: "form",
+                                          data: {},
+                                        });
+                                        if (res?.id)
+                                          navigate(
+                                            `${urlPage}/${id}/${res?.id}/view`
+                                          );
+                                      } else {
+                                        navigate(`${urlPage}/${id}/1/view`);
+                                      }
+                                    },
+                                    after: () => {},
+                                    msg_load: "Create MPR Job Posting ",
+                                    msg_error: "Create MPR Job Posting failed ",
+                                    msg_succes: "MPR Job Posting success ",
+                                  });
+                                }}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <RiAiGenerate className="text-lg" />
+                                </div>
+                              </ButtonBetterTooltip>
+                            )}
+                          </div>
+                        );
+                      },
+                    },
                   ]}
                   onLoad={async (param: any) => {
+                    return [{}, {}];
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",

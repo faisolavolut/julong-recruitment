@@ -75,7 +75,6 @@ function Page() {
           path: `/api/interviews/${id}`,
           validate: "object",
         });
-        console.log({ data });
         const assessors = data?.interview_assessors?.map(
           (e: any) => e?.employee_name
         );

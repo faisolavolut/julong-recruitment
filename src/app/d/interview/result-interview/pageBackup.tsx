@@ -3,7 +3,7 @@ import { TableList } from "@/lib/components/tablelist/TableList";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
 import { events } from "@/lib/utils/event";
-import { access } from "@/lib/utils/getAccess";
+import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { dayDate } from "@/lib/utils/date";
@@ -17,33 +17,13 @@ function Page() {
   const local = useLocal({
     can_add: false,
     can_edit: false,
-    list: [
-      { id: "on_going", name: "On Going", count: 0 },
-      { id: "completed", name: "Completed", count: 0 },
-    ],
-    tab: "on_going",
   });
 
   useEffect(() => {
     const run = async () => {
-      local.can_add = access("create-fgd-schedule");
-      local.can_edit = access("edit-fgd-schedule");
-      const result: any = await apix({
-        port: "recruitment",
-        value: "data.data.total",
-        path: `/api/interviews?page=1&page_size=1&status=IN PROGRESS`,
-        validate: "object",
-      });
-      const completed: any = await apix({
-        port: "recruitment",
-        value: "data.data.total",
-        path: `/api/interviews?page=1&page_size=1&status=COMPLETED`,
-        validate: "object",
-      });
-      local.list = [
-        { id: "on_going", name: "On Going", count: getNumber(result) },
-        { id: "completed", name: "Completed", count: getNumber(completed) },
-      ];
+      const roles = await userRoleMe();
+      local.can_add = getAccess("create-final-result-interview", roles);
+      local.can_edit = getAccess("edit-final-result-interview", roles);
       local.render();
     };
     run();
@@ -51,39 +31,38 @@ function Page() {
 
   return (
     <TableUI
-      title="FGD Schedule"
-      tab={local.list}
-      onTab={(e: string) => {
-        local.tab = e;
-        local.render();
-      }}
-      name="schedule"
+      title="Result Interview"
+      name="result-interview"
       header={{
         sideLeft: (data: any) => {
-          if (!local.can_add) return <></>;
-          return (
-            <div className="flex flex-row flex-grow">
-              <ButtonLink className="bg-primary" href={"/d/fgd/schedule/new"}>
-                <div className="flex items-center gap-x-0.5">
-                  <HiPlus className="text-xl" />
-                  <span className="capitalize">Add New</span>
-                </div>
-              </ButtonLink>
-            </div>
-          );
+          return <></>;
         },
       }}
       column={[
         {
-          name: "schedule_name",
-          header: () => <span>Schedule Name</span>,
+          name: "applicant_name",
+          header: () => <span>Applicant Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "schedule_test",
-          header: () => <span>Schedule Test</span>,
+          name: "age",
+          header: () => <span>Age</span>,
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
+          name: "job_name",
+          header: () => <span>Job Name</span>,
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
+          name: "schedule_date",
+          header: () => <span>Schedule Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
@@ -92,28 +71,45 @@ function Page() {
           name: "start_time",
           header: () => <span>Start Time</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{dayDate(getValue(row, name))}</>;
+            return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "end_time",
           header: () => <span>End Time</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{dayDate(getValue(row, name))}</>;
+            return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "total_candidates",
-          header: () => <span>Total Candidates</span>,
+          name: "interviewer",
+          header: () => <span>Interviewer</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "status",
-          header: () => <span>Status</span>,
-          renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+          name: "result",
+          header: () => <span>Result</span>,
+          renderCell: ({ row, render }: any) => {
+            if (row.status === "APPROVED") {
+              return (
+                <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                  Approved
+                </div>
+              );
+            } else if (row.status === "REJECTED") {
+              return (
+                <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                  Rejected
+                </div>
+              );
+            }
+            return (
+              <div className="bg-gray-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                Pending
+              </div>
+            );
           },
         },
         {
@@ -123,22 +119,14 @@ function Page() {
           renderCell: ({ row }: any) => {
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                {local.can_edit ? (
-                  <ButtonLink href={`/d/fgd/schedule/${row.id}/edit`}>
-                    <div className="flex items-center gap-x-2">
-                      <HiOutlinePencilAlt className="text-lg" />
-                    </div>
-                  </ButtonLink>
-                ) : (
-                  <ButtonLink
-                    className="bg-primary"
-                    href={`/d/fgd/schedule/${row.id}/view`}
-                  >
-                    <div className="flex items-center gap-x-2">
-                      <IoEye className="text-lg" />
-                    </div>
-                  </ButtonLink>
-                )}
+                <ButtonLink
+                  className="bg-primary"
+                  href={`/d/interview/result-interview/${row.id}/view`}
+                >
+                  <div className="flex items-center gap-x-2">
+                    <IoEye className="text-lg" />
+                  </div>
+                </ButtonLink>
               </div>
             );
           },
@@ -163,18 +151,19 @@ function Page() {
         });
         return getNumber(result);
       }}
+      onInit={async (list: any) => {}}
     />
   );
   return (
     <div className="flex p-4 flex-col flex-grow bg-white rounded-lg border border-gray-300 shadow-md shadow-gray-300">
       <div className="flex flex-col py-4 pb-0 pt-0">
         <h2 className="text-xl font-semibold text-gray-900 ">
-          <span className="">FGD Schedule</span>
+          <span className="">Final Result Interview</span>
         </h2>
       </div>
       <div className="w-full flex flex-row flex-grow bg-white overflow-hidden ">
         <TableList
-          name="schedule"
+          name="result-interview"
           header={{
             sideLeft: (data: any) => {
               if (!local.can_add) return <></>;
@@ -182,7 +171,7 @@ function Page() {
                 <div className="flex flex-row flex-grow">
                   <ButtonLink
                     className="bg-primary"
-                    href={"/d/fgd/schedule/new"}
+                    href={"/d/final-interview/result-interview/new"}
                   >
                     <div className="flex items-center gap-x-0.5">
                       <HiPlus className="text-xl" />
@@ -195,15 +184,29 @@ function Page() {
           }}
           column={[
             {
-              name: "schedule_name",
-              header: () => <span>Schedule Name</span>,
+              name: "applicant_name",
+              header: () => <span>Applicant Name</span>,
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
-              name: "schedule_test",
-              header: () => <span>Schedule Test</span>,
+              name: "age",
+              header: () => <span>Age</span>,
+              renderCell: ({ row, name }: any) => {
+                return <>{getValue(row, name)}</>;
+              },
+            },
+            {
+              name: "job_name",
+              header: () => <span>Job Name</span>,
+              renderCell: ({ row, name }: any) => {
+                return <>{getValue(row, name)}</>;
+              },
+            },
+            {
+              name: "schedule_date",
+              header: () => <span>Schedule Date</span>,
               renderCell: ({ row, name }: any) => {
                 return <>{dayDate(getValue(row, name))}</>;
               },
@@ -212,26 +215,26 @@ function Page() {
               name: "start_time",
               header: () => <span>Start Time</span>,
               renderCell: ({ row, name }: any) => {
-                return <>{dayDate(getValue(row, name))}</>;
+                return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "end_time",
               header: () => <span>End Time</span>,
               renderCell: ({ row, name }: any) => {
-                return <>{dayDate(getValue(row, name))}</>;
+                return <>{getValue(row, name)}</>;
               },
             },
             {
-              name: "total_candidates",
-              header: () => <span>Total Candidates</span>,
+              name: "interviewer",
+              header: () => <span>Interviewer</span>,
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
-              name: "status",
-              header: () => <span>Status</span>,
+              name: "result",
+              header: () => <span>Result</span>,
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
@@ -244,7 +247,9 @@ function Page() {
                 return (
                   <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                     {local.can_edit ? (
-                      <ButtonLink href={`/d/fgd/schedule/${row.id}/edit`}>
+                      <ButtonLink
+                        href={`/d/final-interview/result-interview/${row.id}/edit`}
+                      >
                         <div className="flex items-center gap-x-2">
                           <HiOutlinePencilAlt className="text-lg" />
                         </div>
@@ -252,7 +257,7 @@ function Page() {
                     ) : (
                       <ButtonLink
                         className="bg-primary"
-                        href={`/d/fgd/schedule/${row.id}/view`}
+                        href={`/d/final-interview/result-interview/${row.id}/view`}
                       >
                         <div className="flex items-center gap-x-2">
                           <IoEye className="text-lg" />

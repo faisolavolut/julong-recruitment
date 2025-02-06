@@ -6,6 +6,7 @@ import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
+import { getParams } from "@/lib/utils/get-params";
 import { useLocal } from "@/lib/utils/use-local";
 import { X } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -13,6 +14,8 @@ import { useEffect } from "react";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
 function Page() {
+  const id = getParams("id_result");
+  const id_parent = getParams("id");
   const labelPage = "Result Interview";
   const urlPage = `/d/interview/result-interview`;
   const local = useLocal({
@@ -48,43 +51,47 @@ function Page() {
                     url: urlPage,
                   },
                   {
-                    title: "Edit",
+                    title: `List Applicant Interview`,
+                    url: `${urlPage}/${id_parent}/view`,
+                  },
+                  {
+                    title: "Result",
                   },
                 ]}
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
               {local.can_approve && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoCheckmarkOutline className="text-xl" />
-                    Approved
-                  </ButtonContainer>
-                </Alert>
-              )}
-              {local.can_approve && (
-                <Alert
-                  type={"delete"}
-                  msg={"Are you sure you want to delete this record?"}
-                  onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings`,
-                      method: "delete",
-                    });
-                  }}
-                >
-                  <ButtonContainer variant={"destructive"}>
-                    <X className="text-xl" />
-                    Rejected
-                  </ButtonContainer>
-                </Alert>
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to accepted this applicant?"}
+                    onClick={() => {
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoCheckmarkOutline className="text-xl" />
+                      Approved
+                    </ButtonContainer>
+                  </Alert>
+                  <Alert
+                    type={"delete"}
+                    msg={"Are you sure you want to reject this applicant?"}
+                    onClick={async () => {
+                      await apix({
+                        port: "recruitment",
+                        path: `/api/job-postings`,
+                        method: "delete",
+                      });
+                    }}
+                  >
+                    <ButtonContainer variant={"destructive"}>
+                      <X className="text-xl" />
+                      Rejected
+                    </ButtonContainer>
+                  </Alert>
+                </>
               )}
             </div>
           </div>

@@ -146,6 +146,9 @@ function Page() {
             ...data,
           },
         });
+        if (res) {
+          if (fm.data.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
+        }
       }}
       onLoad={async () => {
         const data: any = await apix({
@@ -154,6 +157,7 @@ function Page() {
           path: `/api/job-postings/${id}`,
           validate: "object",
         });
+        if (data.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
         return data;
       }}
       showResize={false}

@@ -13,6 +13,8 @@ import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
 import { actionToast } from "@/lib/utils/action";
+import { ButtonLink } from "@/lib/components/ui/button-link";
+import { GrNotes } from "react-icons/gr";
 
 function Page() {
   const id = getParams("id");
@@ -59,6 +61,15 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
+              <ButtonLink
+                className="bg-primary"
+                href={`/d/job-posting/${id}/edit`}
+              >
+                <div className="flex items-center gap-x-2">
+                  <GrNotes className="text-lg" />
+                  Preview Job Posting
+                </div>
+              </ButtonLink>
               {local.can_edit && (
                 <>
                   <Alert
