@@ -133,10 +133,11 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        const interview_assessors = fm.data.interview_assessors;
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/test-schedule-headers/update",
+          path: "/api/interviews/update",
           method: "put",
           data: {
             ...fm.data,
@@ -153,6 +154,11 @@ function Page() {
                   fm.data.end_time
                 )}:00`
               : null,
+            interview_assessors: Array.isArray(interview_assessors)
+              ? interview_assessors.map((e) => {
+                  return typeof e === "string" ? { employee_id: e } : e;
+                })
+              : [],
           },
         });
         if (fm.data?.status !== "DRAFT")
@@ -163,17 +169,22 @@ function Page() {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/test-schedule-headers/${id}`,
+          path: `/api/interviews/${id}`,
           validate: "object",
         });
-        // if (data?.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
+        if (data?.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
         return {
           ...data,
           project_recruitment_header_id: data?.project_recruitment_header?.id,
           project_recruitment_line_id: data?.project_recruitment_line?.id,
           job_posting_id: data?.job_posting?.id,
           activity: "Administration Selection",
+          start_date: data?.project_recruitment_header?.start_date,
+          end_date: data?.project_recruitment_header?.end_date,
           project_number: data?.job_posting?.document_number,
+          interview_assessors: data?.interview_assessors.map(
+            (e: any) => e?.employee_id
+          ),
         };
       }}
       showResize={false}
@@ -209,27 +220,6 @@ function Page() {
                     name={"name"}
                     label={"Name"}
                     type={"text"}
-                    required={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"test_type_id"}
-                    label={"Select Test Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/test-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
-                      });
-                      return res;
-                    }}
                     required={true}
                   />
                 </div>
@@ -308,6 +298,31 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    name={"job_posting_id"}
+                    label={"Job Name"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}?status=IN PROGRESS`,
+                        validate: "dropdown",
+                        keys: {
+                          label: "job_name",
+                        },
+                      });
+                      return res;
+                    }}
+                    required={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
                     name={"start_date"}
                     label={"Start Date"}
                     type={"date"}
@@ -344,7 +359,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"location"}
+                    name={"location_link"}
                     label={"Location (Url)"}
                     type={"text"}
                   />
@@ -352,7 +367,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"duration"}
+                    name={"range_duration"}
                     label={"Duration"}
                     type={"money"}
                     suffix={() => <div className="text-sm">Minute</div>}
@@ -375,9 +390,9 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"id_pic"}
+                    name={"interview_assessors"}
                     label={"Interviewer"}
-                    type={"dropdown"}
+                    type={"multi-dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "portal",

@@ -73,10 +73,11 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        const interview_assessors = fm.data.interview_assessors;
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/test-schedule-headers",
+          path: "/api/interviews",
           method: "post",
           data: {
             ...fm.data,
@@ -89,6 +90,11 @@ function Page() {
             end_time: normalDate(fm?.data?.end_date)
               ? `${normalDate(fm?.data?.end_date)} ${fm.data.end_time}:00`
               : null,
+            interview_assessors: Array.isArray(interview_assessors)
+              ? interview_assessors.map((e) => {
+                  return typeof e === "string" ? { employee_id: e } : e;
+                })
+              : [],
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
@@ -137,27 +143,6 @@ function Page() {
                     name={"name"}
                     label={"Name"}
                     type={"text"}
-                    required={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"test_type_id"}
-                    label={"Select Test Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/test-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
-                      });
-                      return res;
-                    }}
                     required={true}
                   />
                 </div>
@@ -241,6 +226,31 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    name={"job_posting_id"}
+                    label={"Job Name"}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}?status=IN PROGRESS`,
+                        validate: "dropdown",
+                        keys: {
+                          label: "job_name",
+                        },
+                      });
+                      return res;
+                    }}
+                    required={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
                     name={"start_date"}
                     label={"Start Date"}
                     type={"date"}
@@ -277,7 +287,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"location"}
+                    name={"location_link"}
                     label={"Location (Url)"}
                     type={"text"}
                   />
@@ -285,32 +295,19 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"duration"}
+                    name={"range_duration"}
                     label={"Duration"}
                     type={"money"}
                     suffix={() => <div className="text-sm">Minute</div>}
-                    onLoad={async () => {
-                      if (!fm?.data?.project_recruitment_header_id) return [];
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}?status=IN PROGRESS`,
-                        validate: "dropdown",
-                        keys: {
-                          label: "job_name",
-                        },
-                      });
-                      return res;
-                    }}
                     required={true}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"id_pic"}
+                    name={"interview_assessors"}
                     label={"Interviewer"}
-                    type={"dropdown"}
+                    type={"multi-dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "portal",

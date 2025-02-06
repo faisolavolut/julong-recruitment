@@ -72,21 +72,29 @@ function Page() {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/test-schedule-headers/${id}`,
+          path: `/api/interviews/${id}`,
           validate: "object",
         });
+        console.log({ data });
+        const assessors = data?.interview_assessors?.map(
+          (e: any) => e?.employee_name
+        );
         return {
           ...data,
           type_name: data?.test_type?.name,
           project_recruitment_header_id: data?.project_recruitment_header?.id,
           project_recruitment_line_id: data?.project_recruitment_line?.id,
           job_posting_id: data?.job_posting?.id,
+          project_name: data?.project_recruitment_header?.name,
           project_number: data?.job_posting?.document_number,
+          start_date: data?.project_recruitment_header?.start_date,
+          end_date: data?.project_recruitment_header?.end_date,
           activity: get(
             data,
             "project_recruitment_line.template_activity_line.name"
           ),
           job_name: get(data, "job_posting.job_name"),
+          interview_assessors: assessors.join(", "),
         };
       }}
       showResize={false}
@@ -128,27 +136,6 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"type_name"}
-                    label={"Select Test Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/test-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
-                      });
-                      return res;
-                    }}
-                    required={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
                     required={true}
                     name={"project_name"}
                     label={"Project Number"}
@@ -160,6 +147,15 @@ function Page() {
                     name={"activity"}
                     label={"Activity"}
                     type={"text"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"job_name"}
+                    label={"Job Name"}
+                    type={"time"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -219,7 +215,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"pic_name"}
+                    name={"interview_assessors"}
                     label={"Interviewer"}
                     type={"text"}
                     required={true}
