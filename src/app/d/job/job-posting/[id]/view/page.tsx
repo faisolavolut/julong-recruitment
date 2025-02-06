@@ -63,7 +63,7 @@ function Page() {
             <div className="flex flex-row space-x-2 items-center">
               <ButtonLink
                 className="bg-primary"
-                href={`/d/job-posting/${id}/edit`}
+                href={`/job-posting/${id}/edit`}
               >
                 <div className="flex items-center gap-x-2">
                   <GrNotes className="text-lg" />
