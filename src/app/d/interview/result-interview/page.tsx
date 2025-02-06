@@ -31,6 +31,7 @@ function Page() {
 
   return (
     <TableUI
+      title="Result Interview"
       name="result-interview"
       header={{
         sideLeft: (data: any) => {

@@ -77,7 +77,7 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
                   }`}
                 >
                   {mini ? (
-                    <div className="w-12">
+                    <div className="w-10">
                       <img
                         src={siteurl("/logo.png")}
                         alt="John Cena"

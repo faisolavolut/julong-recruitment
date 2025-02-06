@@ -32,13 +32,13 @@ function Page() {
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/test-schedule-headers?page=1&page_size=1&status=IN PROGRESS`,
+        path: `/api/interviews?page=1&page_size=1&status=IN PROGRESS`,
         validate: "object",
       });
       const completed: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/test-schedule-headers?page=1&page_size=1&status=COMPLETED`,
+        path: `/api/interviews?page=1&page_size=1&status=COMPLETED`,
         validate: "object",
       });
       local.list = [
@@ -153,8 +153,8 @@ function Page() {
         const params = await events("onload-param", param);
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.test_schedule_headers",
-          path: `/api/test-schedule-headers${params}`,
+          value: "data.data.interviews",
+          path: `/api/interviews${params}`,
           validate: "array",
         });
         return result;
@@ -163,7 +163,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/test-schedule-headers?page=1&page_size=1`,
+          path: `/api/interviews?page=1&page_size=1`,
           validate: "object",
         });
         return getNumber(result);

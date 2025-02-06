@@ -133,7 +133,7 @@ function Page() {
             </div>
           </div>
         </CardBetter>
-        <CardBetter className="col-span-2  p-6 flex flex-col h-96">
+        <CardBetter className="col-span-2  p-6 flex flex-col h-80">
           <div className="flex flex-col flex-grow gap-y-2">
             <p className="text-linear-primary font-bold text-sm">
               Duration Recruitment
@@ -179,7 +179,7 @@ function Page() {
           </div>
         </CardBetter>
 
-        <CardBetter className="  p-6 flex flex-col h-96">
+        <CardBetter className="  p-6 flex flex-col h-80">
           <div className="flex flex-col flex-grow gap-y-2">
             <p className="text-linear-primary font-bold text-sm">Job Level</p>
             <div className="flex flex-grow ">
@@ -232,7 +232,7 @@ function Page() {
           </div>
         </CardBetter>
 
-        <CardBetter className="col-span-2  p-6 flex flex-col h-96">
+        <CardBetter className="col-span-2  p-6 flex flex-col h-64">
           <div className="flex flex-col flex-grow gap-y-2">
             <p className="text-linear-primary font-bold text-sm">Department</p>
             <div className="flex flex-grow ">

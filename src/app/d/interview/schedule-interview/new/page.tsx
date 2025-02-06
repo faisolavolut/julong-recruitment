@@ -97,7 +97,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/test-schedule-headers/document-number",
+          path: "/api/interviews/document-number",
         });
         return {
           status: "DRAFT",
