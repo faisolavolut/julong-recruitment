@@ -1,4 +1,5 @@
 "use client";
+
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
@@ -9,6 +10,7 @@ import { useLocal } from "@/lib/utils/use-local";
 import { X } from "lucide-react";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
+import { IoMdSave } from "react-icons/io";
 import { IoCheckmarkOutline } from "react-icons/io5";
 
 function Page() {
@@ -51,40 +53,40 @@ function Page() {
                   },
                 ]}
               />
-            </div>
-            <div className="flex flex-row space-x-2 items-center">
-              {local.can_approve && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoCheckmarkOutline className="text-xl" />
-                    Approved
-                  </ButtonContainer>
-                </Alert>
-              )}
-              {local.can_approve && (
-                <Alert
-                  type={"delete"}
-                  msg={"Are you sure you want to delete this record?"}
-                  onClick={async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/job-postings`,
-                      method: "delete",
-                    });
-                  }}
-                >
-                  <ButtonContainer variant={"destructive"}>
-                    <X className="text-xl" />
-                    Rejected
-                  </ButtonContainer>
-                </Alert>
-              )}
+              <div className="flex flex-row space-x-2 items-center">
+                {local.can_approve && (
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoCheckmarkOutline className="text-xl" />
+                      Approved
+                    </ButtonContainer>
+                  </Alert>
+                )}
+                {local.can_approve && (
+                  <Alert
+                    type={"delete"}
+                    msg={"Are you sure you want to delete this record?"}
+                    onClick={async () => {
+                      await apix({
+                        port: "recruitment",
+                        path: `/api/job-postings`,
+                        method: "delete",
+                      });
+                    }}
+                  >
+                    <ButtonContainer variant={"destructive"}>
+                      <X className="text-xl" />
+                      Rejected
+                    </ButtonContainer>
+                  </Alert>
+                )}
+              </div>
             </div>
           </div>
         );

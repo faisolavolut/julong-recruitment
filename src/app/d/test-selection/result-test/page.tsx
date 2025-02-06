@@ -6,13 +6,14 @@ import { events } from "@/lib/utils/event";
 import { access } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
-import { dayDate } from "@/lib/utils/date";
+import { dayDate, formatTime } from "@/lib/utils/date";
 import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
 
 function Page() {
   const local = useLocal({
@@ -32,7 +33,7 @@ function Page() {
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/test-schedule-headers?page=1&page_size=1`,
+        path: `/api/test-schedule-headers?page=1&page_size=1&status=IN PROGRESS`,
         validate: "object",
       });
       const completed: any = await apix({
@@ -66,38 +67,38 @@ function Page() {
       }}
       column={[
         {
-          name: "schedule_name",
+          name: "name",
           header: () => <span>Schedule Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "schedule_test",
+          name: "start_date",
           header: () => <span>Schedule Test</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "start_time",
           header: () => <span>Start Time</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{dayDate(getValue(row, name))}</>;
+            return <>{formatTime(getValue(row, name))}</>;
           },
         },
         {
           name: "end_time",
           header: () => <span>End Time</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{dayDate(getValue(row, name))}</>;
+            return <>{formatTime(getValue(row, name))}</>;
           },
         },
         {
-          name: "total_candidates",
+          name: "total_candidate",
           header: () => <span>Total Candidates</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{formatMoney(getValue(row, name))}</>;
           },
         },
         {
@@ -138,6 +139,10 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
+        const prm = {
+          ...param,
+          status: "IN PROGRESS",
+        };
         const params = await events("onload-param", param);
         const result: any = await apix({
           port: "recruitment",
@@ -151,7 +156,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/test-schedule-headers?page=1&page_size=1`,
+          path: `/api/test-schedule-headers?page=1&page_size=1&status=IN PROGRESS`,
           validate: "object",
         });
         return getNumber(result);

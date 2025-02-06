@@ -16,11 +16,11 @@ import { X } from "lucide-react";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { ImportResult } from "../ImportResult";
-import get from "lodash.get";
 import { IoMdSave } from "react-icons/io";
 import { RiDownloadCloudLine } from "react-icons/ri";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { siteurl } from "@/lib/utils/siteurl";
+import get from "lodash.get";
 
 function Page() {
   const id = getParams("id");
@@ -70,15 +70,34 @@ function Page() {
       onSubmit={async (fm: any) => {}}
       mode="view"
       onLoad={async () => {
-        const data: any = {};
-        return { id: "LOL", select_test_type: get(data, "test_type.name") };
-        const data1: any = await apix({
+        // sekedar testing
+        const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/job-postings/${id}`,
+          path: `/api/test-schedule-headers/${id}`,
           validate: "object",
         });
-        return { ...data, template_name: data?.template_question?.name };
+        console.log({
+          ...data,
+          project_recruitment_header_id: data?.project_recruitment_header?.id,
+          template_activity_line_id: data?.template_activity_line_id,
+          job_posting_id: data?.job_posting?.id,
+          activity: "Administration Selection",
+          project_number: data?.job_posting?.document_number,
+        });
+        return {
+          ...data,
+          type_name: data?.test_type?.name,
+          project_recruitment_header_id: data?.project_recruitment_header?.id,
+          project_recruitment_line_id: data?.project_recruitment_line?.id,
+          job_posting_id: data?.job_posting?.id,
+          project_number: data?.job_posting?.document_number,
+          activity: get(
+            data,
+            "project_recruitment_line.template_activity_line.name"
+          ),
+          job_name: get(data, "job_posting.job_name"),
+        };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -112,7 +131,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"select_test_type"}
+                    name={"type_name"}
                     label={"Select Test Type"}
                     type={"text"}
                   />

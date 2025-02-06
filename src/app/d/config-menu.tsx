@@ -9,6 +9,12 @@ import { MdGroups, MdOutlineViewDay } from "react-icons/md";
 
 export const configMenu = [
   {
+    title: "Dashboard",
+    icon: <FaChartSimple />,
+    href: "/d/dashboard",
+    permision: ["read-dashboard"],
+  },
+  {
     title: "Master Data Document Setup",
     icon: <HiCubeTransparent />,
     children: [
@@ -245,12 +251,6 @@ export const configMenu = [
     icon: <TiDocumentText />,
     href: "/d/applicant-document",
     permision: ["read-applicant-document"],
-  },
-  {
-    title: "Dashboard",
-    icon: <FaChartSimple />,
-    href: "/d/dashboard",
-    permision: ["read-dashboard"],
   },
   {
     title: "Applicant Result",
