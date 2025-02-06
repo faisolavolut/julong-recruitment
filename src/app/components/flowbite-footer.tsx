@@ -12,8 +12,8 @@ const FlowbiteFooterSection: FC = function () {
               className="mb-2 flex items-center text-2xl font-semibold text-gray-900 dark:text-white sm:mb-0"
             >
               <img
-                src={siteurl("/jobsuit.png")}
-                className="mr-3 h-4 rounded"
+                src={siteurl("/logo-full.png")}
+                className="mr-3  h-6 "
                 alt="Flowbite Logo"
               />
             </a>

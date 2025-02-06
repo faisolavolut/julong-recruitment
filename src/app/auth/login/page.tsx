@@ -15,7 +15,7 @@ const Login: FC = function () {
             <div className="flex flex-row justify-center items-center">
               <img
                 className="mr-2 h-6 rounded"
-                src={siteurl("/jobsuit.png")}
+                src={siteurl("/logo-full.png")}
                 alt="logo"
               />
             </div>

@@ -72,22 +72,26 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
                 }`}
               >
                 <div
-                  className={`flex items-center ${mini && "justify-center"}`}
+                  className={`flex items-center ${
+                    mini ? "justify-center" : "p-2"
+                  }`}
                 >
-                  {true && (
-                    <div className="w-12 h-12">
+                  {mini ? (
+                    <div className="w-12">
                       <img
-                        src={siteurl("/google.jpg")}
+                        src={siteurl("/logo.png")}
                         alt="John Cena"
-                        className="rounded-full w-full h-full object-cover border-2 border-white"
+                        className=" w-full h-full object-cover "
                       />
                     </div>
-                  )}
-                  {!mini && (
-                    <Navbar.Brand href="/">
+                  ) : (
+                    <Navbar.Brand
+                      href="/"
+                      className="flex flex-row items-center justify-center"
+                    >
                       <img
                         alt=""
-                        src={siteurl("/hiree-2.png")}
+                        src={siteurl("/logo-full.png")}
                         className="w-32"
                       />
                       <span className="self-center whitespace-nowrap text-2xl font-semibold text-black"></span>

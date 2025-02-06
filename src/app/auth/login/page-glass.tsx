@@ -25,7 +25,7 @@ const Login: FC = function () {
               >
                 <img
                   className="mr-2 h-6 rounded"
-                  src="/jobsuit.png"
+                  src="/logo-full.png"
                   alt="logo"
                 />
               </a>

@@ -75,14 +75,6 @@ function Page() {
           path: `/api/test-schedule-headers/${id}`,
           validate: "object",
         });
-        console.log({
-          ...data,
-          project_recruitment_header_id: data?.project_recruitment_header?.id,
-          template_activity_line_id: data?.template_activity_line_id,
-          job_posting_id: data?.job_posting?.id,
-          activity: "Administration Selection",
-          project_number: data?.job_posting?.document_number,
-        });
         return {
           ...data,
           type_name: data?.test_type?.name,

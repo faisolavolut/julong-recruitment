@@ -34,8 +34,8 @@ const DefaultHeaderNavigation: FC = function () {
       <div className="grid grid-cols-5 max-w-screen-xl items-center w-full">
         <Link href={siteurl("/")} className="flex flex-row items-center px-4">
           <img
-            src={siteurl("/jobsuit.png")}
-            className="mr-3 h-3 rounded"
+            src={siteurl("/logo-full.png")}
+            className="mr-3 h-6"
             alt="Flowbite Logo"
           />
         </Link>

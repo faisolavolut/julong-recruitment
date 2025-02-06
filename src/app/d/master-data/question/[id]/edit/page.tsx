@@ -467,6 +467,7 @@ function Page() {
                                               ) || [],
                                           },
                                         });
+                                        fm.reload();
                                       },
                                       after: () => {},
                                       msg_load: "Saving ",
