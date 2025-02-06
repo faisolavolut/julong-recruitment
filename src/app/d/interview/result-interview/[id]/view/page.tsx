@@ -107,6 +107,14 @@ function Page() {
           path: `/api/job-postings`,
           validate: "object",
         });
+
+        const data: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/template-questions/" + id,
+          validate: "object",
+        });
+
         return data;
       }}
       showResize={false}

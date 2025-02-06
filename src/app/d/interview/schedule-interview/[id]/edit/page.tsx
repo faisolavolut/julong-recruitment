@@ -133,22 +133,6 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
-        console.log({
-          ...fm.data,
-          start_date: normalDate(fm?.data?.start_date),
-          end_date: normalDate(fm?.data?.end_date),
-          schedule_date: normalDate(fm?.data?.schedule_date),
-          start_time: normalDate(fm?.data?.start_date)
-            ? `${normalDate(fm?.data?.start_date)} ${convertToTimeOnly(
-                fm.data.start_time
-              )}:00`
-            : null,
-          end_time: normalDate(fm?.data?.end_date)
-            ? `${normalDate(fm?.data?.end_date)} ${convertToTimeOnly(
-                fm.data.end_time
-              )}:00`
-            : null,
-        });
         const res = await apix({
           port: "recruitment",
           value: "data.data",

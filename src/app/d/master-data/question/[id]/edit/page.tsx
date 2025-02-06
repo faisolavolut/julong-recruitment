@@ -426,24 +426,12 @@ function Page() {
                                           id: e.id,
                                         };
                                       }
-                                      console.log(
-                                        { res },
-                                        ![
-                                          "multiple choice",
-                                          "checkbox",
-                                          "dropdown",
-                                        ].includes(
-                                          typeof e?.answer_type_name ===
-                                            "string"
-                                            ? e?.answer_type_name.toLowerCase()
-                                            : null
-                                        )
-                                      );
                                       if (
                                         ![
                                           "multiple choice",
                                           "checkbox",
                                           "dropdown",
+                                          "single checkbox",
                                         ].includes(
                                           typeof e?.answer_type_name ===
                                             "string"
@@ -597,6 +585,7 @@ function Page() {
                                         "multiple choice",
                                         "checkbox",
                                         "dropdown",
+                                        "single checkbox",
                                       ].includes(
                                         typeof fm_row?.data
                                           ?.answer_type_name === "string"
