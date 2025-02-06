@@ -530,7 +530,6 @@ function Page() {
                                               fm_row.data.answer_type_name =
                                                 item?.label;
                                               fm.render();
-                                              console.log({ data: fm.data });
                                             }}
                                             onLoad={async () => {
                                               return (

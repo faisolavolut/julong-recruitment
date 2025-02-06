@@ -5,6 +5,7 @@ import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
+import { cloneFM } from "@/lib/utils/cloneFm";
 import { useLocal } from "@/lib/utils/use-local";
 import { X } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -115,8 +116,8 @@ function Page() {
             "/api/template-questions/" + "4e39968e-2e81-4533-8a74-eb73f6b90bba",
           validate: "object",
         });
-
-        return data;
+        console.log({ question });
+        return { ...data, question };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -171,6 +172,105 @@ function Page() {
                     type={"text"}
                     disabled={true}
                   />
+                </div>
+                <div className=" col-span-2 grid gap-4 md:grid-cols-1">
+                  {fm?.data?.question?.questions?.length ? (
+                    <>
+                      {fm?.data?.question?.questions.map(
+                        (e: any, idx: number) => {
+                          const typeField = e?.answer_types?.name
+                            ? e.answer_types?.name.toLowerCase()
+                            : null;
+                          let fm_row = cloneFM(fm, e);
+                          return (
+                            <div className="" key={`question_${idx}`}>
+                              {["text", "paragraph", "attachment"].includes(
+                                typeField
+                              ) && (
+                                <>
+                                  {typeField === "attachment" ? (
+                                    <Field
+                                      fm={fm_row}
+                                      name={"answer"}
+                                      label={e?.name}
+                                      type={"upload"}
+                                      placeholder="Your Answer"
+                                      onChange={() => {
+                                        fm_row.data.update = true;
+                                        fm.render();
+                                      }}
+                                    />
+                                  ) : (
+                                    <Field
+                                      fm={fm_row}
+                                      name={"answer"}
+                                      label={e?.name}
+                                      type={
+                                        typeField === "attachment"
+                                          ? "upload"
+                                          : typeField === "paragraph"
+                                          ? "textarea"
+                                          : "textarea"
+                                      }
+                                      onChange={() => {
+                                        fm_row.data.update = true;
+                                        fm.render();
+                                      }}
+                                      placeholder="Your Answer"
+                                    />
+                                  )}
+                                </>
+                              )}
+                              {[
+                                "multiple choice",
+                                "checkbox",
+                                "single checkbox",
+                                "dropdown",
+                              ].includes(typeField) && (
+                                <>
+                                  <Field
+                                    fm={fm_row}
+                                    name={"answer"}
+                                    label={e?.name}
+                                    type={
+                                      typeField === "multiple choice"
+                                        ? "radio"
+                                        : typeField === "checkbox"
+                                        ? "checkbox"
+                                        : typeField === "single checkbox"
+                                        ? "single-checkbox"
+                                        : "dropdown"
+                                    }
+                                    className={
+                                      typeField === "single checkbox"
+                                        ? "grid grid-cols-4"
+                                        : ""
+                                    }
+                                    placeholder="Choose"
+                                    onChange={() => {
+                                      fm_row.data.update = true;
+                                      fm.render();
+                                    }}
+                                    onLoad={() => {
+                                      const data = e?.question_options || [];
+                                      return data.map((e: any) => {
+                                        return {
+                                          label: e?.option_text,
+                                          value: e?.option_text,
+                                        };
+                                      });
+                                    }}
+                                  />
+                                </>
+                              )}
+                            </div>
+                          );
+                        }
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
               </div>
             </div>
