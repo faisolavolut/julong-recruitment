@@ -243,7 +243,7 @@ function Page() {
                                     }
                                     className={
                                       typeField === "single checkbox"
-                                        ? "grid grid-cols-4"
+                                        ? "grid md:grid-cols-4"
                                         : ""
                                     }
                                     placeholder="Choose"
