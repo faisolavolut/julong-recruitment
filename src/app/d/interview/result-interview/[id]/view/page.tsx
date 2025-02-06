@@ -108,10 +108,11 @@ function Page() {
           validate: "object",
         });
 
-        const data: any = await apix({
+        const question: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/template-questions/" + id,
+          path:
+            "/api/template-questions/" + "4e39968e-2e81-4533-8a74-eb73f6b90bba",
           validate: "object",
         });
 
