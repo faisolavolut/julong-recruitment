@@ -695,6 +695,7 @@ function Page() {
                                       {[
                                         "multiple choice",
                                         "checkbox",
+                                        "single checkbox",
                                         "dropdown",
                                       ].includes(
                                         typeof fm?.data?.answer_type_name ===
@@ -714,6 +715,9 @@ function Page() {
                                                   ? "radio"
                                                   : typeField === "checkbox"
                                                   ? "checkbox"
+                                                  : typeField ===
+                                                    "single checkbox"
+                                                  ? "single-checkbox"
                                                   : "dropdown"
                                               }
                                               placeholder="Choose"
