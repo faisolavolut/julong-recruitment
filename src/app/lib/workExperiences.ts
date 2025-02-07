@@ -22,7 +22,7 @@ export const detectUniqueExperience = (
     return null;
   }
   const uniqueNames = Array.from(
-    new Set(workExperiences.map((exp) => get(exp, keys, "")))
+    new Set(workExperiences.map((exp) => get(exp, keys)))
   ).filter(Boolean);
 
   if (uniqueNames.length === 0) return null;

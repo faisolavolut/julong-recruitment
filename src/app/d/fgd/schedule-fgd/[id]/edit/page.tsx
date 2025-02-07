@@ -501,7 +501,7 @@ function Page() {
                         return (
                           <>
                             {detectUniqueExperience(
-                              getValue(row, "user_profile.work_experience")
+                              getValue(row, "user_profile.work_experiences")
                             )}
                           </>
                         );
@@ -514,7 +514,7 @@ function Page() {
                         return (
                           <>
                             {detectUniqueExperience(
-                              getValue(row, "user_profile.work_experience"),
+                              getValue(row, "user_profile.work_experiences"),
                               "company_name",
                               "company experiences"
                             )}
@@ -523,7 +523,7 @@ function Page() {
                       },
                     },
                     {
-                      name: "user_profile.work_experience",
+                      name: "user_profile.work_experiences",
                       header: () => <span>Work Experience (Year)</span>,
                       renderCell: ({ row, name }: any) => {
                         return <>{getTotalExperience(getValue(row, name))}</>;

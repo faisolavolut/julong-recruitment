@@ -118,13 +118,13 @@ function Page() {
                 },
               },
               {
-                name: "user_profile.work_experiences[0].name",
+                name: "user_profile.work_experiencess[0].name",
                 header: () => <span>Job Experience</span>,
                 renderCell: ({ row, name }: any) => {
                   return (
                     <>
                       {detectUniqueExperience(
-                        getValue(row, "user_profile.work_experience")
+                        getValue(row, "user_profile.work_experiences")
                       )}
                     </>
                   );
@@ -181,13 +181,13 @@ function Page() {
                 },
               },
               {
-                name: "user_profile.work_experiences[0].name",
+                name: "user_profile.work_experiencess[0].name",
                 header: () => <span>Job Experience</span>,
                 renderCell: ({ row, name }: any) => {
                   return (
                     <>
                       {detectUniqueExperience(
-                        getValue(row, "user_profile.work_experience")
+                        getValue(row, "user_profile.work_experiences")
                       )}
                     </>
                   );
