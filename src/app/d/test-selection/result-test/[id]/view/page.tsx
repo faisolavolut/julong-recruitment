@@ -18,7 +18,6 @@ import { TableList } from "@/lib/components/tablelist/TableList";
 import { ImportResult } from "../ImportResult";
 import { IoMdSave } from "react-icons/io";
 import { RiDownloadCloudLine } from "react-icons/ri";
-import { ButtonLink } from "@/lib/components/ui/button-link";
 import { siteurl } from "@/lib/utils/siteurl";
 import get from "lodash.get";
 
@@ -286,16 +285,23 @@ function Page() {
                     sideRight: (data: any) => {
                       return (
                         <div className="flex flex-row flex-grow gap-x-2 ml-4">
-                          <ButtonLink
+                          <ButtonBetter
                             className={"bg-primary"}
-                            target="_blank"
-                            href={siteurl(
-                              "https://file-examples.com/wp-content/storage/2017/02/file_example_XLS_10.xls"
-                            )}
+                            onClick={async () => {
+                              window.open(siteurl("recruitment"), "_blank");
+                              await apix({
+                                port: "recruitment",
+                                method: "get",
+                                options: {
+                                  responseType: "blob",
+                                },
+                                path: `/api/test-schedule-headers/export-result-template?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
+                              });
+                            }}
                           >
                             <RiDownloadCloudLine className="text-xl" />
                             Export Template
-                          </ButtonLink>
+                          </ButtonBetter>
                           <ImportResult fm={fm} />
                         </div>
                       );
