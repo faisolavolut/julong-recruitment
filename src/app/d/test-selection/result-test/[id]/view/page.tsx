@@ -2,8 +2,7 @@
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
-import { Alert } from "@/lib/components/ui/alert";
+import { ButtonBetter } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
@@ -16,10 +15,15 @@ import { X } from "lucide-react";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { ImportResult } from "../ImportResult";
-import { IoMdSave } from "react-icons/io";
 import { RiDownloadCloudLine } from "react-icons/ri";
-import { siteurl } from "@/lib/utils/siteurl";
 import get from "lodash.get";
+import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
+import { actionToast } from "@/lib/utils/action";
+import {
+  detectUniqueExperience,
+  getTotalExperience,
+} from "@/app/lib/workExperiences";
+import { sortEducationLevels } from "@/app/lib/education-level";
 
 function Page() {
   const id = getParams("id");
@@ -248,34 +252,12 @@ function Page() {
               <div className="flex flex-row px-2 w-full items-center">
                 <div className="grid grid-cols-2 flex-grow border-b border-gray-300 text-sm font-bold py-1">
                   <div className="flex flex-grow items-center">Test Result</div>
-                  <div className="flex flex-grow  flex-row gap-x-2 justify-end">
-                    <Alert
-                      type={"save"}
-                      msg={`Are you sure you want to save result test?`}
-                      onClick={() => {}}
-                    >
-                      <ButtonContainer className={"bg-primary"}>
-                        <IoMdSave className="text-xl" />
-                        Save
-                      </ButtonContainer>
-                    </Alert>
-                    <Alert
-                      type={"save"}
-                      msg={`Are you sure you want to submit result test?`}
-                      onClick={() => {}}
-                    >
-                      <ButtonContainer className={"bg-primary"}>
-                        <IoMdSave className="text-xl" />
-                        Submit
-                      </ButtonContainer>
-                    </Alert>
-                  </div>
+                  <div className="flex flex-grow  flex-row gap-x-2 justify-end"></div>
                 </div>
               </div>
               <div className="flex flex-grow flex-col h-[350px]">
                 <TableList
                   name="job-posting"
-                  feature={["checkbox"]}
                   header={{
                     sideLeft: (data: any) => {
                       return (
@@ -285,80 +267,220 @@ function Page() {
                     sideRight: (data: any) => {
                       return (
                         <div className="flex flex-row flex-grow gap-x-2 ml-4">
-                          <ButtonBetter
-                            className={"bg-primary"}
-                            onClick={async () => {
-                              window.open(siteurl("recruitment"), "_blank");
+                          <ImportResult
+                            fm={fm}
+                            showTrigger={false}
+                            open={fm?.data?.openModal ? true : false}
+                            onChangeOpen={(e: boolean) => {
+                              console.log(e);
+                              fm.data.openModal = e;
+                              fm.render();
+                            }}
+                            msg="Import Result Test"
+                            onUpload={async (file: any) => {
                               await apix({
                                 port: "recruitment",
-                                method: "get",
-                                options: {
-                                  responseType: "blob",
+                                path: `/api/test-schedule-headers/read-result-template`,
+                                method: "post",
+                                value: "data",
+                                type: "form",
+                                data: {
+                                  file: file,
                                 },
-                                path: `/api/test-schedule-headers/export-result-template?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
                               });
                             }}
-                          >
-                            <RiDownloadCloudLine className="text-xl" />
-                            Export Template
-                          </ButtonBetter>
-                          <ImportResult fm={fm} />
+                          />
+                          <DropdownHamburgerBetter
+                            className=""
+                            classNameList="w-48"
+                            list={[
+                              {
+                                label: "Export Template",
+                                icon: (
+                                  <RiDownloadCloudLine className="text-xl" />
+                                ),
+                                onClick: async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        method: "get",
+                                        value: "data",
+                                        options: {
+                                          responseType: "blob",
+                                          headers: {
+                                            Accept:
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
+                                          },
+                                        },
+                                        path: `/api/test-schedule-headers/export-result-template?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
+                                      });
+                                      const url = window.URL.createObjectURL(
+                                        new Blob([res])
+                                      );
+                                      const link = document.createElement("a");
+                                      link.href = url;
+                                      link.setAttribute(
+                                        "download",
+                                        "template-import-test.xlsx"
+                                      );
+                                      document.body.appendChild(link);
+                                      link.click();
+                                    },
+                                    msg_load: "Download Import Test",
+                                    msg_error: "Download Import Test Failed",
+                                    msg_succes: "Download Import Test Success",
+                                  });
+                                },
+                              },
+                              {
+                                label: "Export Result",
+                                icon: (
+                                  <RiDownloadCloudLine className="text-xl" />
+                                ),
+                                onClick: async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        method: "get",
+                                        value: "data",
+                                        options: {
+                                          responseType: "blob",
+                                          headers: {
+                                            Accept:
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
+                                          },
+                                        },
+                                        path: `/api/test-schedule-headers/export-answer?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
+                                      });
+                                      console.log(res);
+                                      const url = window.URL.createObjectURL(
+                                        new Blob([res])
+                                      );
+                                      const link = document.createElement("a");
+                                      link.href = url;
+                                      link.setAttribute(
+                                        "download",
+                                        "template-import-test.xlsx"
+                                      );
+                                      document.body.appendChild(link);
+                                      link.click();
+                                    },
+                                    msg_load: "Download Result Test",
+                                    msg_error: "Download Result Test Failed",
+                                    msg_succes: "Download Result Test Success",
+                                  });
+                                },
+                              },
+                              // {
+                              //   label: "Import Result",
+                              //   icon: (
+                              //     <AiOutlineCloudUpload className="text-xl" />
+                              //   ),
+                              //   onClick: async () => {
+                              //     fm.data.openModal = true;
+                              //     fm.render();
+                              //   },
+                              // },
+                            ]}
+                          />
                         </div>
                       );
                     },
                   }}
                   column={[
                     {
-                      name: "id_applicant",
-                      header: () => <span>ID Applicant</span>,
-                      renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
-                      },
-                    },
-                    {
-                      name: "name",
+                      name: "user_profile.name",
                       header: () => <span>Applicant Name</span>,
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
-                      name: "age",
-                      header: () => <span>Age</span>,
+                      name: "user_profile.educations",
+                      header: () => <span>GPA</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {getNumber(
+                              sortEducationLevels(
+                                getValue(row, "user_profile.educations"),
+                                "gpa"
+                              )
+                            )}
+                          </>
+                        );
+                      },
+                    },
+                    {
+                      name: "major",
+                      header: () => <span>Major</span>,
+                      renderCell: ({ row, name }: any) => {
+                        const major = sortEducationLevels(
+                          getValue(row, "user_profile.educations"),
+                          "major"
+                        );
+                        return <>{major ? major : "-"}</>;
                       },
                     },
                     {
                       name: "job_name",
                       header: () => <span>Job Name</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {detectUniqueExperience(
+                              getValue(row, "user_profile.work_experience")
+                            )}
+                          </>
+                        );
                       },
                     },
                     {
-                      name: "work_experience",
-                      header: () => <span>Work Experience (month)</span>,
+                      name: "job_experience",
+                      header: () => <span>Job Experience</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return (
+                          <>
+                            {detectUniqueExperience(
+                              getValue(row, "user_profile.work_experience"),
+                              "company_name",
+                              "company experiences"
+                            )}
+                          </>
+                        );
                       },
                     },
                     {
-                      name: "cv",
-                      header: () => <span>CV</span>,
+                      name: "user_profile.work_experience",
+                      header: () => <span>Work Experience (Year)</span>,
                       renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
+                        return <>{getTotalExperience(getValue(row, name))}</>;
                       },
                     },
                     {
-                      name: "status_selection",
+                      name: "final_result",
                       header: () => <span>Status Selection</span>,
                       renderCell: ({ row }: any) => {
-                        // return (
-                        //   <div className="flex items-center gap-x-0.5 whitespace-nowrap text-blue-500	  rounded-md font-bold">
-                        //     Success
-                        //   </div>
-                        // );
+                        if (row.final_result === "ACCEPTED") {
+                          return (
+                            <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Accepted
+                            </div>
+                          );
+                        } else if (row.final_result === "REJECTED") {
+                          return (
+                            <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Rejected
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="bg-gray-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                            Pending
+                          </div>
+                        );
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap text-red-500	  rounded-md font-bold">
                             Failed
@@ -385,8 +507,8 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.user_profiles",
-                      path: `/api/user-profiles${params}`,
+                      value: "data.data.test_applicants",
+                      path: `/api/test-applicants/test-schedule-header/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -395,7 +517,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/user-profiles?page=1&page_size=1`,
+                      path: `/api/test-applicants/test-schedule-header/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

@@ -1,4 +1,4 @@
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonBetter } from "@/lib/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -9,13 +9,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/lib/components/ui/dialog";
+import * as XLSX from "xlsx";
 import { actionToast } from "@/lib/utils/action";
 import { useLocal } from "@/lib/utils/use-local";
-import { FC, useEffect } from "react";
-import { AiOutlineCloudUpload } from "react-icons/ai";
+import { FC, useEffect, useRef } from "react";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
 
-export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
+export const ImportResultBetter: FC<any> = ({
+  fm,
+  onUpload,
+  msg,
+  children,
+}) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const local = useLocal({
     tbl: null as any,
     open: false,
@@ -46,6 +53,31 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
     local.filename = file.name;
     local.extension = extension;
     local.file = file;
+    function arrayBufferToBinaryString(buffer: ArrayBuffer): string {
+      const bytes = new Uint8Array(buffer);
+      return String.fromCharCode.apply(null, Array.from(bytes));
+    }
+    const reader = new FileReader();
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (e.target && e.target.result) {
+        const binaryStr =
+          typeof e.target.result === "string"
+            ? e.target.result
+            : arrayBufferToBinaryString(e.target.result);
+        const workbook = XLSX.read(binaryStr, { type: "binary" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+        console.log(jsonData);
+        local.count = jsonData?.length;
+      }
+    };
+    if (file) {
+      if (typeof reader.readAsArrayBuffer === "function") {
+        reader.readAsArrayBuffer(file);
+      } else {
+        reader.readAsBinaryString(file);
+      }
+    }
     local.render();
   };
   useEffect(() => {
@@ -53,7 +85,7 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
     local.render();
   }, []);
   return (
-    <div>
+    <div className="flex flex-grow">
       <Dialog open={local.open}>
         <DialogTrigger
           asChild
@@ -62,16 +94,7 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
             local.render();
           }}
         >
-          <div className="flex flex-col">
-            <div className="flex flex-row flex-grow">
-              <ButtonContainer className="bg-primary">
-                <div className="flex items-center gap-x-0.5">
-                  <AiOutlineCloudUpload className="text-xl" />
-                  Import Result
-                </div>
-              </ButtonContainer>
-            </div>
-          </div>
+          {children}
         </DialogTrigger>
         <DialogContent
           className={cx(
@@ -80,10 +103,6 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
               max-width: 100vw;
             `
           )}
-          onClick={() => {
-            local.open = false;
-            local.render();
-          }}
         >
           <DialogHeader>
             <DialogTitle>Applicant</DialogTitle>
@@ -103,7 +122,8 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
                     <p className="  text-sm font-bold">{local.filename}</p>
                   </div>
                   <p className="">
-                    Are you sure you want to proceed with the import? This
+                    There are {formatMoney(local.count)} records in the Excel
+                    file. Are you sure you want to proceed with the import? This
                     action is final and cannot be undone. Click OK to continue
                   </p>
                 </div>
@@ -112,6 +132,9 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
                   <div className="flex items-center justify-center w-full">
                     <label
                       htmlFor="dropzone-file"
+                      onClick={() => {
+                        fileInputRef.current?.click();
+                      }}
                       className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                     >
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -137,6 +160,7 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
                         </p>
                       </div>
                       <input
+                        ref={fileInputRef}
                         id="dropzone-file"
                         type="file"
                         className="hidden"
@@ -156,7 +180,7 @@ export const ImportResult: FC<any> = ({ fm, onUpload, msg }) => {
                 await actionToast({
                   task: async () => {
                     if (typeof onUpload === "function") {
-                      await onUpload(local.file);
+                      // await onUpload(local.file);
                     }
                     fm.reload();
                   },
