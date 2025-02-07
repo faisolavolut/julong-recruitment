@@ -9,7 +9,6 @@ import { dayDate, formatTime } from "@/lib/utils/date";
 import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
-import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { formatMoney } from "@/lib/components/form/field/TypeInput";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
@@ -27,8 +26,8 @@ function Page() {
 
   useEffect(() => {
     const run = async () => {
-      local.can_add = access("create-schedule-interview");
-      local.can_edit = access("edit-schedule-interview");
+      local.can_add = access("create-schedule-fgd");
+      local.can_edit = access("edit-schedule-fgd");
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
@@ -51,7 +50,7 @@ function Page() {
   }, []);
   return (
     <TableUI
-      title="Schedule Interview"
+      title="Final Result FGD"
       tab={local.list}
       onTab={(e: string) => {
         local.tab = e;
@@ -60,20 +59,7 @@ function Page() {
       name="result-test"
       header={{
         sideLeft: (data: any) => {
-          if (!local.can_add) return <></>;
-          return (
-            <div className="flex flex-row flex-grow">
-              <ButtonLink
-                className="bg-primary"
-                href={"/d/interview/schedule-interview/new"}
-              >
-                <div className="flex items-center gap-x-0.5">
-                  <HiPlus className="text-xl" />
-                  <span className="capitalize">Add New</span>
-                </div>
-              </ButtonLink>
-            </div>
-          );
+          return <></>;
         },
       }}
       column={[
@@ -133,24 +119,14 @@ function Page() {
           renderCell: ({ row }: any) => {
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                {local.can_edit ? (
-                  <ButtonLink
-                    href={`/d/interview/schedule-interview/${row.id}/edit`}
-                  >
-                    <div className="flex items-center gap-x-2">
-                      <HiOutlinePencilAlt className="text-lg" />
-                    </div>
-                  </ButtonLink>
-                ) : (
-                  <ButtonLink
-                    className="bg-primary"
-                    href={`/d/interview/schedule-interview/${row.id}/view`}
-                  >
-                    <div className="flex items-center gap-x-2">
-                      <IoEye className="text-lg" />
-                    </div>
-                  </ButtonLink>
-                )}
+                <ButtonLink
+                  className="bg-primary"
+                  href={`/d/fgd/final-result-fgd/${row.id}/view`}
+                >
+                  <div className="flex items-center gap-x-2">
+                    <IoEye className="text-lg" />
+                  </div>
+                </ButtonLink>
               </div>
             );
           },

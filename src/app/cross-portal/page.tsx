@@ -8,7 +8,7 @@ import { apix } from "@/lib/utils/apix";
 function Portal() {
   const local = useLocal({
     ready: false,
-    access: true,
+    access: false,
   });
   const router = useRouter();
   useEffect(() => {

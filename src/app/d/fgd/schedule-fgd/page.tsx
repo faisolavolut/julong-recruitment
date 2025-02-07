@@ -27,8 +27,8 @@ function Page() {
 
   useEffect(() => {
     const run = async () => {
-      local.can_add = access("create-schedule-interview");
-      local.can_edit = access("edit-schedule-interview");
+      local.can_add = access("create-schedule-fgd");
+      local.can_edit = access("edit-schedule-fgd");
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
@@ -51,7 +51,7 @@ function Page() {
   }, []);
   return (
     <TableUI
-      title="Schedule Interview"
+      title="Schedule FGD"
       tab={local.list}
       onTab={(e: string) => {
         local.tab = e;
@@ -65,7 +65,7 @@ function Page() {
             <div className="flex flex-row flex-grow">
               <ButtonLink
                 className="bg-primary"
-                href={"/d/interview/schedule-interview/new"}
+                href={"/d/fgd/schedule-fgd/new"}
               >
                 <div className="flex items-center gap-x-0.5">
                   <HiPlus className="text-xl" />
@@ -134,9 +134,7 @@ function Page() {
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                 {local.can_edit ? (
-                  <ButtonLink
-                    href={`/d/interview/schedule-interview/${row.id}/edit`}
-                  >
+                  <ButtonLink href={`/d/fgd/schedule-fgd/${row.id}/edit`}>
                     <div className="flex items-center gap-x-2">
                       <HiOutlinePencilAlt className="text-lg" />
                     </div>
@@ -144,7 +142,7 @@ function Page() {
                 ) : (
                   <ButtonLink
                     className="bg-primary"
-                    href={`/d/interview/schedule-interview/${row.id}/view`}
+                    href={`/d/fgd/schedule-fgd/${row.id}/view`}
                   >
                     <div className="flex items-center gap-x-2">
                       <IoEye className="text-lg" />

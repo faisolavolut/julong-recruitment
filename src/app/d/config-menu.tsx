@@ -165,25 +165,56 @@ export const configMenu = [
         href: "/d/interview/result-interview",
         permision: ["read-result-interview"],
       },
+      {
+        title: "Final Result Interview",
+        href: "/d/interview/final-result-interview",
+        permision: ["read-final-result-interview"],
+      },
     ],
-    permision: ["read-schedule-interview", "read-result-interview"],
+    permision: [
+      "read-schedule-interview",
+      "read-result-interview",
+      "read-final-result-interview",
+    ],
   },
   {
     title: "FGD Test",
     icon: <MdGroups />,
+    // children: [
+    //   {
+    //     title: "FGD Schedule",
+    //     href: "/d/fgd/schedule",
+    //     permision: ["read-fgd-schedule"],
+    //   },
+    //   {
+    //     title: "FGD Result",
+    //     href: "/d/fgd/result",
+    //     permision: ["read-fgd-result"],
+    //   },
+    // ],
+
     children: [
       {
-        title: "FGD Schedule",
-        href: "/d/fgd/schedule",
-        permision: ["read-fgd-schedule"],
+        title: "Schedule FGD",
+        href: "/d/fgd/schedule-fgd",
+        permision: ["read-schedule-fgd"],
       },
       {
-        title: "FGD Result",
-        href: "/d/fgd/result",
-        permision: ["read-fgd-result"],
+        title: "Result FGD",
+        href: "/d/fgd/result-fgd",
+        permision: ["read-result-fgd"],
+      },
+      {
+        title: "Final Result FGD",
+        href: "/d/fgd/final-result-fgd",
+        permision: ["read-final-result-fgd"],
       },
     ],
-    permision: ["read-fgd-setup", "read-fgd-schedule", "read-fgd-result"],
+    permision: [
+      "read-schedule-fgd",
+      "read-result-fgd",
+      "read-final-result-fgd",
+    ],
   },
   {
     title: "Final Interview",
