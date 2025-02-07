@@ -146,7 +146,7 @@ export const configMenu = [
       {
         title: "Applicant Overview",
         href: "/d/test-selection/applicant-overview",
-        permision: ["read-test-applicant-overview"],
+        permision: ["hilang-read-test-applicant-overview"],
       },
     ],
     permision: ["read-result-test", "read-test-applicant-overview"],
@@ -204,39 +204,39 @@ export const configMenu = [
         href: "/d/fgd/result-fgd",
         permision: ["read-result-fgd"],
       },
-      {
-        title: "Final Result FGD",
-        href: "/d/fgd/final-result-fgd",
-        permision: ["read-final-result-fgd"],
-      },
+      // {
+      //   title: "Final Result FGD",
+      //   href: "/d/fgd/final-result-fgd",
+      //   permision: ["hilang-read-final-result-fgd"],
+      // },
     ],
     permision: [
       "read-schedule-fgd",
       "read-result-fgd",
-      "read-final-result-fgd",
+      // "read-final-result-fgd",
     ],
   },
-  {
-    title: "Final Interview",
-    icon: <GoCommentDiscussion />,
-    children: [
-      {
-        title: "Calendar",
-        href: "/d/final-interview/schedule-interview",
-        permision: ["read-final-interview-calender"],
-      },
-      {
-        title: "Final Interview",
-        href: "/d/final-interview/result-interview",
-        permision: ["read-final-interview-recruitment"],
-      },
-    ],
-    permision: [
-      "read-final-interview-calender",
-      "read-final-interview-recruitment",
-      "read-final-interview-result",
-    ],
-  },
+  // {
+  //   title: "Final Interview",
+  //   icon: <GoCommentDiscussion />,
+  //   children: [
+  //     {
+  //       title: "Calendar",
+  //       href: "/d/final-interview/schedule-interview",
+  //       permision: ["read-final-interview-calender"],
+  //     },
+  //     {
+  //       title: "Final Interview",
+  //       href: "/d/final-interview/result-interview",
+  //       permision: ["read-final-interview-recruitment"],
+  //     },
+  //   ],
+  //   permision: [
+  //     "read-final-interview-calender",
+  //     "read-final-interview-recruitment",
+  //     "read-final-interview-result",
+  //   ],
+  // },
   {
     title: "Offering Letter",
     icon: <SlEnvolopeLetter />,

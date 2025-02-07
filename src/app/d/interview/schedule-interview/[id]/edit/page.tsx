@@ -108,7 +108,7 @@ function Page() {
                         task: async () => {
                           await apix({
                             port: "recruitment",
-                            path: `/api/test-schedule-headers/${id}`,
+                            path: `/api/interviews/${id}`,
                             method: "delete",
                           });
                         },
@@ -454,13 +454,6 @@ function Page() {
                   }}
                   column={[
                     {
-                      name: "id_applicant",
-                      header: () => <span>ID Applicant</span>,
-                      renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
-                      },
-                    },
-                    {
                       name: "user_profile.name",
                       header: () => <span>Applicant Name</span>,
                       renderCell: ({ row, name }: any) => {
@@ -574,8 +567,8 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.test_applicants",
-                      path: `/api/test-applicants/test-schedule-header/${id}${params}`,
+                      value: "data.data.interview_applicants",
+                      path: `/api/interview-applicants/interview/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -584,7 +577,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/test-applicants/test-schedule-header/${id}?page=1&page_size=1`,
+                      path: `/api/interview-applicants/interview/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);
