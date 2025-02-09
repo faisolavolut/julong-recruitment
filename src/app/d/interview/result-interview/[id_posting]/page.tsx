@@ -20,12 +20,27 @@ function Page() {
   const local = useLocal({
     can_add: false,
     can_edit: false,
+    tab: "interview",
   });
 
   useEffect(() => {
     const run = async () => {
       local.can_add = access("create-final-result-interview");
       local.can_edit = access("edit-final-result-interview");
+
+      const data: any = await apix({
+        port: "recruitment",
+        value: "data.data",
+        path: `/api/job-postings/${id_posting}`,
+        validate: "object",
+      });
+      const interview: any = await apix({
+        port: "recruitment",
+        value: "data.data",
+        path: `/api/project-recruitment-lines/header/${data?.project_recruitment_header_id}?form_type=INTERVIEW`,
+        validate: "object",
+      });
+      console.log({ interview });
       local.render();
     };
     run();
@@ -33,6 +48,15 @@ function Page() {
 
   return (
     <TableUI
+      tab={[
+        { id: "interview", name: "Interview" },
+        { id: "final_interview", name: "Final Interview" },
+      ]}
+      modeTab="only-title"
+      onTab={(e: string) => {
+        local.tab = e;
+        local.render();
+      }}
       breadcrumb={[
         {
           title: "List Job Posting",

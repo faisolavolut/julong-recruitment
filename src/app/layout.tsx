@@ -29,21 +29,27 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const routerInstance = useRouter();
   useEffect(() => {
     const run = async () => {
+      let isUser = false;
       try {
-        await userToken();
+        isUser = await userToken();
       } catch (ex) {}
-      try {
-        const roles = await userRoleMe();
-        globalThis.userRole = roles;
-      } catch (ex) {}
-      globalThis.router = routerInstance;
-      const user = localStorage.getItem("user");
-      if (user) {
-        const w = window as any;
-        w.user = JSON.parse(user);
+      if (!isUser) {
+        local.ready = true;
+        local.render();
+      } else {
+        try {
+          const roles = await userRoleMe();
+          globalThis.userRole = roles;
+        } catch (ex) {}
+        globalThis.router = routerInstance;
+        const user = localStorage.getItem("user");
+        if (user) {
+          const w = window as any;
+          w.user = JSON.parse(user);
+        }
+        local.ready = true;
+        local.render();
       }
-      local.ready = true;
-      local.render();
     };
     run();
   }, []);

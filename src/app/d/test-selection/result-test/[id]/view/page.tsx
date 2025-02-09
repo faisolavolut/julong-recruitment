@@ -2,11 +2,11 @@
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter } from "@/lib/components/ui/button";
+import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
 import { events } from "@/lib/utils/event";
@@ -14,7 +14,6 @@ import { IoCheckmarkOutline } from "react-icons/io5";
 import { X } from "lucide-react";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
-import { ImportResult } from "../ImportResult";
 import { RiDownloadCloudLine } from "react-icons/ri";
 import get from "lodash.get";
 import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
@@ -24,6 +23,13 @@ import {
   getTotalExperience,
 } from "@/app/lib/workExperiences";
 import { sortEducationLevels } from "@/app/lib/education-level";
+import { ModalImportResult } from "../ModalImportResult";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import { access } from "@/lib/utils/getAccess";
+import { Alert } from "@/lib/components/ui/alert";
+import { IoMdSave } from "react-icons/io";
+import { normalDate } from "@/lib/utils/date";
+import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
 
 function Page() {
   const id = getParams("id");
@@ -32,11 +38,15 @@ function Page() {
   const local = useLocal({
     can_edit: false,
     ready: false as boolean,
+    can_submit: false as boolean,
+    can_import_result: false as boolean,
   });
-
+  const [open, setOpen] = useState(false as boolean);
   useEffect(() => {
     const run = async () => {
       local.can_edit = true;
+      local.can_submit = access("submit-result-test");
+      local.can_import_result = access("import-result-test");
       local.ready = true;
       local.render();
     };
@@ -66,11 +76,50 @@ function Page() {
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center"></div>
+            <div className="flex flex-row space-x-2 items-center">
+              {local.can_submit && fm?.data?.status === "IN PROGRESS" && (
+                <Alert
+                  type={"save"}
+                  msg={"Are you sure you want to save this record?"}
+                  onClick={() => {
+                    fm.data.status = "COMPLETED";
+                    fm.submit();
+                  }}
+                >
+                  <ButtonContainer className={"bg-primary"}>
+                    <IoMdSave className="text-xl" />
+                    Submit
+                  </ButtonContainer>
+                </Alert>
+              )}
+            </div>
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {}}
+      onSubmit={async (fm: any) => {
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/test-schedule-headers/update",
+          method: "put",
+          data: {
+            ...fm.data,
+            start_date: normalDate(fm?.data?.start_date),
+            end_date: normalDate(fm?.data?.end_date),
+            schedule_date: normalDate(fm?.data?.schedule_date),
+            start_time: normalDate(fm?.data?.start_date)
+              ? `${normalDate(fm?.data?.start_date)} ${convertToTimeOnly(
+                  fm.data.start_time
+                )}:00`
+              : null,
+            end_time: normalDate(fm?.data?.end_date)
+              ? `${normalDate(fm?.data?.end_date)} ${convertToTimeOnly(
+                  fm.data.end_time
+                )}:00`
+              : null,
+          },
+        });
+      }}
       mode="view"
       onLoad={async () => {
         // sekedar testing
@@ -267,14 +316,11 @@ function Page() {
                     sideRight: (data: any) => {
                       return (
                         <div className="flex flex-row flex-grow gap-x-2 ml-4">
-                          <ImportResult
+                          <ModalImportResult
                             fm={fm}
-                            showTrigger={false}
-                            open={fm?.data?.openModal ? true : false}
+                            open={open}
                             onChangeOpen={(e: boolean) => {
-                              console.log(e);
-                              fm.data.openModal = e;
-                              fm.render();
+                              setOpen(e);
                             }}
                             msg="Import Result Test"
                             onUpload={async (file: any) => {
@@ -373,16 +419,18 @@ function Page() {
                                   });
                                 },
                               },
-                              // {
-                              //   label: "Import Result",
-                              //   icon: (
-                              //     <AiOutlineCloudUpload className="text-xl" />
-                              //   ),
-                              //   onClick: async () => {
-                              //     fm.data.openModal = true;
-                              //     fm.render();
-                              //   },
-                              // },
+                              {
+                                label: "Import Result",
+                                icon: (
+                                  <AiOutlineCloudUpload className="text-xl" />
+                                ),
+                                onClick: async ({ close }: any) => {
+                                  if (typeof close === "function") {
+                                    close();
+                                  }
+                                  setOpen(true);
+                                },
+                              },
                             ]}
                           />
                         </div>

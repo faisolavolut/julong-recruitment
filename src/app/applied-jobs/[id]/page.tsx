@@ -59,7 +59,6 @@ function Page() {
         validate: "array",
         path: "/api/project-recruitment-lines/header/" + id_project,
       });
-      console.log({ res });
 
       let now = 0 as number;
       try {

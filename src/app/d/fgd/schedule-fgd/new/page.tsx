@@ -295,18 +295,8 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"range_duration"}
-                    label={"Duration"}
-                    type={"money"}
-                    suffix={() => <div className="text-sm">Minute</div>}
-                    required={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
                     name={"interview_assessors"}
-                    label={"FGDer"}
+                    label={"User Assessment"}
                     type={"multi-dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({

@@ -13,18 +13,19 @@ import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
-import { siteurl } from "@/lib/utils/siteurl";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RiDownloadCloudLine } from "react-icons/ri";
-import { ImportResult } from "../../ImportResult";
 import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
-import { IoMdSave } from "react-icons/io";
+import { AiOutlineCloudUpload } from "react-icons/ai";
+import { ModalImportResult } from "@/app/d/test-selection/result-test/[id]/ModalImportResult";
+import { actionToast } from "@/lib/utils/action";
 
 function Page() {
   const id = getParams("id");
+  const [open, setOpen] = useState(false as boolean);
   const id_posting = getParams("id_posting");
   const labelPage = "Result Interview";
   const urlPage = `/d/interview/result-interview`;
@@ -283,7 +284,26 @@ function Page() {
                     sideRight: (data: any) => {
                       return (
                         <div className="flex flex-row flex-grow gap-x-2 ml-4">
-                          <ImportResult fm={fm} />
+                          <ModalImportResult
+                            fm={fm}
+                            open={open}
+                            onChangeOpen={(e: boolean) => {
+                              setOpen(e);
+                            }}
+                            msg="Import Result Test"
+                            onUpload={async (file: any) => {
+                              await apix({
+                                port: "recruitment",
+                                path: `/api/test-schedule-headers/read-result-template`,
+                                method: "post",
+                                value: "data",
+                                type: "form",
+                                data: {
+                                  file: file,
+                                },
+                              });
+                            }}
+                          />
                           <DropdownHamburgerBetter
                             className=""
                             classNameList="w-48"
@@ -294,23 +314,89 @@ function Page() {
                                   <RiDownloadCloudLine className="text-xl" />
                                 ),
                                 onClick: async () => {
-                                  window.open(
-                                    siteurl(
-                                      "https://file-examples.com/wp-content/storage/2017/02/file_example_XLS_10.xls"
-                                    ),
-                                    "_blank"
-                                  );
+                                  await actionToast({
+                                    task: async () => {
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        method: "get",
+                                        value: "data",
+                                        options: {
+                                          responseType: "blob",
+                                          headers: {
+                                            Accept:
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
+                                          },
+                                        },
+                                        path: `/api/test-schedule-headers/export-result-template?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
+                                      });
+                                      const url = window.URL.createObjectURL(
+                                        new Blob([res])
+                                      );
+                                      const link = document.createElement("a");
+                                      link.href = url;
+                                      link.setAttribute(
+                                        "download",
+                                        "template-import-test.xlsx"
+                                      );
+                                      document.body.appendChild(link);
+                                      link.click();
+                                    },
+                                    msg_load: "Download Import Test",
+                                    msg_error: "Download Import Test Failed",
+                                    msg_succes: "Download Import Test Success",
+                                  });
                                 },
                               },
                               {
-                                label: "Save",
-                                icon: <IoMdSave className="text-xl" />,
-                                onClick: async () => {},
+                                label: "Export Result",
+                                icon: (
+                                  <RiDownloadCloudLine className="text-xl" />
+                                ),
+                                onClick: async () => {
+                                  await actionToast({
+                                    task: async () => {
+                                      const res = await apix({
+                                        port: "recruitment",
+                                        method: "get",
+                                        value: "data",
+                                        options: {
+                                          responseType: "blob",
+                                          headers: {
+                                            Accept:
+                                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
+                                          },
+                                        },
+                                        path: `/api/test-schedule-headers/export-answer?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
+                                      });
+                                      const url = window.URL.createObjectURL(
+                                        new Blob([res])
+                                      );
+                                      const link = document.createElement("a");
+                                      link.href = url;
+                                      link.setAttribute(
+                                        "download",
+                                        "template-import-test.xlsx"
+                                      );
+                                      document.body.appendChild(link);
+                                      link.click();
+                                    },
+                                    msg_load: "Download Result Test",
+                                    msg_error: "Download Result Test Failed",
+                                    msg_succes: "Download Result Test Success",
+                                  });
+                                },
                               },
                               {
-                                label: "Submit",
-                                icon: <IoMdSave className="text-xl" />,
-                                onClick: async () => {},
+                                label: "Import Result",
+                                icon: (
+                                  <AiOutlineCloudUpload className="text-xl" />
+                                ),
+                                onClick: async ({ close }: any) => {
+                                  if (typeof close === "function") {
+                                    close();
+                                  }
+                                  setOpen(true);
+                                },
                               },
                             ]}
                           />

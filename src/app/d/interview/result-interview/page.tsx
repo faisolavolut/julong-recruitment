@@ -26,7 +26,7 @@ function Page() {
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/job-postings?page=1&page_size=1`,
+        path: `/api/job-postings?page=1&page_size=1&status=IN PROGRESS`,
         validate: "object",
       });
       const completed: any = await apix({
@@ -115,7 +115,10 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", param);
+        const params = await events("onload-param", {
+          ...param,
+          status: "IN PROGRESS",
+        });
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
@@ -128,7 +131,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/job-postings?page=1&page_size=1`,
+          path: `/api/job-postings?page=1&page_size=1&status=IN PROGRESS`,
           validate: "object",
         });
         return getNumber(result);

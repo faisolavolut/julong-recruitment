@@ -263,40 +263,30 @@ function Page() {
                         Detail Question
                       </AccordionTriggerCustom>
                       <AccordionContent>
-                        <div className="grid grid-cols-2">
+                        <div className="grid grid-cols-2 gap-4 md:gap-6">
                           <div>
                             <Field
                               fm={fm}
                               name={"name"}
-                              label={"Question"}
-                              type={"dropdown"}
-                              onLoad={async () => {
-                                const res: any = await apix({
-                                  port: "recruitment",
-                                  value: "data.data.document_setups",
-                                  path: "/api/document-setup",
-                                  validate: "dropdown",
-                                  keys: { label: "title" },
-                                });
-                                return res;
-                              }}
+                              label={"Recipient's Name"}
+                              type={"text"}
                             />
                           </div>
                           <div>
                             <Field
                               fm={fm}
                               name={"email"}
-                              label={"Email"}
+                              label={"Recipient's Email"}
                               type={"text"}
-                              disabled={true}
                             />
                           </div>
-                          <div>
+                          <div className="col-span-2">
                             <Field
+                              hidden_label={true}
                               fm={fm}
                               name={"name"}
                               label={"Question"}
-                              type={"text"}
+                              type={"richtext"}
                             />
                           </div>
                         </div>
