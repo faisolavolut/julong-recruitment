@@ -23,11 +23,11 @@ export const configMenu = [
         href: "/d/master-data/activity",
         permision: ["read-activity"],
       },
-      {
-        title: "Major",
-        href: "/d/master-data/major",
-        permision: ["read-major"],
-      },
+      // {
+      //   title: "Major",
+      //   href: "/d/master-data/major",
+      //   permision: ["read-major"],
+      // },
       {
         title: "University",
         href: "/d/master-data/university",
