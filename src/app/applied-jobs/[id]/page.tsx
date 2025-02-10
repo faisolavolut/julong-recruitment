@@ -68,6 +68,7 @@ function Page() {
           path: `/api/applicants/me/${id}`,
           validate: "object",
         });
+        console.log({profile})
         local.step = profile?.order;
         local.profile = profile;
         now = profile?.order;

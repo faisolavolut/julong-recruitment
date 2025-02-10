@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -229,6 +228,21 @@ function Page() {
                     name={"document_setup_id"}
                     label={"Document Type"}
                     type={"dropdown"}
+                    onChange={({ data }) => {
+                      console.log(data);
+                      const result = data?.header + data?.body + data?.footer;
+                      console.log({ result });
+                      fm.data.detail_content = result;
+                      fm.render();
+                      console.log(fm.data.detail_content);
+
+                      if (
+                        typeof fm?.fields?.detail_content?.reload === "function"
+                      ) {
+                        console.log("HALOO");
+                        fm?.fields?.detail_content?.reload();
+                      }
+                    }}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
@@ -260,7 +274,7 @@ function Page() {
                   >
                     <AccordionItem value="item-1">
                       <AccordionTriggerCustom className="flex flex-row items-center">
-                        Detail Question
+                        Document Content
                       </AccordionTriggerCustom>
                       <AccordionContent>
                         <div className="grid grid-cols-2 gap-4 md:gap-6">
@@ -284,7 +298,7 @@ function Page() {
                             <Field
                               hidden_label={true}
                               fm={fm}
-                              name={"name"}
+                              name={"detail_content"}
                               label={"Question"}
                               type={"richtext"}
                             />

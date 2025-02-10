@@ -18,10 +18,10 @@ function Page() {
     can_add: false,
     can_edit: false,
     list: [
-      { id: "on_going", name: "On Going", count: 0 },
-      { id: "completed", name: "Completed", count: 0 },
+      { id: "IN PROGRESS", name: "On Going", count: 0 },
+      { id: "COMPLETED", name: "Completed", count: 0 },
     ],
-    tab: "on_going",
+    tab: "IN PROGRESS",
   });
 
   useEffect(() => {
@@ -41,8 +41,8 @@ function Page() {
         validate: "object",
       });
       local.list = [
-        { id: "on_going", name: "On Going", count: getNumber(result) },
-        { id: "completed", name: "Completed", count: getNumber(completed) },
+        { id: "IN PROGRESS", name: "On Going", count: getNumber(result) },
+        { id: "COMPLETED", name: "Completed", count: getNumber(completed) },
       ];
       local.render();
     };
@@ -133,7 +133,10 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", param);
+        const params = await events("onload-param", {
+          ...param,
+          status: local.tab,
+        });
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.interviews",
@@ -143,10 +146,15 @@ function Page() {
         return result;
       }}
       onCount={async () => {
+        const params = await events("onload-param", {
+          status: local.tab,
+          paging: 1,
+          take: 1,
+        });
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/interviews?page=1&page_size=1`,
+          path: `/api/interviews${params}`,
           validate: "object",
         });
         return getNumber(result);

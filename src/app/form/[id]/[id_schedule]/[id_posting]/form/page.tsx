@@ -81,17 +81,48 @@ function Page() {
       } catch (ex) {}
       let startTime = null as any;
       let listQuestion = [] as any[];
+      let id_line = null as any;
+      try {
+        const data: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/job-postings/${id_posting}`,
+          validate: "object",
+        });
+
+        const profile: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/applicants/me/${id_posting}`,
+          validate: "object",
+        });
+        console.log({ profile });
+        // const jobposting = await apix({
+        //   port: "recruitment",
+        //   value: "data.data",
+        //   path: `/api/project-recruitment-lines/header/${data?.)}?form_type=TEST`,
+        //   method: "get",
+        // });
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/project-recruitment-lines/header/${profile?.job_posting?.project_recruitment_header_id}?form_type=TEST`,
+          method: "get",
+        });
+        id_line = res?.[0]?.id;
+        console.log({ res });
+      } catch (ex) {}
+      let id_testschedule = null as any;
       try {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/test-schedule-headers/my-schedule?job_posting_id=${id_posting}&project_recruitment_line_id=a9c8920d-a74a-4258-a262-a1bfe6d91b54
-`,
+          path: `/api/test-schedule-headers/my-schedule?job_posting_id=${id_posting}&project_recruitment_line_id=${id_line}`,
           method: "get",
         });
-        console.log({ res });
+        id_testschedule = res?.test_applicants?.id;
         local.header = res;
-        local.id_applicant = local.header?.test_applicants?.id;
+        local.id_applicant = id_testschedule;
         startTime = res?.test_applicants?.started_time;
         listQuestion =
           get(
@@ -125,9 +156,7 @@ function Page() {
           const schedule = await apix({
             port: "recruitment",
             value: "data.data",
-            path:
-              "/api/test-schedule-headers/" +
-              local.header?.test_applicants?.test_schedule_header_id,
+            path: "/api/test-schedule-headers/" + id_testschedule,
             validate: "object",
           });
           const result = {

@@ -228,7 +228,7 @@ body {
 
     th {
       background-color: var(--second);
-      font-weight: bold;
+      font-weight: normal !important;
       text-align: left;
     }
     .selectedCell:after {

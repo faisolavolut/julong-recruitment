@@ -9,6 +9,8 @@ import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
+import { dayDate, formatTime } from "@/lib/utils/date";
 
 function Page() {
   const local = useLocal({
@@ -26,13 +28,13 @@ function Page() {
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/job-postings?page=1&page_size=1&status=IN PROGRESS`,
+        path: `/api/interviews?page=1&page_size=1&status=IN PROGRESS`,
         validate: "object",
       });
       const completed: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/job-postings?page=1&page_size=1&status=COMPLETED`,
+        path: `/api/interviews?page=1&page_size=1&status=COMPLETED`,
         validate: "object",
       });
       local.list = [
@@ -60,31 +62,45 @@ function Page() {
       }}
       column={[
         {
-          name: "document_number",
-          header: () => <span>Job Posting Number</span>,
+          name: "project_recruitment_line.template_activity_line.name",
+          header: () => <span>Schedule Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "job_name",
-          header: () => <span>Job Name</span>,
+          name: "name",
+          header: () => <span>Schedule Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "recruitment_type",
-          header: () => <span>Recruitment Type</span>,
+          name: "start_date",
+          header: () => <span>Schedule Date</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "for_organization_name",
-          header: () => <span>Company</span>,
+          name: "start_time",
+          header: () => <span>Start Time</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{formatTime(getValue(row, name))}</>;
+          },
+        },
+        {
+          name: "end_time",
+          header: () => <span>End Time</span>,
+          renderCell: ({ row, name }: any) => {
+            return <>{formatTime(getValue(row, name))}</>;
+          },
+        },
+        {
+          name: "total_candidate",
+          header: () => <span>Total Candidates</span>,
+          renderCell: ({ row, name }: any) => {
+            return <>{formatMoney(getValue(row, name))}</>;
           },
         },
         {
@@ -121,8 +137,8 @@ function Page() {
         });
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.job_postings",
-          path: `/api/job-postings${params}`,
+          value: "data.data.interviews",
+          path: `/api/interviews${params}`,
           validate: "array",
         });
         return result;
@@ -131,7 +147,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/job-postings?page=1&page_size=1&status=IN PROGRESS`,
+          path: `/api/interviews?page=1&page_size=1&status=IN PROGRESS`,
           validate: "object",
         });
         return getNumber(result);

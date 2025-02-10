@@ -290,11 +290,11 @@ function Page() {
                             onChangeOpen={(e: boolean) => {
                               setOpen(e);
                             }}
-                            msg="Import Result Test"
+                            msg="Import Result Interview"
                             onUpload={async (file: any) => {
                               await apix({
                                 port: "recruitment",
-                                path: `/api/test-schedule-headers/read-result-template`,
+                                path: `/api/interviews/read-result-template`,
                                 method: "post",
                                 value: "data",
                                 type: "form",
@@ -327,7 +327,7 @@ function Page() {
                                               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
                                           },
                                         },
-                                        path: `/api/test-schedule-headers/export-result-template?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
+                                        path: `/api/interviews/export-result-template?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
                                       });
                                       const url = window.URL.createObjectURL(
                                         new Blob([res])
@@ -336,7 +336,7 @@ function Page() {
                                       link.href = url;
                                       link.setAttribute(
                                         "download",
-                                        "template-import-test.xlsx"
+                                        "template-import-interview.xlsx"
                                       );
                                       document.body.appendChild(link);
                                       link.click();
@@ -366,7 +366,7 @@ function Page() {
                                               "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
                                           },
                                         },
-                                        path: `/api/test-schedule-headers/export-answer?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
+                                        path: `/api/interviews/export-answers?id=${id}&job_posting_id=${fm?.data?.job_posting_id}`,
                                       });
                                       const url = window.URL.createObjectURL(
                                         new Blob([res])
@@ -375,7 +375,7 @@ function Page() {
                                       link.href = url;
                                       link.setAttribute(
                                         "download",
-                                        "template-import-test.xlsx"
+                                        "export-interview-result.xlsx"
                                       );
                                       document.body.appendChild(link);
                                       link.click();
@@ -475,17 +475,17 @@ function Page() {
                       },
                     },
                     {
-                      name: "status",
+                      name: "final_result",
                       sortable: false,
                       header: () => <span>Status Selection</span>,
                       renderCell: ({ row, render }: any) => {
-                        if (row.status === "APPROVED") {
+                        if (row.final_result === "ACCEPTED") {
                           return (
                             <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
-                              Approved
+                              Accepted
                             </div>
                           );
-                        } else if (row.status === "REJECTED") {
+                        } else if (row.final_result === "REJECTED") {
                           return (
                             <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
                               Rejected
@@ -558,12 +558,11 @@ function Page() {
                     // },
                   ]}
                   onLoad={async (param: any) => {
-                    return [{}, {}];
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.test_applicants",
-                      path: `/api/test-applicants/test-schedule-header/${id}${params}`,
+                      value: "data.data.interview_applicants",
+                      path: `/api/interview-applicants/interview/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -572,7 +571,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/test-applicants/test-schedule-header/${id}?page=1&page_size=1`,
+                      path: `/api/interview-applicants/interview/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

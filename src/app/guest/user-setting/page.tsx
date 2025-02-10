@@ -1,16 +1,11 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
-import { FormBetter } from "@/lib/components/form/FormBetter";
-import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
-import { Alert } from "@/lib/components/ui/alert";
+import { ButtonBetter } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoMdMail, IoMdSave } from "react-icons/io";
-import { normalDate } from "@/lib/utils/date";
+import { IoMdMail } from "react-icons/io";
 import { siteurl } from "@/lib/utils/siteurl";
 import { TabHeader } from "@/lib/components/tablist/TabHeader";
 import get from "lodash.get";
@@ -184,6 +179,7 @@ function Page() {
             });
             return {
               ...data,
+              bilingual: data?.bilingual ? data?.bilingual : "no",
               email: data?.user?.email,
             };
           }}
@@ -304,6 +300,26 @@ function Page() {
                           name={"ktp"}
                           label={"KTP"}
                           type={"upload"}
+                        />
+                      </div>
+                      <div>
+                        <Field
+                          fm={fm}
+                          name={"bilingual"}
+                          label={"Skill Bilingual"}
+                          type={"dropdown"}
+                          onLoad={() => {
+                            return [
+                              {
+                                value: "yes",
+                                label: "Bilingual",
+                              },
+                              {
+                                value: "no",
+                                label: "Non Bilingual",
+                              },
+                            ];
+                          }}
                         />
                       </div>
                       <div>
