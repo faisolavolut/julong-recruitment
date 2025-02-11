@@ -17,7 +17,7 @@ import { formatMoney } from "@/lib/components/form/field/TypeInput";
 
 function Page() {
   const list = [
-    { id: "in_progress", name: "In Progress" },
+    { id: "IN PROGRESS", name: "In Progress" },
     { id: "completed", name: "Completed" },
   ];
   const local = useLocal({
@@ -25,8 +25,8 @@ function Page() {
     can_add: false,
     can_edit: false,
     list: [
-      { id: "on_going", name: "On Going", count: 0 },
-      { id: "completed", name: "Completed", count: 0 },
+      { id: "IN PROGRESS", name: "On Going", count: 0 },
+      { id: "COMPLETED", name: "Completed", count: 0 },
     ],
   });
 

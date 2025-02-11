@@ -10,10 +10,7 @@ import FlowbiteFooterSection from "@/app/components/flowbite-footer";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
 import { siteurl } from "@/lib/utils/siteurl";
 import get from "lodash.get";
-import {
-  convertToTimeOnly,
-  formatMoney,
-} from "@/lib/components/form/field/TypeInput";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
 import { getNumber } from "@/lib/utils/getNumber";
 import { actionToast } from "@/lib/utils/action";
 import Stepper from "@/app/components/Stepper";
@@ -26,6 +23,7 @@ import { dayDate, formatTime } from "@/lib/utils/date";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { GoClock } from "react-icons/go";
 import { IoLinkOutline } from "react-icons/io5";
+import { scheduleFase } from "./schedule";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -42,6 +40,7 @@ function Page() {
     step: 0,
     stepName: null as any,
     detail: null as any,
+    readyTest: false,
   });
 
   useEffect(() => {
@@ -68,7 +67,6 @@ function Page() {
           path: `/api/applicants/me/${id}`,
           validate: "object",
         });
-        console.log({profile})
         local.step = profile?.order;
         local.profile = profile;
         now = profile?.order;
@@ -92,29 +90,22 @@ function Page() {
         });
       }
       const stepNow = steps.find((e: any) => e?.id === now);
+      console.log({ stepNow, res });
       const stepName = stepNow?.name;
       if (stepName === "TEST") {
-        const test = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: `/api/test-schedule-headers/my-schedule?job_posting_id=${id}&project_recruitment_line_id=${stepNow?.id_line}
-`,
-          validate: "object",
+        const test = await scheduleFase({
+          step: "TEST",
+          data: {
+            id: id,
+            id_line: stepNow?.id_line,
+          },
         });
-        let url = test.link;
-        const regex = /form\/[a-f0-9-]+/;
-        const isMatch = regex.test(url);
-        if (isMatch) {
-          url = `${url}/${stepNow?.id_line}/${id}/form`;
+        if (!test) {
+          local.readyTest = false;
+        } else {
+          local.readyTest = true;
+          local.detail = test;
         }
-        let detail = {
-          ...test,
-          url: url,
-          start_time: convertToTimeOnly(test?.start_time),
-          end_time: convertToTimeOnly(test?.end_date),
-        };
-        console.log({ detail });
-        local.detail = detail;
       }
 
       local.stepName = stepName;
@@ -326,37 +317,43 @@ function Page() {
                             You've Passed to the Next Stage! Please stay tuned
                             and check your email regularly for updates.
                           </div>
-                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                            <p className="font-bold">Schedule Test:</p>
-                            <p className=" flex flex-row gap-x-2 items-center">
-                              <RiCalendarScheduleLine />
-                              {dayDate(get(local, "detail.start_date")) ===
-                              dayDate(get(local, "detail.end_date"))
-                                ? dayDate(get(local, "detail.start_date"))
-                                : `${dayDate(
-                                    get(local, "detail.start_date")
-                                  )} - ${dayDate(
-                                    get(local, "detail.end_date")
+                          {local.readyTest ? (
+                            <>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <p className="font-bold">Schedule Test:</p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <RiCalendarScheduleLine />
+                                  {dayDate(get(local, "detail.start_date")) ===
+                                  dayDate(get(local, "detail.end_date"))
+                                    ? dayDate(get(local, "detail.start_date"))
+                                    : `${dayDate(
+                                        get(local, "detail.start_date")
+                                      )} - ${dayDate(
+                                        get(local, "detail.end_date")
+                                      )}`}
+                                </p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <GoClock />
+                                  {`${get(local, "detail.start_time")} - ${get(
+                                    local,
+                                    "detail.end_time"
                                   )}`}
-                            </p>
-                            <p className=" flex flex-row gap-x-2 items-center">
-                              <GoClock />
-                              {`${get(local, "detail.start_time")} - ${get(
-                                local,
-                                "detail.end_time"
-                              )}`}
-                            </p>
-                            <p className=" flex flex-row gap-x-2 items-center">
-                              <IoLinkOutline />
-                              <a
-                                target="_blank"
-                                className="text-primary underline"
-                                href={get(local, "detail.url")}
-                              >
-                                Link Test
-                              </a>
-                            </p>
-                          </div>
+                                </p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <IoLinkOutline />
+                                  <a
+                                    target="_blank"
+                                    className="text-primary underline"
+                                    href={get(local, "detail.url")}
+                                  >
+                                    Link Test
+                                  </a>
+                                </p>
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       ) : local.stepName === "INTERVIEW" ? (
                         <div className="border border-gray-200 flex flex-col py-4 rounded-lg">

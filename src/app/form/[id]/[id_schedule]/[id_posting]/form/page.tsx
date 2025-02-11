@@ -120,36 +120,43 @@ function Page() {
           path: `/api/test-schedule-headers/my-schedule?job_posting_id=${id_posting}&project_recruitment_line_id=${id_line}`,
           method: "get",
         });
-        id_testschedule = res?.test_applicants?.id;
+        console.log({ res });
+        id_testschedule = res?.test_applicants?.test_schedule_header_id;
         local.header = res;
-        local.id_applicant = id_testschedule;
+        local.id_applicant = res?.test_applicants?.id;
         startTime = res?.test_applicants?.started_time;
         listQuestion =
           get(
             res,
             "project_recruitment_line.template_activity_line.template_question.questions"
           ) || [];
-        listQuestion = listQuestion.map((e: any) => {
-          const typeAnswer = e?.answer_types?.name.toLowerCase();
-          const answer = e?.question_responses;
-          return {
-            ...e,
-            deleted_ids: answer.map((e: any) => e?.id),
-            answer:
-              typeAnswer === "checkbox"
-                ? answer.map((e: any) => e?.answer)
-                : typeAnswer === "attachment"
-                ? answer?.[0]?.answer_file
-                : answer?.[0]?.answer,
-            answer_type_name: e?.answer_types?.name,
-            question_options: e?.question_options?.length
-              ? e.question_options.map((e: any) => e.option_text)
-              : [],
-          };
-        });
+        console.log({ listQuestion });
+        listQuestion = Array.isArray(listQuestion)
+          ? listQuestion.map((e: any) => {
+              const typeAnswer = e?.answer_types?.name.toLowerCase();
+              const answer = e?.question_responses || [];
+              return {
+                ...e,
+                deleted_ids: answer.map((e: any) => e?.id),
+                answer:
+                  typeAnswer === "checkbox"
+                    ? answer.map((e: any) => e?.answer)
+                    : typeAnswer === "attachment"
+                    ? answer?.[0]?.answer_file
+                    : answer?.[0]?.answer,
+                answer_type_name: e?.answer_types?.name,
+                question_options: e?.question_options?.length
+                  ? e.question_options.map((e: any) => e.option_text)
+                  : [],
+              };
+            })
+          : [];
+        console.log({ listQuestion });
         if (res?.test_applicants?.assessment_status === "COMPLETED")
           setIsDone(true);
-      } catch (ex) {}
+      } catch (ex) {
+        console.error(ex);
+      }
       local.render();
       if (!isDone) {
         try {
@@ -159,19 +166,21 @@ function Page() {
             path: "/api/test-schedule-headers/" + id_testschedule,
             validate: "object",
           });
+          console.log({ schedule });
           const result = {
             ...schedule,
             start_date: new Date(
-              `${normalDate(schedule?.start_date)} ${convertToTimeOnly(
-                schedule?.start_time
-              )}`
+              `${normalDate(
+                schedule?.project_recruitment_line?.start_date
+              )} ${convertToTimeOnly(schedule?.start_time)}`
             ),
             end_date: new Date(
-              `${normalDate(schedule?.end_date)} ${convertToTimeOnly(
-                schedule?.end_time
-              )}`
+              `${normalDate(
+                schedule?.project_recruitment_line?.end_date
+              )} ${convertToTimeOnly(schedule?.end_time)}`
             ),
           };
+          console.log({ result });
           local.detail = result;
           setStartTime(new Date(result.start_date));
           setEndTime(new Date(result.end_date));
@@ -197,22 +206,10 @@ function Page() {
             setIsStarted(true);
           }
           console.log({ data });
-          const question = data?.questions?.length
-            ? data.questions.map((e: any) => {
-                return {
-                  ...e,
-                  answer_type_name: e?.answer_types?.name,
-                  question_options: e?.question_options?.length
-                    ? e.question_options.map((e: any) => e.option_text)
-                    : [],
-                  // answer:
-                };
-              })
-            : [];
-          local.maxPage = question?.length;
+          local.maxPage = data?.questions?.length;
           local.data = {
             ...data,
-            questions: listQuestion,
+            questions: listQuestion || [],
           };
         } catch (ex) {}
         if (w?.user) {
@@ -236,6 +233,9 @@ function Page() {
   }, []);
   useEffect(() => {
     if (!isStarted || !examEndTime) return;
+
+    const left = Math.max(0, examEndTime - Date.now());
+    setTimeLeft(left);
     const timer = setInterval(() => {
       const left = Math.max(0, examEndTime - Date.now());
       setTimeLeft(left);
@@ -518,7 +518,10 @@ function Page() {
                               </span>
                               {get(e, "name")}
                             </p>
-                            {get(e, "answer") ? (
+                            {(Array.isArray(get(e, "answer")) &&
+                              get(e, "answer.length")) ||
+                            (!Array.isArray(get(e, "answer")) &&
+                              get(e, "answer")) ? (
                               <div className="flex flex-row gap-x-1">
                                 <div className="text-gray-500 line-clamp-1 pl-1">
                                   <BsArrowReturnRight />

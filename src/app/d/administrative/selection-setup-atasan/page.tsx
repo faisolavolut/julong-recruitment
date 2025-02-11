@@ -10,14 +10,14 @@ import { dayDate } from "@/lib/utils/date";
 import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
-import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
+import { HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TabHeader } from "@/lib/components/tablist/TabHeader";
 import get from "lodash.get";
 
 function Page() {
   const list = [
-    { id: "in_progress", name: "In Progress" },
+    { id: "IN PROGRESS", name: "In Progress" },
     { id: "completed", name: "Completed" },
   ];
   const local = useLocal({

@@ -21,10 +21,10 @@ function Page() {
   const local = useLocal({
     can_add: false,
     can_edit: false,
-    tab: "in_progress",
+    tab: "IN PROGRESS",
     list: [
-      { id: "in_progress", name: "In Progress", count: 0 },
-      { id: "completed", name: "Completed", count: 0 },
+      { id: "IN PROGRESS", name: "In Progress", count: 0 },
+      { id: "COMPLETED", name: "Completed", count: 0 },
     ],
     breadcrumb: [] as any,
   });
@@ -47,8 +47,8 @@ function Page() {
         validate: "object",
       });
       local.list = [
-        { id: "in_progress", name: "In Progress", count: getNumber(result) },
-        { id: "completed", name: "Completed", count: getNumber(completed) },
+        { id: "IN PROGRESS", name: "In Progress", count: getNumber(result) },
+        { id: "COMPLETED", name: "Completed", count: getNumber(completed) },
       ];
 
       const data: any = await apix({
