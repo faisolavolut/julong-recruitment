@@ -232,7 +232,7 @@ function Page() {
         const params = await events("onload-param", { ...param, order: 1 });
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data",
+          value: "data.data.applicants",
           path: `/api/applicants/job-posting/${id_posting}${params}`,
           validate: "array",
         });
