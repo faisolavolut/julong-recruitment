@@ -229,8 +229,8 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"interview_assessors"}
-                    label={"FGDer"}
+                    name={"fgd_schedule_assessors"}
+                    label={"User Assessment"}
                     type={"text"}
                     required={true}
                   />

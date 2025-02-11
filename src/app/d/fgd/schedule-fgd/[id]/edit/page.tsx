@@ -26,6 +26,7 @@ import {
 import { sortEducationLevels } from "@/app/lib/education-level";
 import { normalDate } from "@/lib/utils/date";
 import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
+import { get_user } from "@/lib/utils/get_user";
 
 function Page() {
   const id = getParams("id");
@@ -161,15 +162,14 @@ function Page() {
               : [],
           },
         });
-        if (fm.data?.status !== "DRAFT")
-          navigate(`/d/test-selection/schedule-test/${id}/view`);
+        if (fm.data?.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
       }}
       onLoad={async () => {
         // sekedar testing
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/interviews/${id}`,
+          path: `/api/fgd-schedules/${id}`,
           validate: "object",
         });
         if (data?.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
@@ -268,6 +268,11 @@ function Page() {
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     onChange={(row: any) => {
+                      const pic = row?.data.project_pics || [];
+                      const id_pic = pic.find(
+                        (e: any) => e?.employee_id === get_user("employee.id")
+                      );
+                      fm.data.project_pic_id = id_pic?.id;
                       fm.data.start_date = row?.data?.start_date;
                       fm.data.end_date = row?.data?.end_date;
                       fm.data.template_activity_line_id =
@@ -367,31 +372,8 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"range_duration"}
-                    label={"Duration"}
-                    type={"money"}
-                    suffix={() => <div className="text-sm">Minute</div>}
-                    onLoad={async () => {
-                      if (!fm?.data?.project_recruitment_header_id) return [];
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}?status=IN PROGRESS`,
-                        validate: "dropdown",
-                        keys: {
-                          label: "job_name",
-                        },
-                      });
-                      return res;
-                    }}
-                    required={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"interview_assessors"}
-                    label={"FGDer"}
+                    name={"fgd_schedule_assessors"}
+                    label={"User Assessment"}
                     type={"multi-dropdown"}
                     onLoad={async () => {
                       const res: any = await apix({
@@ -453,13 +435,6 @@ function Page() {
                     },
                   }}
                   column={[
-                    {
-                      name: "id_applicant",
-                      header: () => <span>ID Applicant</span>,
-                      renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
-                      },
-                    },
                     {
                       name: "user_profile.name",
                       header: () => <span>Applicant Name</span>,
@@ -535,9 +510,7 @@ function Page() {
                       renderCell: ({ row, name }: any) => {
                         return (
                           <FilePreview
-                            url={
-                              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                            }
+                            url={getValue(row, name)}
                             disabled={true}
                             limit_name={10}
                           />
@@ -575,7 +548,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.test_applicants",
-                      path: `/api/test-applicants/test-schedule-header/${id}${params}`,
+                      path: `/api/fgd-applicants/fgd-schedule/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -584,7 +557,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/test-applicants/test-schedule-header/${id}?page=1&page_size=1`,
+                      path: `/api/fgd-applicants/fgd-schedule/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

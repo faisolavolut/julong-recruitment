@@ -92,7 +92,7 @@ function Page() {
           },
         },
         {
-          name: "start_date",
+          name: "schedule_date",
           header: () => <span>Schedule Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
@@ -161,7 +161,7 @@ function Page() {
         });
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.interviews",
+          value: "data.data.fgd_schedules",
           path: `/api/fgd-schedules${params}`,
           validate: "array",
         });

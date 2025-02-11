@@ -73,11 +73,11 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
-        const interview_assessors = fm.data.interview_assessors;
+        const fgd_schedule_assessors = fm.data.fgd_schedule_assessors;
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/interviews",
+          path: "/api/fgd-schedules",
           method: "post",
           data: {
             ...fm.data,
@@ -90,8 +90,8 @@ function Page() {
             end_time: normalDate(fm?.data?.end_date)
               ? `${normalDate(fm?.data?.end_date)} ${fm.data.end_time}:00`
               : null,
-            interview_assessors: Array.isArray(interview_assessors)
-              ? interview_assessors.map((e) => {
+            fgd_schedule_assessors: Array.isArray(fgd_schedule_assessors)
+              ? fgd_schedule_assessors.map((e) => {
                   return typeof e === "string" ? { employee_id: e } : e;
                 })
               : [],
@@ -103,7 +103,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/interviews/document-number",
+          path: "/api/fgd-schedules/document-number",
         });
         return {
           status: "DRAFT",
@@ -295,7 +295,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"interview_assessors"}
+                    name={"fgd_schedule_assessors"}
                     label={"User Assessment"}
                     type={"multi-dropdown"}
                     onLoad={async () => {

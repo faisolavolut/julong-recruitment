@@ -392,7 +392,7 @@ function Page() {
                                     className="text-primary underline"
                                     href={get(local, "detail.url")}
                                   >
-                                    Link Test
+                                    Link Interview
                                   </a>
                                 </p>
                               </div>
@@ -440,7 +440,7 @@ function Page() {
                                     className="text-primary underline"
                                     href={get(local, "detail.url")}
                                   >
-                                    Link Test
+                                    Link Location
                                   </a>
                                 </p>
                               </div>

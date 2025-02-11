@@ -76,7 +76,7 @@ function Page() {
           },
         },
         {
-          name: "start_date",
+          name: "schedule_date",
           header: () => <span>Schedule Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;

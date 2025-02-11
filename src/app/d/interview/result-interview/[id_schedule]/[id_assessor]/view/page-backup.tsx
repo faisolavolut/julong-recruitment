@@ -363,9 +363,7 @@ function Page() {
                       renderCell: ({ row, name }: any) => {
                         return (
                           <FilePreview
-                            url={
-                              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                            }
+                            url={getValue(row, name)}
                             disabled={true}
                             limit_name={10}
                           />

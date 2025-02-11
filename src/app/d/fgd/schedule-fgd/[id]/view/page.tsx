@@ -72,7 +72,7 @@ function Page() {
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/interviews/${id}`,
+          path: `/api/fgd-schedules/${id}`,
           validate: "object",
         });
         const assessors = data?.interview_assessors?.map(
@@ -214,8 +214,8 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"interview_assessors"}
-                    label={"FGDer"}
+                    name={"fgd_schedule_assessors"}
+                    label={"User Assessment"}
                     type={"text"}
                     required={true}
                   />
@@ -347,9 +347,7 @@ function Page() {
                       renderCell: ({ row, name }: any) => {
                         return (
                           <FilePreview
-                            url={
-                              "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-                            }
+                            url={getValue(row, name)}
                             disabled={true}
                             limit_name={10}
                           />
