@@ -9,6 +9,8 @@ import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
+import { dayDate, formatTime } from "@/lib/utils/date";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
 
 function Page() {
   const local = useLocal({
@@ -26,13 +28,13 @@ function Page() {
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/job-postings?page=1&page_size=1`,
+        path: `/api/fgd-schedules?page=1&page_size=1&status=IN PROGRESS`,
         validate: "object",
       });
       const completed: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/job-postings?page=1&page_size=1&status=COMPLETED`,
+        path: `/api/fgd-schedules?page=1&page_size=1&status=COMPLETED`,
         validate: "object",
       });
       local.list = [
@@ -51,7 +53,7 @@ function Page() {
         local.tab = e;
         local.render();
       }}
-      title="Job Posting"
+      title="Schedule FGD"
       name="job-posting"
       header={{
         sideLeft: (data: any) => {
@@ -60,31 +62,38 @@ function Page() {
       }}
       column={[
         {
-          name: "document_number",
-          header: () => <span>Job Posting Number</span>,
+          name: "name",
+          header: () => <span>Schedule Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "job_name",
-          header: () => <span>Job Name</span>,
+          name: "schedule_date",
+          header: () => <span>Schedule Date</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "recruitment_type",
-          header: () => <span>Recruitment Type</span>,
+          name: "start_time",
+          header: () => <span>Start Time</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{formatTime(getValue(row, name))}</>;
           },
         },
         {
-          name: "for_organization_name",
-          header: () => <span>Company</span>,
+          name: "end_time",
+          header: () => <span>End Time</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{formatTime(getValue(row, name))}</>;
+          },
+        },
+        {
+          name: "total_candidate",
+          header: () => <span>Total Candidates</span>,
+          renderCell: ({ row, name }: any) => {
+            return <>{formatMoney(getValue(row, name))}</>;
           },
         },
         {
@@ -115,20 +124,28 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", param);
+        const params = await events("onload-param", {
+          ...param,
+          status: local.tab,
+        });
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.job_postings",
-          path: `/api/job-postings${params}`,
+          value: "data.data.fgd_schedules",
+          path: `/api/fgd-schedules${params}`,
           validate: "array",
         });
         return result;
       }}
       onCount={async () => {
+        const params = await events("onload-param", {
+          status: local.tab,
+          paging: 1,
+          take: 1,
+        });
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/job-postings?page=1&page_size=1`,
+          path: `/api/fgd-schedules${params}`,
           validate: "object",
         });
         return getNumber(result);

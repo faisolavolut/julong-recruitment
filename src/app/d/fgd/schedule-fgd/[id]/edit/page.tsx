@@ -109,7 +109,7 @@ function Page() {
                         task: async () => {
                           await apix({
                             port: "recruitment",
-                            path: `/api/test-schedule-headers/${id}`,
+                            path: `/api/fgd-schedules/${id}`,
                             method: "delete",
                           });
                         },
@@ -134,11 +134,11 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
-        const interview_assessors = fm.data.interview_assessors;
+        const fgd_schedule_assessors = fm.data.fgd_schedule_assessors;
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/interviews/update",
+          path: "/api/fgd-schedules/update",
           method: "put",
           data: {
             ...fm.data,
@@ -155,8 +155,8 @@ function Page() {
                   fm.data.end_time
                 )}:00`
               : null,
-            interview_assessors: Array.isArray(interview_assessors)
-              ? interview_assessors.map((e) => {
+            fgd_schedule_assessors: Array.isArray(fgd_schedule_assessors)
+              ? fgd_schedule_assessors.map((e) => {
                   return typeof e === "string" ? { employee_id: e } : e;
                 })
               : [],
@@ -182,9 +182,9 @@ function Page() {
           start_date: data?.project_recruitment_header?.start_date,
           end_date: data?.project_recruitment_header?.end_date,
           project_number: data?.job_posting?.document_number,
-          interview_assessors: data?.interview_assessors.map(
-            (e: any) => e?.employee_id
-          ),
+          fgd_schedule_assessors: data?.fgd_assessors?.length
+            ? data?.fgd_assessors.map((e: any) => e?.employee_id)
+            : [],
         };
       }}
       showResize={false}
@@ -547,7 +547,7 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.test_applicants",
+                      value: "data.data.fgd_applicants",
                       path: `/api/fgd-applicants/fgd-schedule/${id}${params}`,
                       validate: "array",
                     });

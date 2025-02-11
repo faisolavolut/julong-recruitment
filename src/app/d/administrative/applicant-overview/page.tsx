@@ -15,7 +15,7 @@ function Page() {
   const local = useLocal({
     can_add: false,
     can_edit: false,
-    tab: "IN PROGRESS",
+    tab: "on_going",
     list: [
       { id: "IN PROGRESS", name: "On Going", count: 0 },
       { id: "COMPLETED", name: "Completed", count: 0 },

@@ -414,7 +414,7 @@ function Page() {
                           {local.readyTest ? (
                             <>
                               <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                                <p className="font-bold">FGD:</p>
+                                <p className="font-bold">Schedule FGD:</p>
                                 <p className=" flex flex-row gap-x-2 items-center">
                                   <RiCalendarScheduleLine />
                                   {dayDate(get(local, "detail.start_date")) ===

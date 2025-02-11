@@ -14,7 +14,7 @@ import { FC, useEffect } from "react";
 import { PiMicrosoftExcelLogoFill } from "react-icons/pi";
 
 export const ModalImportResult: FC<{
-  fm: any;
+  fm?: any;
   onUpload: (file: any) => Promise<void>;
   msg: string;
   open: boolean;

@@ -549,7 +549,7 @@ function Page() {
                               <Field
                                 fm={fm_row}
                                 name={"certificate"}
-                                label={"Certificate of Employee (SK)"}
+                                label={"Certificate of School (SK)"}
                                 type={"upload"}
                               />
                             </div>

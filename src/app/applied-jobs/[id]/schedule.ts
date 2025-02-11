@@ -48,7 +48,55 @@ export const scheduleFase = async ({
           validate: "object",
         });
         if (test?.status === "DRAFT") test = null;
-        console.log({ test });
+      } catch (ex) {}
+      if (test) {
+        let url = test.link;
+        let detail = {
+          ...test,
+          url: url,
+          start_date: test?.project_recruitment_line?.start_date,
+          end_date: test?.project_recruitment_line?.end_date,
+          start_time: convertToTimeOnly(test?.start_time),
+          end_time: convertToTimeOnly(test?.end_time),
+        };
+        result = detail;
+      }
+      break;
+    case "FINAL_INTERVIEW":
+      try {
+        test = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/interviews/my-schedule?job_posting_id=${data?.id}&project_recruitment_line_id=${data?.id_line}&status=IN PROGRESS
+                  `,
+          validate: "object",
+        });
+        if (test?.status === "DRAFT") test = null;
+      } catch (ex) {}
+      if (test) {
+        let url = test.link;
+        let detail = {
+          ...test,
+          url: url,
+          start_date: test?.project_recruitment_line?.start_date,
+          end_date: test?.project_recruitment_line?.end_date,
+          start_time: convertToTimeOnly(test?.start_time),
+          end_time: convertToTimeOnly(test?.end_time),
+        };
+        result = detail;
+      }
+      break;
+
+    case "FGD":
+      try {
+        test = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/fgd-schedules/my-schedule?job_posting_id=${data?.id}&project_recruitment_line_id=${data?.id_line}&status=IN PROGRESS
+                    `,
+          validate: "object",
+        });
+        if (test?.status === "DRAFT") test = null;
       } catch (ex) {}
       if (test) {
         let url = test.link;
