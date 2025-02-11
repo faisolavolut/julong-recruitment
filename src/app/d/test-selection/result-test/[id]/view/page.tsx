@@ -408,7 +408,7 @@ function Page() {
                                       link.href = url;
                                       link.setAttribute(
                                         "download",
-                                        "template-import-test.xlsx"
+                                        "export-result-test.xlsx"
                                       );
                                       document.body.appendChild(link);
                                       link.click();

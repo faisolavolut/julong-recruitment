@@ -4,6 +4,7 @@ import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { ButtonContainer } from "@/lib/components/ui/button";
+import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
 import { getParams } from "@/lib/utils/get-params";
@@ -78,50 +79,85 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              <Alert
-                type={"save"}
-                msg={"Are you sure you want to save this form result?"}
-                onClick={() => {
-                  fm.submit();
-                }}
-              >
-                <ButtonContainer className={"bg-primary"}>
-                  <IoMdSave className="text-xl" />
-                  Save
-                </ButtonContainer>
-              </Alert>
-              {local.can_approve && (
-                <>
-                  <Alert
-                    type={"save"}
-                    msg={"Are you sure you want to accepted this applicant?"}
-                    onClick={() => {
-                      fm.submit();
-                    }}
-                  >
-                    <ButtonContainer className={"bg-primary"}>
-                      <IoCheckmarkOutline className="text-xl" />
-                      Approved
-                    </ButtonContainer>
-                  </Alert>
-                  <Alert
-                    type={"delete"}
-                    msg={"Are you sure you want to reject this applicant?"}
-                    onClick={async () => {
-                      await apix({
-                        port: "recruitment",
-                        path: `/api/job-postings`,
-                        method: "delete",
-                      });
-                    }}
-                  >
-                    <ButtonContainer variant={"destructive"}>
-                      <X className="text-xl" />
-                      Rejected
-                    </ButtonContainer>
-                  </Alert>
-                </>
-              )}
+              {local.can_approve &&
+                !["ACCEPTED", "REJECTED"].includes(fm.data?.status) && (
+                  <>
+                    <Alert
+                      type={"save"}
+                      msg={"Are you sure you want to save this form result?"}
+                      onClick={() => {
+                        fm.submit();
+                      }}
+                    >
+                      <ButtonContainer className={"bg-primary"}>
+                        <IoMdSave className="text-xl" />
+                        Save
+                      </ButtonContainer>
+                    </Alert>
+                    <Alert
+                      type={"save"}
+                      msg={"Are you sure you want to accepted this applicant?"}
+                      onClick={async () => {
+                        await actionToast({
+                          task: async () => {
+                            await apix({
+                              port: "recruitment",
+                              path: `/api/interview-applicants/update-status`,
+                              method: "post",
+                              data: {
+                                id: id_result,
+                                status: "ACCEPTED",
+                              },
+                            });
+                          },
+                          after: () => {
+                            fm.data.status === "ACCEPTED";
+                            fm.render();
+                          },
+                          msg_load: "Accepted ",
+                          msg_error: "Accepted failed ",
+                          msg_succes: "Accepted success ",
+                        });
+                      }}
+                    >
+                      <ButtonContainer className={"bg-primary"}>
+                        <IoCheckmarkOutline className="text-xl" />
+                        Approved
+                      </ButtonContainer>
+                    </Alert>
+                    <Alert
+                      type={"delete"}
+                      msg={"Are you sure you want to reject this applicant?"}
+                      onClick={async () => {
+                        await actionToast({
+                          task: async () => {
+                            await apix({
+                              port: "recruitment",
+                              path: `/api/interview-applicants/update-status`,
+                              method: "post",
+                              data: {
+                                id: id_result,
+                                status: "REJECTED",
+                              },
+                            });
+                          },
+                          after: () => {
+                            fm.data.status === "REJECTED";
+                            fm.render();
+                          },
+                          msg_load: "Rejected ",
+                          msg_error: "Rejected failed ",
+                          msg_succes: "Rejected success ",
+                        });
+                      }}
+                    >
+                      <ButtonContainer variant={"destructive"}>
+                        <X className="text-xl" />
+                        Rejected
+                      </ButtonContainer>
+                    </Alert>
+                  </>
+                )}
             </div>
           </div>
         );
@@ -233,7 +269,7 @@ function Page() {
           interviewer_name: assessor?.employee_name,
           question: list_question.map((e: any) => {
             const typeAnswer = e?.answer_types?.name.toLowerCase();
-            const answer = e?.question_responses;
+            const answer = e?.question_responses || [];
             return {
               ...e,
               id_answer: answer?.[0]?.id,

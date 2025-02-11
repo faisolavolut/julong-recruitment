@@ -9,9 +9,9 @@ export const scheduleFase = async ({
   data: any;
 }) => {
   let result = null as any;
+  let test = null as any;
   switch (step) {
     case "TEST":
-      let test = null as any;
       try {
         test = await apix({
           port: "recruitment",
@@ -21,9 +21,7 @@ export const scheduleFase = async ({
           validate: "object",
         });
         if (test?.status === "DRAFT") test = null;
-        console.log({ test });
       } catch (ex) {}
-      console.log("test");
       if (test) {
         let url = test.link;
         const regex = /form\/[a-f0-9-]+/;
@@ -35,7 +33,32 @@ export const scheduleFase = async ({
           ...test,
           url: url,
           start_time: convertToTimeOnly(test?.start_time),
-          end_time: convertToTimeOnly(test?.end_date),
+          end_time: convertToTimeOnly(test?.end_time),
+        };
+        result = detail;
+      }
+      break;
+    case "INTERVIEW":
+      try {
+        test = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/interviews/my-schedule?job_posting_id=${data?.id}&project_recruitment_line_id=${data?.id_line}&status=IN PROGRESS
+                `,
+          validate: "object",
+        });
+        if (test?.status === "DRAFT") test = null;
+        console.log({ test });
+      } catch (ex) {}
+      if (test) {
+        let url = test.link;
+        let detail = {
+          ...test,
+          url: url,
+          start_date: test?.project_recruitment_line?.start_date,
+          end_date: test?.project_recruitment_line?.end_date,
+          start_time: convertToTimeOnly(test?.start_time),
+          end_time: convertToTimeOnly(test?.end_time),
         };
         result = detail;
       }

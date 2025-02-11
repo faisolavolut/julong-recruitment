@@ -19,7 +19,7 @@ import { Field } from "@/lib/components/form/Field";
 import { Form } from "@/lib/components/form/Form";
 import { notFound } from "next/navigation";
 import { labelDocumentType } from "@/lib/utils/document_type";
-import { dayDate, formatTime } from "@/lib/utils/date";
+import { dayDate } from "@/lib/utils/date";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { GoClock } from "react-icons/go";
 import { IoLinkOutline } from "react-icons/io5";
@@ -82,6 +82,7 @@ function Page() {
           id_line: e?.id,
         };
       });
+      steps = steps?.sort((a: any, b: any) => a?.id - b?.id);
       if (steps?.length) {
         steps.push({
           id: steps?.length + 1,
@@ -90,24 +91,21 @@ function Page() {
         });
       }
       const stepNow = steps.find((e: any) => e?.id === now);
-      console.log({ stepNow, res });
       const stepName = stepNow?.name;
-      if (stepName === "TEST") {
-        const test = await scheduleFase({
-          step: "TEST",
-          data: {
-            id: id,
-            id_line: stepNow?.id_line,
-          },
-        });
-        if (!test) {
-          local.readyTest = false;
-        } else {
-          local.readyTest = true;
-          local.detail = test;
-        }
+      console.log({ steps, res });
+      const test = await scheduleFase({
+        step: stepName,
+        data: {
+          id: id,
+          id_line: stepNow?.id_line,
+        },
+      });
+      if (!test) {
+        local.readyTest = false;
+      } else {
+        local.readyTest = true;
+        local.detail = test;
       }
-
       local.stepName = stepName;
       local.steps = steps;
       local.data = data;
@@ -365,33 +363,91 @@ function Page() {
                             You've Passed to the Next Stage! Please stay tuned
                             and check your email regularly for updates.
                           </div>
-                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                            <p className="font-bold">Schedule Interview:</p>
-                            <p className=" flex flex-row gap-x-2 items-center">
-                              <RiCalendarScheduleLine />
-                              {dayDate(new Date()) === dayDate(new Date())
-                                ? dayDate(new Date())
-                                : `${dayDate(new Date())} - ${dayDate(
-                                    new Date()
+                          {local.readyTest ? (
+                            <>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <p className="font-bold">Schedule Interview:</p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <RiCalendarScheduleLine />
+                                  {dayDate(get(local, "detail.start_date")) ===
+                                  dayDate(get(local, "detail.end_date"))
+                                    ? dayDate(get(local, "detail.start_date"))
+                                    : `${dayDate(
+                                        get(local, "detail.start_date")
+                                      )} - ${dayDate(
+                                        get(local, "detail.end_date")
+                                      )}`}
+                                </p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <GoClock />
+                                  {`${get(local, "detail.start_time")} - ${get(
+                                    local,
+                                    "detail.end_time"
                                   )}`}
-                            </p>
-                            <p className=" flex flex-row gap-x-2 items-center">
-                              <GoClock />
-                              {`${formatTime(new Date())} - ${formatTime(
-                                new Date()
-                              )}`}
-                            </p>
-                            <p className=" flex flex-row gap-x-2 items-center">
-                              <IoLinkOutline />
-                              <a
-                                className="text-primary cursor-pointer underline"
-                                target="_blank"
-                                href={"https://meet.google.com/jrb-mxxj-yda"}
-                              >
-                                link meet
-                              </a>
-                            </p>
+                                </p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <IoLinkOutline />
+                                  <a
+                                    target="_blank"
+                                    className="text-primary underline"
+                                    href={get(local, "detail.url")}
+                                  >
+                                    Link Test
+                                  </a>
+                                </p>
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      ) : local.stepName === "FGD" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations{" "}
+                            <LuPartyPopper className="text-pink-500" />
                           </div>
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            You've Passed to the Next Stage! Please stay tuned
+                            and check your email regularly for updates.
+                          </div>
+                          {local.readyTest ? (
+                            <>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <p className="font-bold">FGD:</p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <RiCalendarScheduleLine />
+                                  {dayDate(get(local, "detail.start_date")) ===
+                                  dayDate(get(local, "detail.end_date"))
+                                    ? dayDate(get(local, "detail.start_date"))
+                                    : `${dayDate(
+                                        get(local, "detail.start_date")
+                                      )} - ${dayDate(
+                                        get(local, "detail.end_date")
+                                      )}`}
+                                </p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <GoClock />
+                                  {`${get(local, "detail.start_time")} - ${get(
+                                    local,
+                                    "detail.end_time"
+                                  )}`}
+                                </p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <IoLinkOutline />
+                                  <a
+                                    target="_blank"
+                                    className="text-primary underline"
+                                    href={get(local, "detail.url")}
+                                  >
+                                    Link Test
+                                  </a>
+                                </p>
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       ) : local.stepName === "OFFERING_LETTER" ? (
                         <div className="border border-gray-200 flex flex-col py-4 rounded-lg">

@@ -27,8 +27,8 @@ function Page() {
   const id = getParams("id");
   const [open, setOpen] = useState(false as boolean);
   const id_posting = getParams("id_posting");
-  const labelPage = "Result Interview";
-  const urlPage = `/d/interview/result-interview`;
+  const labelPage = "Final Result Interview";
+  const urlPage = `/d/interview/final-result-interview`;
   const local = useLocal({
     can_edit: false,
     ready: false as boolean,
@@ -341,9 +341,11 @@ function Page() {
                                       document.body.appendChild(link);
                                       link.click();
                                     },
-                                    msg_load: "Download Import Test",
-                                    msg_error: "Download Import Test Failed",
-                                    msg_succes: "Download Import Test Success",
+                                    msg_load: "Download Import Interview",
+                                    msg_error:
+                                      "Download Import Interview Failed",
+                                    msg_succes:
+                                      "Download Import Interview Success",
                                   });
                                 },
                               },
@@ -380,9 +382,11 @@ function Page() {
                                       document.body.appendChild(link);
                                       link.click();
                                     },
-                                    msg_load: "Download Result Test",
-                                    msg_error: "Download Result Test Failed",
-                                    msg_succes: "Download Result Test Success",
+                                    msg_load: "Download Result Interview",
+                                    msg_error:
+                                      "Download Result Interview Failed",
+                                    msg_succes:
+                                      "Download Result Interview Success",
                                   });
                                 },
                               },
