@@ -17,8 +17,6 @@ import { GoVerified } from "react-icons/go";
 import { flattenObject } from "@/lib/utils/flattenObject";
 
 function Page() {
-  const labelPage = "Job Posting";
-  const urlPage = `/d/job/job-posting`;
   const list = [
     { id: "profile", name: "Profile" },
     { id: "work_experience", name: "Work Experience" },
@@ -41,10 +39,7 @@ function Page() {
         path: "/api/users/me",
         method: "get",
       });
-      local.user = {
-        ...res,
-        verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
-      };
+      local.verif = res?.verified_user_profile !== "ACTIVE" ? false : true;
       local.can_add = true;
       local.ready = true;
       local.render();
@@ -162,7 +157,6 @@ function Page() {
             };
             delete data["user"];
             let result = flattenObject(data) as any;
-            console.log(result);
             const res = await apix({
               port: "recruitment",
               value: "data.data",
@@ -506,9 +500,7 @@ function Page() {
                                 name={"school_name"}
                                 label={"School or College Name"}
                                 type={"dropdown"}
-                                onChange={() => {
-                                  console.log(fm_row);
-                                }}
+                                onChange={() => {}}
                                 onLoad={async () => {
                                   const res: any = await apix({
                                     port: "recruitment",
