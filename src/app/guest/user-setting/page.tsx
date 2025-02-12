@@ -560,7 +560,7 @@ function Page() {
                             <div>
                               <Field
                                 fm={fm_row}
-                                name={"graduation_year"}
+                                name={"graduate_year"}
                                 label={"Graduation Year"}
                                 type={"money"}
                               />
