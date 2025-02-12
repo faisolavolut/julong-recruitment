@@ -56,6 +56,27 @@ function Page() {
     local.avatar = URL.createObjectURL(file);
     local.file = file;
     local.render();
+    await actionToast({
+      task: async () => {
+        await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/user-profiles/update-avatar",
+          method: "put",
+          type: "form",
+          data: {
+            id: local.user?.id,
+            avatar: file,
+          },
+        });
+      },
+      after: () => {
+        location.reload();
+      },
+      msg_load: "Update avatar ",
+      msg_error: "Update avatar failed ",
+      msg_succes: "Update avatar success ",
+    });
   };
   if (local.ready && !local.can_add) return notFound();
 
@@ -72,7 +93,9 @@ function Page() {
         <div className="flex flex-row px-10 gap-x-4">
           <div className="w-16 h-16 rounded-full relative overflow-hidden border-2 border-white">
             <img
-              src={siteurl("/dog.jpg")}
+              src={siteurl(
+                local?.user?.avatar ? local?.user?.avatar : "/dog.jpg"
+              )}
               alt="John Cena"
               className=" w-full h-full object-cover "
             />

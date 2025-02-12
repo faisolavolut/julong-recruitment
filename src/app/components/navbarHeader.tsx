@@ -14,17 +14,31 @@ import get from "lodash.get";
 import Link from "next/link";
 import { useEffect, type FC } from "react";
 import { configMenu } from "../d/config-menu";
+import { apix } from "@/lib/utils/apix";
 
 const DefaultHeaderNavigation: FC = function () {
   const local = useLocal({
     user: null as any,
     role: null as any,
+    profile: null as any,
   });
   useEffect(() => {
     const run = async () => {
       userToken();
       const w: any = window;
       local.user = w?.user;
+      local.render();
+      const res = await apix({
+        port: "recruitment",
+        value: "data.data",
+        path: "/api/user-profiles/user",
+        method: "get",
+      });
+      local.user = {
+        ...local?.user,
+        avatar: res?.avatar,
+      };
+      local.profile = res;
       local.render();
     };
     run();
@@ -104,7 +118,12 @@ const UserDropdown: FC<{ user: any }> = function ({ user }) {
       label={
         <span>
           <span className="sr-only">User menu</span>
-          <Avatar alt="" img={siteurl("/dog.jpg")} rounded size="sm" />
+          <Avatar
+            alt=""
+            img={siteurl(user?.avatar ? user?.avatar : "/dog.jpg")}
+            rounded
+            size="sm"
+          />
         </span>
       }
     >
