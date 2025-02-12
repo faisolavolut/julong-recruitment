@@ -37,7 +37,7 @@ function Page() {
   useEffect(() => {
     const run = async () => {
       const res = await apix({
-        port: "portal",
+        port: "recruitment",
         value: "data.data",
         path: "/api/user-profiles/user",
         method: "get",
@@ -47,6 +47,7 @@ function Page() {
       local.can_add = true;
       local.ready = true;
       local.render();
+      console.log({ local });
     };
     run();
   }, []);
