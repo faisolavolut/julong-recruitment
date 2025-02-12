@@ -47,7 +47,6 @@ function Page() {
       local.can_add = true;
       local.ready = true;
       local.render();
-      console.log({ local });
     };
     run();
   }, []);
@@ -474,6 +473,7 @@ function Page() {
                               /> */}
                               <Field
                                 fm={fm_row}
+                                required={true}
                                 name={"education_level"}
                                 label={"Education Level"}
                                 type={"dropdown"}
@@ -532,6 +532,7 @@ function Page() {
                                 fm={fm_row}
                                 allowNew={true}
                                 name={"school_name"}
+                                required={true}
                                 label={"School or College Name"}
                                 type={"dropdown"}
                                 onChange={() => {}}
@@ -553,6 +554,7 @@ function Page() {
                             <div>
                               <Field
                                 fm={fm_row}
+                                required={true}
                                 name={"major"}
                                 label={"Major"}
                                 type={"text"}
@@ -561,6 +563,16 @@ function Page() {
                             <div>
                               <Field
                                 fm={fm_row}
+                                required={true}
+                                name={"end_date"}
+                                label={"Date of Graduation"}
+                                type={"date"}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm_row}
+                                required={true}
                                 name={"graduate_year"}
                                 label={"Graduation Year"}
                                 type={"money"}
@@ -569,6 +581,7 @@ function Page() {
                             <div>
                               <Field
                                 fm={fm_row}
+                                required={true}
                                 name={"gpa"}
                                 label={"GPA"}
                                 type={"money"}
