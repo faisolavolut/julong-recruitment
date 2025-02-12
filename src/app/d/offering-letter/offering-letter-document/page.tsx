@@ -23,6 +23,16 @@ function Page() {
     const run = async () => {
       local.can_add = access("create-offering-letter-document");
       local.can_edit = access("edit-offering-letter-document");
+      const res: any = await apix({
+        port: "recruitment",
+        value: "data.data",
+        path: "/api/document-types",
+        validate: "array",
+      });
+      const findDocument = res.find(
+        (item: any) => item.name === "Offering Letter"
+      );
+      console.log({ res });
       local.render();
     };
     run();

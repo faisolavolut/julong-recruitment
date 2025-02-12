@@ -114,6 +114,7 @@ function Page() {
       onLoad={async (param: any) => {
         const prm = {
           ...param,
+          status: "INACTIVE",
         };
         const params = await events("onload-param", prm);
         const result: any = await apix({
@@ -122,13 +123,14 @@ function Page() {
           path: `/api/user-profiles${params}`,
           validate: "array",
         });
+        console.log({ result });
         return result;
       }}
       onCount={async () => {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/user-profiles?page=1&page_size=1`,
+          path: `/api/user-profiles?page=1&page_size=1&status=INACTIVE`,
           validate: "object",
         });
         return getNumber(result);
