@@ -5,8 +5,7 @@ WORKDIR /app
 # Salin file yang diperlukan untuk instalasi dependencies
 RUN apt-get update && apt-get install -y git && apt-get clean
 
-RUN git clone https://github.com/faisolavolut/julong-lib.git src/lib && \
-cd src/lib && npm install 
+RUN git clone https://github.com/faisolavolut/julong-lib.git src/lib
 
 COPY package.json package-lock.json ./
 # Install dependencies
