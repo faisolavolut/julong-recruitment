@@ -1,5 +1,5 @@
 # Stage 1: Install dependencies
-FROM node:20-slim AS deps
+FROM node:22-slim AS deps
 WORKDIR /app
 
 # Salin file yang diperlukan untuk instalasi dependencies
@@ -12,7 +12,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 # Stage 2: Build aplikasi
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 WORKDIR /app
 
 # Salin dependencies dari stage sebelumnya
@@ -68,7 +68,7 @@ RUN cat .env
 RUN npm run build
 
 # Stage 3: Jalankan aplikasi
-FROM node:20-slim AS runner
+FROM node:22-slim AS runner
 
 WORKDIR /app
 COPY --from=builder /app ./
