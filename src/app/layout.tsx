@@ -7,7 +7,7 @@ import { navigate } from "@/lib/utils/navigate";
 import classnames from "classnames";
 import { css } from "@emotion/css";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import dotenv from "dotenv";
 import { userRoleMe } from "@/lib/utils/getAccess";
@@ -23,11 +23,13 @@ globalThis.css = css;
 globalThis.uuid = uuidv4;
 globalThis.navigate = navigate;
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+  const [isClient, setIsClient] = useState(false);
   const local = useLocal({
     ready: false,
   });
   const routerInstance = useRouter();
   useEffect(() => {
+    setIsClient(true);
     const run = async () => {
       let isUser = false;
       try {
@@ -74,13 +76,20 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           ></iframe>
         </noscript>
         <Toaster position="top-right" />
-        {local.ready ? (
-          children
+        {isClient ? (
+          <>
+            {local.ready ? (
+              children
+            ) : (
+              <div className="h-screen w-screen flex flex-row items-center justify-center">
+                <div className="spinner-better"></div>
+              </div>
+            )}
+          </>
         ) : (
-          <div className="h-screen w-screen flex flex-row items-center justify-center">
-            <div className="spinner-better"></div>
-          </div>
+          <></>
         )}
+
         <Script />
       </body>
     </html>

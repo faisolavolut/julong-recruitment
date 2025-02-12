@@ -113,7 +113,6 @@ function Page() {
       ]}
       onLoad={async (param: any) => {
         const prm = {
-          status: "INACTIVE",
           ...param,
         };
         const params = await events("onload-param", prm);
