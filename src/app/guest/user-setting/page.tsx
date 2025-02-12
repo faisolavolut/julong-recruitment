@@ -41,7 +41,10 @@ function Page() {
         path: "/api/users/me",
         method: "get",
       });
-      local.verif = res?.verified_user_profile === "false" ? false : true;
+      local.user = {
+        ...res,
+        verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
+      };
       local.can_add = true;
       local.ready = true;
       local.render();

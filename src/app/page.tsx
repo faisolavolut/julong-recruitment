@@ -23,6 +23,7 @@ function HomePage() {
     ready: false,
     access: true,
     jobs: [] as any[],
+    user: null as any,
   });
   useEffect(() => {
     const run = async () => {
@@ -37,9 +38,25 @@ function HomePage() {
         local.jobs = res;
         local.render();
       } catch (ex) {}
+
+      try {
+        const res = await apix({
+          port: "portal",
+          value: "data.data",
+          path: "/api/users/me",
+          method: "get",
+        });
+        local.user = {
+          ...res,
+          verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
+        };
+      } catch (ex) {}
+      local.ready = true;
+      local.render();
     };
     run();
   }, []);
+
   if (local.ready) {
     if (!local.access) return <ServerErrorPage />;
   }
@@ -131,7 +148,7 @@ function HomePage() {
                 gap={4}
                 data={local.jobs}
                 child={(item, idx, data, key) => {
-                  return <JobCard data={item} />;
+                  return <JobCard data={item} user={local?.user} />;
                 }}
                 col={4}
               />

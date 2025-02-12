@@ -2,22 +2,11 @@
 import get from "lodash.get";
 import { useEffect, useState } from "react";
 import { useLocal } from "@/lib/utils/use-local";
-import { Form } from "@/lib/components/form/Form";
-import { Field } from "@/lib/components/form/Field";
-import { ButtonBetter } from "@/lib/components/ui/button";
-import { IoIosSearch } from "react-icons/io";
 import { PinterestLayout } from "@/lib/components/ui/PinterestLayout";
 import DefaultHeaderNavigation from "@/app/components/navbarHeader";
 import JobCard from "@/app/components/JobCard";
 import FlowbiteFooterSection from "@/app/components/flowbite-footer";
-import { MdOutlineLocationOn } from "react-icons/md";
 import { apix } from "@/lib/utils/apix";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
 import { PaginationPage } from "@/lib/components/tablelist/TableList";
 import { getNumber } from "@/lib/utils/getNumber";
 
@@ -31,6 +20,7 @@ function HomePage() {
     count: 0,
     page: 1,
     maxPage: 100,
+    user: null as any,
   });
   useEffect(() => {
     setIsClient(true);
@@ -54,6 +44,21 @@ function HomePage() {
         local.maxPage = Math.ceil(getNumber(count) / 15);
         local.render();
       } catch (ex) {}
+
+      try {
+        const res = await apix({
+          port: "portal",
+          value: "data.data",
+          path: "/api/users/me",
+          method: "get",
+        });
+        local.user = {
+          ...res,
+          verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
+        };
+      } catch (ex) {}
+      local.ready = true;
+      local.render();
     };
     run();
   }, []);
@@ -85,7 +90,7 @@ function HomePage() {
                   gap={8}
                   data={local.data}
                   child={(item, idx, data, key) => {
-                    return <JobCard data={item} />;
+                    return <JobCard data={item} user={local?.user} />;
                   }}
                   col={4}
                 />

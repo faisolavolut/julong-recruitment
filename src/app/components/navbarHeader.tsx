@@ -54,9 +54,9 @@ const DefaultHeaderNavigation: FC = function () {
               <ButtonLink href="/applied-jobs" variant={"noline"}>
                 Applied Jobs
               </ButtonLink>
-              <ButtonLink href="/about" variant={"noline"}>
+              {/* <ButtonLink href="/about" variant={"noline"}>
                 About Us
-              </ButtonLink>
+              </ButtonLink> */}
             </>
           ) : (
             <>
@@ -80,10 +80,13 @@ const DefaultHeaderNavigation: FC = function () {
             </>
           ) : (
             <>
-              <ButtonLink href={`${siteurl("/auth/login")}`} variant={"noline"}>
+              <ButtonLink
+                href={`${siteurl("/login", "portal")}`}
+                variant={"noline"}
+              >
                 Log in
               </ButtonLink>
-              <ButtonLink href={`${siteurl("/auth/register")}`}>
+              <ButtonLink href={`${siteurl("/register", "portal")}`}>
                 Sign up
               </ButtonLink>
             </>
@@ -107,10 +110,10 @@ const UserDropdown: FC = function () {
     >
       <Dropdown.Header>
         <span className="block text-md">
-          {get_user("employee.name") ? get_user("employee.name") : "-"}
+          {get_user("name") ? get_user("name") : "-"}
         </span>
         <span className="block truncate text-md font-medium">
-          {get_user("employee.email") ? get_user("employee.email") : "-"}
+          {get_user("email") ? get_user("email") : "-"}
         </span>
       </Dropdown.Header>
 
