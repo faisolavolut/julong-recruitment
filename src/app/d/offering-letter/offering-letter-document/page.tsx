@@ -17,6 +17,7 @@ function Page() {
   const local = useLocal({
     can_add: false,
     can_edit: false,
+    id_document: null,
   });
 
   useEffect(() => {
@@ -30,9 +31,9 @@ function Page() {
         validate: "array",
       });
       const findDocument = res.find(
-        (item: any) => item.name === "Offering Letter"
+        (item: any) => item.name === "OFFERING_LETTER"
       );
-      console.log({ res });
+      local.id_document = findDocument?.id;
       local.render();
     };
     run();
@@ -141,20 +142,47 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", param);
+        const res: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/document-types",
+          validate: "array",
+        });
+        const findDocument = res.find(
+          (item: any) => item.name === "OFFERING_LETTER"
+        );
+        const params = await events("onload-param", {
+          ...param,
+          document_type_id: findDocument?.id,
+        });
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
-          path: `/api/job-postings${params}`,
+          path: `/api/document-sending${params}`,
           validate: "array",
         });
         return result;
       }}
       onCount={async () => {
+        const res: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/document-types",
+          validate: "array",
+        });
+        const findDocument = res.find(
+          (item: any) => item.name === "OFFERING_LETTER"
+        );
+        const params = await events("onload-param", {
+          document_type_id: findDocument?.id,
+          paging: 1,
+          take: 1,
+        });
+
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/job-postings?page=1&page_size=1`,
+          path: `/api/document-sending${params}`,
           validate: "object",
         });
         return getNumber(result);

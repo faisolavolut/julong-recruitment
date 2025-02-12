@@ -29,8 +29,8 @@ import { RiDownloadCloudLine } from "react-icons/ri";
 
 function Page() {
   const id = getParams("id");
-  const labelPage = "Document Checking";
-  const urlPage = `/d/master-data/document-checking`;
+  const labelPage = "Offering Letter Document";
+  const urlPage = `/d/offering-letter/offering-letter-document`;
   const local = useLocal({
     can_edit: false,
     ready: false as boolean,
@@ -89,8 +89,8 @@ function Page() {
                     label: "Submit",
                     icon: <IoMdSave className="text-xl" />,
                     onClick: async () => {
-                      // fm.data.status = "COMPLETED";
-                      // fm.submit();
+                      fm.data.status = "PENDING";
+                      fm.submit();
                     },
                     msg: "Are you sure you want to submit this record?",
                     alert: true,
@@ -100,21 +100,30 @@ function Page() {
                     icon: <IoCheckmarkOutline className="text-xl" />,
                     msg: "Are you sure you want to completed this record?",
                     alert: true,
-                    onClick: async () => {},
+                    onClick: async () => {
+                      fm.data.status = "COMPLETED";
+                      fm.submit();
+                    },
                   },
                   {
                     label: "Revise",
                     icon: <TbEyeEdit className="text-xl" />,
                     msg: "Are you sure you want to revise this record?",
                     alert: true,
-                    onClick: async () => {},
+                    onClick: async () => {
+                      fm.data.status = "REVISE";
+                      fm.submit();
+                    },
                   },
                   {
                     label: "Rejected",
                     icon: <X className="text-xl" />,
                     msg: "Are you sure you want to rejected this record?",
                     alert: true,
-                    onClick: async () => {},
+                    onClick: async () => {
+                      fm.data.status = "REJECTED";
+                      fm.submit();
+                    },
                   },
                   {
                     label: "Download Document",
@@ -124,7 +133,10 @@ function Page() {
                   {
                     label: "Send",
                     icon: <IoIosSend className="text-xl" />,
-                    onClick: async () => {},
+                    onClick: async () => {
+                      fm.data.status = "PENDING";
+                      fm.submit();
+                    },
                     msg: "Are you sure you want to send this offer letter to the applicant?",
                     alert: true,
                   },
@@ -135,14 +147,14 @@ function Page() {
                     onClick: async () => {
                       await actionToast({
                         task: async () => {
-                          // await apix({
-                          //   port: "recruitment",
-                          //   path: `/api/document-verifications/${id}`,
-                          //   method: "delete",
-                          // });
+                          await apix({
+                            port: "recruitment",
+                            path: `/api/document-sending/${id}`,
+                            method: "delete",
+                          });
                         },
                         after: () => {
-                          // navigate(urlPage);
+                          navigate(urlPage);
                         },
                         msg_load: "Delete ",
                         msg_error: "Delete failed ",
@@ -162,7 +174,7 @@ function Page() {
         await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-verifications",
+          path: "/api/document-sending/update",
           method: "put",
           data: {
             ...fm.data,
@@ -170,14 +182,20 @@ function Page() {
         });
       }}
       onLoad={async () => {
-        return {};
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/document-verifications/${id}`,
+          path: `/api/document-sending/${id}`,
           validate: "object",
         });
-        return data;
+        return {
+          ...data,
+          email: data?.applicant?.user_profile?.user?.email,
+          project_number:
+            data?.job_posting?.project_recruitment_header?.document_number,
+          project_recruitment_header_id:
+            data?.job_posting?.project_recruitment_header_id,
+        };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -213,13 +231,25 @@ function Page() {
                     label={"Job Name"}
                     required={true}
                     type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.project_recruitment_header_id =
+                        data?.project_recruitment_header_id;
+                      fm.data.project_number =
+                        data?.project_recruitment_header?.document_number;
+                      fm.data.for_organization_id = data?.for_organization_id;
+                      fm.render();
+                    }}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.job_postings",
                         path: "/api/job-postings?status=IN PROGRESS",
                         validate: "dropdown",
-                        keys: { label: "job_name" },
+                        keys: {
+                          label: (item: any) => {
+                            return `${item.job_name} - ${item.document_number}`;
+                          },
+                        },
                       });
                       return res;
                     }}
@@ -256,7 +286,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"organization_name"}
+                    name={"for_organization_id"}
                     label={"Organization Name"}
                     required={true}
                     type={"dropdown"}
@@ -282,6 +312,10 @@ function Page() {
                     }
                     required={true}
                     type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.order = data?.order;
+                      fm.render();
+                    }}
                     onLoad={async () => {
                       if (!fm?.data?.project_recruitment_header_id) return [];
                       const res: any = await apix({
@@ -309,17 +343,12 @@ function Page() {
                     label={"Document Type"}
                     type={"dropdown"}
                     onChange={({ data }) => {
-                      console.log(data);
                       const result = data?.header + data?.body + data?.footer;
-                      console.log({ result });
                       fm.data.detail_content = result;
                       fm.render();
-                      console.log(fm.data.detail_content);
-
                       if (
                         typeof fm?.fields?.detail_content?.reload === "function"
                       ) {
-                        console.log("HALOO");
                         fm?.fields?.detail_content?.reload();
                       }
                     }}
@@ -361,9 +390,33 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"name"}
+                              name={"applicant_id"}
                               label={"Recipient's Name"}
-                              type={"text"}
+                              disabled={
+                                fm?.data?.project_recruitment_line_id &&
+                                fm?.data?.job_posting_id
+                                  ? false
+                                  : true
+                              }
+                              type={"dropdown"}
+                              onChange={({ data }) => {
+                                fm.data.email = data?.user_profile?.user?.email;
+                              }}
+                              onLoad={async () => {
+                                if (
+                                  !fm?.data?.project_recruitment_line_id ||
+                                  !fm?.data?.job_posting_id
+                                )
+                                  return [];
+                                const res: any = await apix({
+                                  port: "recruitment",
+                                  value: "data.data.applicants",
+                                  path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}?order=${fm?.data?.order}`,
+                                  validate: "dropdown",
+                                  keys: { label: "user_profile.name" },
+                                });
+                                return res;
+                              }}
                             />
                           </div>
                           <div>
@@ -372,6 +425,7 @@ function Page() {
                               name={"email"}
                               label={"Recipient's Email"}
                               type={"text"}
+                              disabled={true}
                             />
                           </div>
                           <div className="col-span-2">

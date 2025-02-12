@@ -18,6 +18,7 @@ import {
   AccordionItem,
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const labelPage = "Offering Letter Document";
@@ -80,10 +81,11 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/final-interview-result",
+          path: "/api/document-sending",
           method: "post",
           data: {
             ...fm.data,
+            document_date: normalDate(fm.data?.document_date),
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
@@ -92,7 +94,7 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/job-postings/document-number",
+          path: "/api/document-sending/document-number",
         });
         return {
           status: "DRAFT",
@@ -133,13 +135,25 @@ function Page() {
                     label={"Job Name"}
                     required={true}
                     type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.project_recruitment_header_id =
+                        data?.project_recruitment_header_id;
+                      fm.data.project_number =
+                        data?.project_recruitment_header?.document_number;
+                      fm.data.for_organization_id = data?.for_organization_id;
+                      fm.render();
+                    }}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.job_postings",
                         path: "/api/job-postings?status=IN PROGRESS",
                         validate: "dropdown",
-                        keys: { label: "job_name" },
+                        keys: {
+                          label: (item: any) => {
+                            return `${item.job_name} - ${item.document_number}`;
+                          },
+                        },
                       });
                       return res;
                     }}
@@ -176,7 +190,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"organization_name"}
+                    name={"for_organization_id"}
                     label={"Organization Name"}
                     required={true}
                     type={"dropdown"}
@@ -202,6 +216,11 @@ function Page() {
                     }
                     required={true}
                     type={"dropdown"}
+                    onChange={({ data }) => {
+                      console.log(data);
+                      fm.data.order = data?.order;
+                      fm.render();
+                    }}
                     onLoad={async () => {
                       if (!fm?.data?.project_recruitment_header_id) return [];
                       const res: any = await apix({
@@ -229,17 +248,12 @@ function Page() {
                     label={"Document Type"}
                     type={"dropdown"}
                     onChange={({ data }) => {
-                      console.log(data);
                       const result = data?.header + data?.body + data?.footer;
-                      console.log({ result });
                       fm.data.detail_content = result;
                       fm.render();
-                      console.log(fm.data.detail_content);
-
                       if (
                         typeof fm?.fields?.detail_content?.reload === "function"
                       ) {
-                        console.log("HALOO");
                         fm?.fields?.detail_content?.reload();
                       }
                     }}
@@ -281,9 +295,33 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"name"}
+                              name={"applicant_id"}
                               label={"Recipient's Name"}
-                              type={"text"}
+                              disabled={
+                                fm?.data?.project_recruitment_line_id &&
+                                fm?.data?.job_posting_id
+                                  ? false
+                                  : true
+                              }
+                              type={"dropdown"}
+                              onChange={({ data }) => {
+                                fm.data.email = data?.user_profile?.user?.email;
+                              }}
+                              onLoad={async () => {
+                                if (
+                                  !fm?.data?.project_recruitment_line_id ||
+                                  !fm?.data?.job_posting_id
+                                )
+                                  return [];
+                                const res: any = await apix({
+                                  port: "recruitment",
+                                  value: "data.data.applicants",
+                                  path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}?order=${fm?.data?.order}`,
+                                  validate: "dropdown",
+                                  keys: { label: "user_profile.name" },
+                                });
+                                return res;
+                              }}
                             />
                           </div>
                           <div>
@@ -292,6 +330,7 @@ function Page() {
                               name={"email"}
                               label={"Recipient's Email"}
                               type={"text"}
+                              disabled={true}
                             />
                           </div>
                           <div className="col-span-2">
