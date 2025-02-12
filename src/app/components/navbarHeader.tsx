@@ -76,7 +76,7 @@ const DefaultHeaderNavigation: FC = function () {
         <div className="flex items-center gap-3 lg:order-2 justify-end">
           {local.user ? (
             <>
-              <UserDropdown />
+              <UserDropdown user={local.user} />
             </>
           ) : (
             <>
@@ -96,7 +96,7 @@ const DefaultHeaderNavigation: FC = function () {
     </div>
   );
 };
-const UserDropdown: FC = function () {
+const UserDropdown: FC<{ user: any }> = function ({ user }) {
   return (
     <Dropdown
       arrowIcon={false}
@@ -116,43 +116,54 @@ const UserDropdown: FC = function () {
           {get_user("email") ? get_user("email") : "-"}
         </span>
       </Dropdown.Header>
-
-      <Dropdown.Item
-        onClick={async () => {
-          try {
-            const user = await api.get(
-              `${process.env.NEXT_PUBLIC_API_PORTAL}/api/users/me`
-            );
-            const us = user.data.data;
-            if (us) {
-              localStorage.setItem("user", JSON.stringify(user.data.data));
-              const roles = await userRoleMe();
-              const permision = get(roles, "[0].permissions");
-              const menuMe = filterMenuByPermission(configMenu, permision);
-              router.push(getFirstMenuWithUrl(menuMe));
-            } else {
-              navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
-            }
-          } catch (e) {
-            navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
-          }
-        }}
-      >
-        Dashboard
-      </Dropdown.Item>
-      <Dropdown.Divider />
-      <Dropdown.Item
-        className="flex flex-row items-center gap-x-1"
-        onClick={() => {
-          if (typeof window === "object")
-            navigate(
-              `${process.env.NEXT_PUBLIC_API_PORTAL}/choose-roles?state=manpower`
-            );
-        }}
-      >
-        Switch Role
-      </Dropdown.Item>
-      <Dropdown.Divider />
+      {get(user, "roles[0].permissions.length") ? (
+        <>
+          <Dropdown.Item
+            onClick={async () => {
+              try {
+                const user = await api.get(
+                  `${process.env.NEXT_PUBLIC_API_PORTAL}/api/users/me`
+                );
+                const us = user.data.data;
+                if (us) {
+                  localStorage.setItem("user", JSON.stringify(user.data.data));
+                  const roles = await userRoleMe();
+                  const permision = get(roles, "[0].permissions");
+                  const menuMe = filterMenuByPermission(configMenu, permision);
+                  router.push(getFirstMenuWithUrl(menuMe));
+                } else {
+                  navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
+                }
+              } catch (e) {
+                navigate(`${process.env.NEXT_PUBLIC_API_PORTAL}/login`);
+              }
+            }}
+          >
+            Dashboard
+          </Dropdown.Item>
+          <Dropdown.Divider />
+        </>
+      ) : (
+        <></>
+      )}
+      {get(user, "roles[0].permissions.length") ? (
+        <>
+          <Dropdown.Item
+            className="flex flex-row items-center gap-x-1"
+            onClick={() => {
+              if (typeof window === "object")
+                navigate(
+                  `${process.env.NEXT_PUBLIC_API_PORTAL}/choose-roles?state=recruitment`
+                );
+            }}
+          >
+            Switch Role
+          </Dropdown.Item>
+          <Dropdown.Divider />
+        </>
+      ) : (
+        <></>
+      )}
       <Dropdown.Item
         className="flex flex-row items-center gap-x-1"
         onClick={() => {

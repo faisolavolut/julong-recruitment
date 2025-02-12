@@ -92,6 +92,48 @@ function Page() {
                 <div className="flex flex-col px-10 gap-x-4 gap-y-2">
                   <div className=""></div>
 
+                  <div className="flex flex-row">
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-500">
+                          Salary (Rupiah)
+                        </h3>
+                        <p className="text-lg font-semibold text-green-600">
+                          Rp
+                          {formatMoney(
+                            getNumber(get(local, "data.salary_min"))
+                          )}{" "}
+                          - Rp
+                          {formatMoney(
+                            getNumber(get(local, "data.salary_max"))
+                          )}
+                        </p>
+                        <p className="text-xs text-gray-400">Monthly salary</p>
+                      </div>
+                      <div className="border-l border-gray-300 h-full mx-4"></div>
+                      <div className="text-center">
+                        <div className="flex items-center justify-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={25}
+                            height={25}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="m15 19.923l-6-2.1l-3.958 1.53q-.384.143-.713-.083T4 18.634V6.404q0-.268.13-.489t.378-.307L9 4.077l6 2.1l3.958-1.53q.384-.143.713.054t.329.588v12.384q0 .287-.159.498q-.158.212-.426.298zm-.5-1.22v-11.7l-5-1.745v11.7zm1 0L19 17.55V5.7l-3.5 1.304zM5 18.3l3.5-1.342v-11.7L5 6.45zM15.5 7.004v11.7zm-7-1.746v11.7z"
+                            ></path>
+                          </svg>
+                        </div>
+                        <h3 className="text-sm font-medium text-gray-500 mt-1">
+                          Job Location
+                        </h3>
+                        <p className="text-lg font-semibold text-gray-800">
+                          {get(local, "data.for_organization_location")}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   {local.applied ? (
                     <ButtonBetter className="bg-gray-300 text-black hover:bg-gray-300 cursor-default		">
                       <svg
@@ -109,7 +151,9 @@ function Page() {
                     </ButtonBetter>
                   ) : local.user?.verif !== "ACTIVE" ? (
                     <ButtonBetter
-                      className={"bg-primary"}
+                      className={
+                        "text-primary bg-gradient-to-r from-blue-100 to-blue-50"
+                      }
                       onClick={async (e: any) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -164,7 +208,11 @@ function Page() {
                         });
                       }}
                     >
-                      <ButtonContainer className={"bg-primary"}>
+                      <ButtonContainer
+                        className={
+                          "text-primary bg-gradient-to-r from-blue-100 to-blue-50"
+                        }
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width={20}
@@ -180,48 +228,6 @@ function Page() {
                       </ButtonContainer>
                     </Alert>
                   )}
-                  <div className="flex flex-row">
-                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
-                      <div>
-                        <h3 className="text-sm font-medium text-gray-500">
-                          Salary (Rupiah)
-                        </h3>
-                        <p className="text-lg font-semibold text-green-600">
-                          Rp
-                          {formatMoney(
-                            getNumber(get(local, "data.salary_min"))
-                          )}{" "}
-                          - Rp
-                          {formatMoney(
-                            getNumber(get(local, "data.salary_max"))
-                          )}
-                        </p>
-                        <p className="text-xs text-gray-400">Monthly salary</p>
-                      </div>
-                      <div className="border-l border-gray-300 h-full mx-4"></div>
-                      <div className="text-center">
-                        <div className="flex items-center justify-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={25}
-                            height={25}
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              fill="currentColor"
-                              d="m15 19.923l-6-2.1l-3.958 1.53q-.384.143-.713-.083T4 18.634V6.404q0-.268.13-.489t.378-.307L9 4.077l6 2.1l3.958-1.53q.384-.143.713.054t.329.588v12.384q0 .287-.159.498q-.158.212-.426.298zm-.5-1.22v-11.7l-5-1.745v11.7zm1 0L19 17.55V5.7l-3.5 1.304zM5 18.3l3.5-1.342v-11.7L5 6.45zM15.5 7.004v11.7zm-7-1.746v11.7z"
-                            ></path>
-                          </svg>
-                        </div>
-                        <h3 className="text-sm font-medium text-gray-500 mt-1">
-                          Job Location
-                        </h3>
-                        <p className="text-lg font-semibold text-gray-800">
-                          {get(local, "data.for_organization_location")}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
               <div className="flex flex-row gap-x-4 p-8">

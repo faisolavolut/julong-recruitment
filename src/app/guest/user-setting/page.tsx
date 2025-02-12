@@ -29,6 +29,9 @@ function Page() {
     tab: get(list, "[0].id"),
     fm: null as any,
     verif: false,
+    user: null as any,
+    avatar: siteurl("/dog.jpg"),
+    file: null as any,
   });
 
   useEffect(() => {
@@ -36,10 +39,11 @@ function Page() {
       const res = await apix({
         port: "portal",
         value: "data.data",
-        path: "/api/users/me",
+        path: "/api/user-profiles/user",
         method: "get",
       });
-      local.verif = res?.verified_user_profile !== "ACTIVE" ? false : true;
+      local.user = res;
+      local.verif = res?.status !== "ACTIVE" ? false : true;
       local.can_add = true;
       local.ready = true;
       local.render();
@@ -47,6 +51,12 @@ function Page() {
     run();
   }, []);
 
+  const handleFileChange = async (event: any) => {
+    const file = event.target.files[0];
+    local.avatar = URL.createObjectURL(file);
+    local.file = file;
+    local.render();
+  };
   if (local.ready && !local.can_add) return notFound();
 
   return (
@@ -60,16 +70,29 @@ function Page() {
         )}
       >
         <div className="flex flex-row px-10 gap-x-4">
-          <div className="w-16 h-16">
+          <div className="w-16 h-16 rounded-full relative overflow-hidden border-2 border-white">
             <img
               src={siteurl("/dog.jpg")}
               alt="John Cena"
-              className="rounded-full w-full h-full object-cover border-2 border-white"
+              className=" w-full h-full object-cover "
             />
+            <label
+              htmlFor="dropzone-file"
+              className="text-white text-center absolute bottom-0 left-0 h-full flex flex-row items-center justify-center w-full text-xs  hover:bg-black/60  text-center py-1 cursor-pointer"
+            >
+              Click to Upload
+              <input
+                id="dropzone-file"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+                accept=".jpg,.jpeg,.png"
+              />
+            </label>
           </div>
           <div className="text-white">
             <div className="flex flex-row gap-x-2">
-              <h1 className="text-lg font-semibold">John Cena </h1>
+              <h1 className="text-lg font-semibold"> {local?.user?.name} </h1>
               {local.verif ? (
                 <div className="flex flex-row gap-x-2 items-center justify-center rounded-full bg-blue-500 text-xs px-2">
                   <GoVerified /> Verified
@@ -82,11 +105,11 @@ function Page() {
             </div>
             <p className="text-sm flex items-center  flex-row gap-x-2">
               <MdOutlineLocationOn />
-              Surabaya, Indonesia
+              {local?.user?.address ? local?.user?.address : "No Address"}
             </p>
             <p className="text-sm flex items-center flex-row gap-x-2">
               <IoMdMail />
-              johncena@gmail.com
+              {local?.user?.user?.email}
             </p>
           </div>
         </div>
@@ -192,6 +215,7 @@ function Page() {
                     <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                       <div>
                         <Field
+                          required={true}
                           fm={fm}
                           name={"name"}
                           label={"Full Name"}
@@ -200,6 +224,7 @@ function Page() {
                       </div>
                       <div>
                         <Field
+                          required={true}
                           fm={fm}
                           name={"address"}
                           label={"Address"}
@@ -208,6 +233,7 @@ function Page() {
                       </div>
                       <div>
                         <Field
+                          required={true}
                           fm={fm}
                           name={"marital_status"}
                           label={"Marital Status"}
@@ -232,6 +258,7 @@ function Page() {
                       </div>
                       <div>
                         <Field
+                          required={true}
                           fm={fm}
                           name={"age"}
                           label={"Age"}
@@ -240,6 +267,7 @@ function Page() {
                       </div>
                       <div>
                         <Field
+                          required={true}
                           fm={fm}
                           name={"email"}
                           label={"Email"}
@@ -257,6 +285,7 @@ function Page() {
                       </div>
                       <div>
                         <Field
+                          required={true}
                           fm={fm}
                           name={"gender"}
                           label={"Gender"}
@@ -278,6 +307,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
+                          required={true}
                           name={"birth_place"}
                           label={"Birth Place"}
                           type={"text"}
@@ -286,6 +316,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
+                          required={true}
                           name={"birth_date"}
                           label={"Birth Date"}
                           type={"date"}
@@ -294,6 +325,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
+                          required={true}
                           name={"ktp"}
                           label={"KTP"}
                           type={"upload"}
@@ -322,6 +354,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
+                          required={true}
                           name={"curriculum_vitae"}
                           label={"CV"}
                           type={"upload"}
