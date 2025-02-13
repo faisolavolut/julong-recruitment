@@ -473,7 +473,7 @@ function Page() {
                                   method: "post",
                                   type: "form",
                                   data: {
-                                    ...fm.data,
+                                    file: fm?.data?.file,
                                     document_sending_id: local.detail?.id,
                                     applicant_id: local?.detail?.applicant?.id,
                                   },
