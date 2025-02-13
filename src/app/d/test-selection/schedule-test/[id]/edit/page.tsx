@@ -391,6 +391,7 @@ function Page() {
                     name={"description"}
                     label={"Description"}
                     type={"textarea"}
+                    required={true}
                   />
                 </div>
                 <div>
@@ -674,7 +675,7 @@ function Page() {
                             <TooltipBetter content="View Profile Applicant">
                               <ButtonLink
                                 className="bg-primary"
-                                href={`/d/test-selection/schedule-test/${id}/${row.id}/applicant`}
+                                href={`/d/test-selection/schedule-test/${id}/${row.user_profile_id}/applicant`}
                               >
                                 <div className="flex items-center gap-x-2">
                                   <IoEye className="text-lg" />

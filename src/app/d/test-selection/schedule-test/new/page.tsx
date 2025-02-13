@@ -314,6 +314,7 @@ function Page() {
                     name={"description"}
                     label={"Description"}
                     type={"textarea"}
+                    required={true}
                   />
                 </div>
                 <div>

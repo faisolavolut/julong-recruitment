@@ -20,6 +20,7 @@ import notFound from "@/app/not-found";
 function Page() {
   const id = getParams("id_user");
   const id_parent = getParams("id");
+  const id_applicant = getParams("id_applicant");
   const labelPage = "Candidate";
   const urlPage = `/d/test-selection/schedule-test/${id_parent}/view`;
   const local = useLocal({
@@ -70,20 +71,13 @@ function Page() {
       }}
       onSubmit={async (fm: any) => {}}
       onLoad={async () => {
-        // sekedar testing data, nanti dihapus jika sudah ada
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/user-profiles/user",
-          method: "get",
-        });
-        return res;
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
           path: `/api/user-profiles/${id}`,
           validate: "object",
         });
+        console.log({ data });
         return {
           ...data,
           email: data?.user?.email,
@@ -103,7 +97,9 @@ function Page() {
                 <div className="col-span-2">
                   <div className="w-48 h-48">
                     <img
-                      src={siteurl("/dog.jpg")}
+                      src={siteurl(
+                        fm?.data?.avatar ? fm?.data?.avatar : "/dog.jpg"
+                      )}
                       alt="John Cena"
                       className="rounded-full w-full h-full object-cover border-2 border-white"
                     />

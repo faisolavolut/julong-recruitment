@@ -130,7 +130,7 @@ function Page() {
         });
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.job_postings",
+          value: "data.data.document_sendings",
           path: `/api/document-sending${params}`,
           validate: "array",
         });
