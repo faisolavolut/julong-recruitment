@@ -16,6 +16,7 @@ import { FaArrowRight } from "react-icons/fa";
 import TestimonialsCard from "./components/testimoni";
 import { apix } from "@/lib/utils/apix";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { get_user } from "@/lib/utils/get_user";
 
 function HomePage() {
   const router = useRouter();
@@ -31,7 +32,9 @@ function HomePage() {
         const res = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
-          path: "/api/no-auth/job-postings?page=1&page_size=8&status=IN PROGRESS",
+          path: `/api${
+            get_user("id") ? `/` : `/no-auth/`
+          }job-postings?page=1&page_size=8&status=IN PROGRESS`,
           method: "get",
         });
         console.log(res);

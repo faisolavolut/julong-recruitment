@@ -101,7 +101,7 @@ function Page() {
         },
       }}
       column={
-        local.tab === "in_progress"
+        local.tab === "IN PROGRESS"
           ? [
               {
                 name: "user_profile.name",
@@ -214,14 +214,15 @@ function Page() {
                 renderCell: ({ row }: any) => {
                   return (
                     <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                      <ButtonLink
+                      <ButtonBetterTooltip
+                        tooltip={"View Profile"}
                         className="bg-primary"
-                        href={`/d/administrative/applicant-overview/${row.id}/view`}
+                        href={`/d/administrative/applicant-overview/${id_posting}/${row.id}/view`}
                       >
                         <div className="flex items-center gap-x-2">
                           <IoEye className="text-lg" />
                         </div>
-                      </ButtonLink>
+                      </ButtonBetterTooltip>
                     </div>
                   );
                 },

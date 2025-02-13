@@ -18,6 +18,7 @@ export const JobCard: React.FC<any> = ({
   render?: () => void;
 }) => {
   const [favorite, setFavorite] = useState(data?.is_saved ? true : false);
+  const [applied, setApplied] = useState(data?.is_applied ? true : false);
   const [isZooming, setIsZooming] = useState(false);
   const handleClick = () => {
     setIsZooming(true);
@@ -41,7 +42,7 @@ export const JobCard: React.FC<any> = ({
             />
           </div>
         </div>
-        {data?.is_applied ? (
+        {applied ? (
           <div className="text-blue-600  px-3 py-1 text-sm font-bold">
             Applied
           </div>
@@ -109,6 +110,7 @@ export const JobCard: React.FC<any> = ({
                 },
                 after: () => {
                   data.is_applied = true;
+                  setApplied(true);
                   if (typeof render === "function") render();
                 },
                 msg_load: "Apply job ",
