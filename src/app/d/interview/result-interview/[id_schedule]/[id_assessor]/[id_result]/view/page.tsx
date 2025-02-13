@@ -44,7 +44,6 @@ function Page() {
         path: `/api/interviews/applicant-schedule?project_recruitment_line_id=${data?.project_recruitment_line_id}&job_posting_id=${data?.job_posting_id}&applicant_id=${id_result}`,
         validate: "object",
       });
-      console.log({ result });
       local.ready = true;
       local.render();
     };
@@ -103,7 +102,7 @@ function Page() {
                             await apix({
                               port: "recruitment",
                               path: `/api/interview-applicants/update-status`,
-                              method: "post",
+                              method: "put",
                               data: {
                                 id: id_result,
                                 status: "ACCEPTED",
@@ -134,7 +133,7 @@ function Page() {
                             await apix({
                               port: "recruitment",
                               path: `/api/interview-applicants/update-status`,
-                              method: "post",
+                              method: "put",
                               data: {
                                 id: id_result,
                                 status: "REJECTED",
@@ -164,7 +163,6 @@ function Page() {
       }}
       onSubmit={async (fm: any) => {
         const question = fm?.data?.question;
-        console.log({ question });
         const job_posting_id = fm?.data?.job_posting_id;
         const user_profile_id = fm?.data?.applicant?.user_profile_id;
         const result: any[] = [];
@@ -246,14 +244,6 @@ function Page() {
           value: "data.data",
           path: `/api/applicants/${id_result}`,
           validate: "object",
-        });
-        console.log({
-          ...data,
-          applicant,
-          question: get(
-            result,
-            "project_recruitment_line.template_activity_line.template_question.questions"
-          ),
         });
         const list_assessor = data?.interview_assessors || [];
         const assessor = list_assessor.find((e: any) => e?.id === id_assessor);

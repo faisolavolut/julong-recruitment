@@ -60,6 +60,7 @@ function Page() {
       });
 
       let now = 0 as number;
+      let applicant = null;
       try {
         const profile: any = await apix({
           port: "recruitment",
@@ -67,6 +68,7 @@ function Page() {
           path: `/api/applicants/me/${id}`,
           validate: "object",
         });
+        applicant = profile;
         local.step = profile?.order;
         local.profile = profile;
         now = profile?.order;
@@ -98,6 +100,7 @@ function Page() {
         data: {
           id: id,
           id_line: stepNow?.id_line,
+          applicant,
         },
       });
       if (!test) {
@@ -462,7 +465,20 @@ function Page() {
                           </div>
                           <div className="flex flex-col flex-grow py-4 pt-0 px-8">
                             <Form
-                              onSubmit={async (fm: any) => {}}
+                              onSubmit={async (fm: any) => {
+                                await apix({
+                                  port: "recruitment",
+                                  value: "data.data",
+                                  path: "/api/document-agreement",
+                                  method: "post",
+                                  type: "form",
+                                  data: {
+                                    ...fm.data,
+                                    document_sending_id: local.detail?.id,
+                                    applicant_id: local?.detail?.applicant?.id,
+                                  },
+                                });
+                              }}
                               onLoad={async () => {
                                 return {
                                   employee_contract:
@@ -503,7 +519,7 @@ function Page() {
                                               fm={fm}
                                               hidden_label={true}
                                               classField={""}
-                                              name={"contract"}
+                                              name={"file"}
                                               label={
                                                 "Upload the signed offer letter in PDF format."
                                               }
@@ -512,7 +528,14 @@ function Page() {
                                           </div>
                                         </div>
                                         <div className="flex flex-row items-center">
-                                          <ButtonBetter className=" px-6">
+                                          <ButtonBetter
+                                            className=" px-6"
+                                            onClick={(event) => {
+                                              event.preventDefault();
+                                              event.stopPropagation();
+                                              fm.submit();
+                                            }}
+                                          >
                                             Submit
                                           </ButtonBetter>
                                         </div>

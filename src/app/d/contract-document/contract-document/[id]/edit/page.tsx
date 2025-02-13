@@ -202,6 +202,7 @@ function Page() {
           organization_location_id: data?.job_posting?.organization_location_id,
           document_number: data?.document_number,
           job_posting_id: data?.job_posting_id,
+          order: data?.project_recruitment_line?.order,
         };
       }}
       showResize={false}

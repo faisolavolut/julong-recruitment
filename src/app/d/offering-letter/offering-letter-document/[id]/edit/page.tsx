@@ -192,11 +192,13 @@ function Page() {
         });
         return {
           ...data,
+          recruitment_type: data?.job_posting?.recruitment_type,
           email: data?.applicant?.user_profile?.user?.email,
           project_number:
             data?.job_posting?.project_recruitment_header?.document_number,
           project_recruitment_header_id:
             data?.job_posting?.project_recruitment_header_id,
+          order: data?.project_recruitment_line?.order,
         };
       }}
       showResize={false}
@@ -236,6 +238,7 @@ function Page() {
                     onChange={({ data }) => {
                       fm.data.project_recruitment_header_id =
                         data?.project_recruitment_header_id;
+                      fm.data.recruitment_type = data?.recruitment_type;
                       fm.data.project_number =
                         data?.project_recruitment_header?.document_number;
                       fm.data.for_organization_id = data?.for_organization_id;
@@ -263,17 +266,8 @@ function Page() {
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
                     required={true}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: { value: "value", label: "value" },
-                      });
-                      return res;
-                    }}
+                    type={"text"}
+                    disabled={true}
                   />
                 </div>
                 <div>
