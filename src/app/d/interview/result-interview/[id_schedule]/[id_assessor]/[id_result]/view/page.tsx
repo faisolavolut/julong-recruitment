@@ -101,10 +101,11 @@ function Page() {
                           task: async () => {
                             await apix({
                               port: "recruitment",
-                              path: `/api/interview-applicants/update-status`,
-                              method: "put",
+                              path: `/api/interview-results`,
+                              method: "post",
                               data: {
-                                id: id_result,
+                                interview_applicant_id: id_result,
+                                interview_assessor_id: id_assessor,
                                 status: "ACCEPTED",
                               },
                             });
@@ -132,10 +133,11 @@ function Page() {
                           task: async () => {
                             await apix({
                               port: "recruitment",
-                              path: `/api/interview-applicants/update-status`,
-                              method: "put",
+                              path: `/api/interview-results`,
+                              method: "post",
                               data: {
-                                id: id_result,
+                                interview_applicant_id: id_result,
+                                interview_assessor_id: id_assessor,
                                 status: "REJECTED",
                               },
                             });
