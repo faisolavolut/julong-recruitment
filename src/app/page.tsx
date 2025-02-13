@@ -50,6 +50,10 @@ function HomePage() {
           ...res,
           verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
         };
+        console.log({
+          ...res,
+          verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
+        });
       } catch (ex) {}
       local.ready = true;
       local.render();

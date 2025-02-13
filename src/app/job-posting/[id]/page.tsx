@@ -149,7 +149,7 @@ function Page() {
                       </svg>
                       Applied
                     </ButtonBetter>
-                  ) : local.user?.verif !== "ACTIVE" ? (
+                  ) : !local.user?.verif ? (
                     <ButtonBetter
                       className={
                         "text-primary bg-gradient-to-r from-blue-100 to-blue-50"

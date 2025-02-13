@@ -65,7 +65,7 @@ export const JobCard: React.FC<any> = ({
               Apply Now
             </ButtonBetter>
           </>
-        ) : user?.verif !== "ACTIVE" ? (
+        ) : !user?.verif ? (
           <ButtonBetter
             variant="outline"
             className={
@@ -92,38 +92,29 @@ export const JobCard: React.FC<any> = ({
         ) : (
           <Alert
             type={"save"}
-            title={
-              user?.verif !== "ACTIVE"
-                ? "Access Denied!"
-                : "Are you certain you want to continue?"
-            }
+            title={"Are you certain you want to continue?"}
             msg={
-              user?.verif !== "ACTIVE"
-                ? "You have not applied for a job yet because your account has not been verified by the admin"
-                : "Are you sure you want to apply for this job? Please review your application before submitting. You can still make changes as long as the application form remains open."
+              "Are you sure you want to apply for this job? Please review your application before submitting. You can still make changes as long as the application form remains open."
             }
-            hiddenFooter={user?.verif !== "ACTIVE" ? true : false}
             onClick={async (e: any) => {
               e.stopPropagation();
               e.preventDefault();
-              if (user?.verif === "ACTIVE") {
-                await actionToast({
-                  task: async () => {
-                    await apix({
-                      port: "recruitment",
-                      path: `/api/applicants/apply?job_posting_id=${data.id}`,
-                      method: "get",
-                    });
-                  },
-                  after: () => {
-                    data.is_applied = true;
-                    if (typeof render === "function") render();
-                  },
-                  msg_load: "Apply job ",
-                  msg_error: "Apply job failed ",
-                  msg_succes: "Apply job success ",
-                });
-              }
+              await actionToast({
+                task: async () => {
+                  await apix({
+                    port: "recruitment",
+                    path: `/api/applicants/apply?job_posting_id=${data.id}`,
+                    method: "get",
+                  });
+                },
+                after: () => {
+                  data.is_applied = true;
+                  if (typeof render === "function") render();
+                },
+                msg_load: "Apply job ",
+                msg_error: "Apply job failed ",
+                msg_succes: "Apply job success ",
+              });
             }}
           >
             <ButtonContainer
