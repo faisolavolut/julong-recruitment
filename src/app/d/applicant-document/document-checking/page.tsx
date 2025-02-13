@@ -2,6 +2,7 @@
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
 import { events } from "@/lib/utils/event";
+import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { dayDate } from "@/lib/utils/date";
@@ -19,7 +20,12 @@ function Page() {
   });
 
   useEffect(() => {
-    const run = async () => {};
+    const run = async () => {
+      const roles = await userRoleMe();
+      local.can_add = getAccess("create-offering-letter", roles);
+      local.can_edit = getAccess("edit-offering-letter", roles);
+      local.render();
+    };
     run();
   }, []);
 
@@ -34,7 +40,7 @@ function Page() {
             <div className="flex flex-row flex-grow">
               <ButtonLink
                 className="bg-primary"
-                href={"/d/contract-document/document-agreement/new"}
+                href={"/d/offering-letter/offering-letter-document/new"}
               >
                 <div className="flex items-center gap-x-0.5">
                   <HiPlus className="text-xl" />
@@ -47,29 +53,15 @@ function Page() {
       }}
       column={[
         {
-          name: "document_number",
-          header: () => <span>Document No.</span>,
-          renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
-          },
-        },
-        {
-          name: "send_date",
-          header: () => <span>Send Date</span>,
+          name: "contract_date",
+          header: () => <span>Contract Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "recipient_name",
-          header: () => <span>Recipient's Name</span>,
-          renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
-          },
-        },
-        {
-          name: "project_name",
-          header: () => <span>Project Name</span>,
+          name: "user_profile.name",
+          header: () => <span>Send Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
@@ -77,6 +69,13 @@ function Page() {
         {
           name: "job_name",
           header: () => <span>Job Name</span>,
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
+          name: "for_organization_name",
+          header: () => <span>Company</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
@@ -104,7 +103,7 @@ function Page() {
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                 <ButtonLink
                   className="bg-primary"
-                  href={`/d/offering-letter/offering-letter-agreement/${row.id}/view`}
+                  href={`/d/applicant-document/document-checking/${row.id}/view`}
                 >
                   <div className="flex items-center gap-x-2">
                     <IoEye className="text-lg" />
@@ -123,7 +122,7 @@ function Page() {
           validate: "array",
         });
         const findDocument = res.find(
-          (item: any) => item.name === "CONTRACT_DOCUMENT"
+          (item: any) => item.name === "DOCUMENT_CHECKING"
         );
         const params = await events("onload-param", {
           ...param,
@@ -145,7 +144,7 @@ function Page() {
           validate: "array",
         });
         const findDocument = res.find(
-          (item: any) => item.name === "CONTRACT_DOCUMENT"
+          (item: any) => item.name === "DOCUMENT_CHECKING"
         );
         const params = await events("onload-param", {
           document_type_id: findDocument?.id,

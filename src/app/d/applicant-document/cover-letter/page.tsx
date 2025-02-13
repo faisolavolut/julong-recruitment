@@ -2,13 +2,14 @@
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
 import { events } from "@/lib/utils/event";
+import { access } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { dayDate } from "@/lib/utils/date";
 import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
-import { HiPlus } from "react-icons/hi";
+import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
 
@@ -16,16 +17,21 @@ function Page() {
   const local = useLocal({
     can_add: false,
     can_edit: false,
+    id_document: null,
   });
 
   useEffect(() => {
-    const run = async () => {};
+    const run = async () => {
+      local.can_add = access("create-applicant-document-cover-letter");
+      local.can_edit = access("edit-applicant-document-cover-letter");
+      local.render();
+    };
     run();
   }, []);
 
   return (
     <TableUI
-      title="Candidate Agreement"
+      title="Cover Letter"
       name="offering-letter"
       header={{
         sideLeft: (data: any) => {
@@ -34,7 +40,7 @@ function Page() {
             <div className="flex flex-row flex-grow">
               <ButtonLink
                 className="bg-primary"
-                href={"/d/contract-document/document-agreement/new"}
+                href={"/d/applicant-document/cover-letter/new"}
               >
                 <div className="flex items-center gap-x-0.5">
                   <HiPlus className="text-xl" />
@@ -102,14 +108,24 @@ function Page() {
           renderCell: ({ row }: any) => {
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                <ButtonLink
-                  className="bg-primary"
-                  href={`/d/offering-letter/offering-letter-agreement/${row.id}/view`}
-                >
-                  <div className="flex items-center gap-x-2">
-                    <IoEye className="text-lg" />
-                  </div>
-                </ButtonLink>
+                {local.can_edit ? (
+                  <ButtonLink
+                    href={`/d/applicant-document/cover-letter/${row.id}/edit`}
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <HiOutlinePencilAlt className="text-lg" />
+                    </div>
+                  </ButtonLink>
+                ) : (
+                  <ButtonLink
+                    className="bg-primary"
+                    href={`/d/applicant-document/cover-letter/${row.id}/view`}
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <IoEye className="text-lg" />
+                    </div>
+                  </ButtonLink>
+                )}
               </div>
             );
           },
@@ -123,7 +139,7 @@ function Page() {
           validate: "array",
         });
         const findDocument = res.find(
-          (item: any) => item.name === "CONTRACT_DOCUMENT"
+          (item: any) => item.name === "SURAT_PENGANTAR_MASUK"
         );
         const params = await events("onload-param", {
           ...param,
@@ -145,7 +161,7 @@ function Page() {
           validate: "array",
         });
         const findDocument = res.find(
-          (item: any) => item.name === "CONTRACT_DOCUMENT"
+          (item: any) => item.name === "SURAT_PENGANTAR_MASUK"
         );
         const params = await events("onload-param", {
           document_type_id: findDocument?.id,

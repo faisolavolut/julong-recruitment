@@ -248,6 +248,7 @@ function Page() {
                     name={"document_setup_id"}
                     label={"Document Type"}
                     type={"dropdown"}
+                    required={true}
                     onChange={({ data }) => {
                       const result = data?.header + data?.body + data?.footer;
                       fm.data.detail_content = result;

@@ -2,7 +2,7 @@ import { siteurl } from "@/lib/utils/siteurl";
 
 export default function NotFound() {
   return (
-    <section className="flex flex-grow flex-row w-full h-full">
+    <section className="h-screen flex flex-grow flex-row w-full h-full">
       <div className="flex flex-row flex-grow items-center justify-center">
         <div className="max-w-screen-sm text-center flex flex-col flex-grow items-center justify-center">
           <img

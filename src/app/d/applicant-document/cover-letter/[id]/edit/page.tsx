@@ -29,8 +29,8 @@ import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id");
-  const labelPage = "Contract Document";
-  const urlPage = "/d/contract-document/contract-document";
+  const labelPage = "Cover Letter";
+  const urlPage = "/d/applicant-document/cover-letter";
   const local = useLocal({
     can_edit: false,
     ready: false as boolean,
@@ -467,82 +467,6 @@ function Page() {
                                 });
                                 return res;
                               }}
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"upah_pokok"}
-                              label={"Gaji Pokok"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"tunjangan_jabatan"}
-                              label={"Tunjangan Jabatan"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"tunjangan_operasional"}
-                              label={"Tunjangan Operasional Kerja"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"tunjangan_makan"}
-                              label={"Tunjangan Makan"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"organization_location_id"}
-                              disabled={
-                                fm?.data?.for_organization_id ? false : true
-                              }
-                              label={"Location"}
-                              type={"dropdown"}
-                              onLoad={async () => {
-                                if (!fm?.data?.for_organization_id) return [];
-                                const res: any = await apix({
-                                  port: "portal",
-                                  value: "data.data",
-                                  path:
-                                    "/api/organization-locations/organization/" +
-                                    fm?.data?.for_organization_id,
-                                  validate: "dropdown",
-                                  keys: { label: "name" },
-                                });
-                                return res;
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"hometrip_ticket"}
-                              label={"Home Trip Ticket"}
-                              type={"text"}
                             />
                           </div>
                           <div className="col-span-2">

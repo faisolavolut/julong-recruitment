@@ -1,32 +1,48 @@
 "use client";
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
+import { Alert } from "@/lib/components/ui/alert";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
+import { access } from "@/lib/utils/getAccess";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import get from "lodash.get";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTriggerCustom,
+} from "@/lib/components/ui/accordion";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
-  const labelPage = "Document Checking";
-  const urlPage = `/d/master-data/document-checking`;
+  const labelPage = "Contract Document";
+  const urlPage = "/d/contract-document/contract-document";
   const local = useLocal({
-    can_add: false,
+    can_add: true as boolean,
     ready: false as boolean,
   });
 
   useEffect(() => {
     const run = async () => {
-      local.can_add = true;
+      local.can_add = access("create-contract-document");
       local.ready = true;
       local.render();
     };
     run();
   }, []);
 
+  if (!local.ready)
+    return (
+      <div className="flex-grow flex-grow flex flex-row items-center justify-center">
+        <div className="spinner-better"></div>
+      </div>
+    );
   if (local.ready && !local.can_add) return notFound();
 
   return (
@@ -71,16 +87,26 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-verifications",
+          path: "/api/document-sending",
           method: "post",
           data: {
             ...fm.data,
+            document_date: normalDate(fm.data?.document_date),
+            tanggal_masuk: normalDate(fm.data?.tanggal_masuk),
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
-        return {};
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/document-sending/document-number",
+        });
+        return {
+          status: "DRAFT",
+          document_number: res,
+        };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -92,35 +118,353 @@ function Page() {
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
-                  <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
-                </div>
-                <div>
                   <Field
                     fm={fm}
-                    name={"format"}
-                    label={"Format"}
+                    name={"document_number"}
+                    label={"Document Number"}
                     type={"text"}
+                    disabled={true}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_question_id"}
-                    label={"Template"}
+                    name={"document_date"}
+                    label={"Document Date"}
+                    required={true}
+                    type={"date"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"job_posting_id"}
+                    label={"Job Name"}
+                    required={true}
                     type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.project_recruitment_header_id =
+                        data?.project_recruitment_header_id;
+                      fm.data.organization_location_id =
+                        data?.organization_location_id;
+                      fm.data.project_number =
+                        data?.project_recruitment_header?.document_number;
+                      fm.data.for_organization_id = data?.for_organization_id;
+
+                      // fm.data["job_level_id"] = get(e, "data.job_level_id.name");
+                      // fm.data["job_level_id_id"] = e.data?.job_level_id?.id;
+                      fm.render();
+                    }}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data.template_questions",
-                        path: "/api/template-questions",
+                        value: "data.data.job_postings",
+                        path: "/api/job-postings?status=IN PROGRESS",
                         validate: "dropdown",
                         keys: {
-                          label: "name",
+                          label: (item: any) => {
+                            return `${item.job_name} - ${item.document_number}`;
+                          },
                         },
                       });
                       return res;
                     }}
                   />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"recruitment_type"}
+                    label={"Recruitment Type"}
+                    required={true}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: "/api/recruitment-types",
+                        validate: "dropdown",
+                        keys: { value: "value", label: "value" },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"project_number"}
+                    label={"Project Number"}
+                    type={"text"}
+                    disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"for_organization_id"}
+                    label={"Organization Name"}
+                    required={true}
+                    type={"dropdown"}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "portal",
+                        value: "data.data.organizations",
+                        path: "/api/organizations",
+                        validate: "dropdown",
+                        keys: { label: "name" },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"project_recruitment_line_id"}
+                    label={"Activity"}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    required={true}
+                    type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.order = data?.order;
+                      fm.render();
+                    }}
+                    onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path:
+                          "/api/project-recruitment-lines/header/" +
+                          fm?.data?.project_recruitment_header_id,
+                        validate: "dropdown",
+                        keys: {
+                          label: (row: any) =>
+                            labelDocumentType(
+                              get(row, "template_activity_line.name")
+                            ) || "",
+                        },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"document_setup_id"}
+                    label={"Document Type"}
+                    type={"dropdown"}
+                    required={true}
+                    onChange={({ data }) => {
+                      const result = data?.header + data?.body + data?.footer;
+                      fm.data.detail_content = result;
+                      fm.render();
+                      if (
+                        typeof fm?.fields?.detail_content?.reload === "function"
+                      ) {
+                        fm?.fields?.detail_content?.reload();
+                      }
+                    }}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.document_setups",
+                        path: "/api/document-setup",
+                        validate: "dropdown",
+                        keys: { label: "title" },
+                      });
+                      return res;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"status"}
+                    label={"Status"}
+                    type={"text"}
+                    disabled={true}
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full"
+                    defaultValue={"item-1"}
+                  >
+                    <AccordionItem value="item-1">
+                      <AccordionTriggerCustom className="flex flex-row items-center">
+                        Document Content
+                      </AccordionTriggerCustom>
+                      <AccordionContent>
+                        <div className="grid grid-cols-2 gap-4 md:gap-6">
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"applicant_id"}
+                              label={"Recipient's Name"}
+                              disabled={
+                                fm?.data?.project_recruitment_line_id &&
+                                fm?.data?.job_posting_id
+                                  ? false
+                                  : true
+                              }
+                              type={"dropdown"}
+                              onChange={({ data }) => {
+                                fm.data.email = data?.user_profile?.user?.email;
+                              }}
+                              onLoad={async () => {
+                                if (
+                                  !fm?.data?.project_recruitment_line_id ||
+                                  !fm?.data?.job_posting_id
+                                )
+                                  return [];
+                                const res: any = await apix({
+                                  port: "recruitment",
+                                  value: "data.data.applicants",
+                                  path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}?order=${fm?.data?.order}`,
+                                  validate: "dropdown",
+                                  keys: { label: "user_profile.name" },
+                                });
+                                return res;
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"email"}
+                              label={"Recipient's Email"}
+                              type={"text"}
+                              disabled={true}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"tanggal_masuk"}
+                              label={"Start Date of Employment"}
+                              type={"date"}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"job_level_id"}
+                              label={"Job Level"}
+                              required={true}
+                              disabled={
+                                fm?.data?.for_organization_id ? false : true
+                              }
+                              type={"dropdown"}
+                              onLoad={async () => {
+                                if (!fm?.data?.for_organization_id) return [];
+                                const res: any = await apix({
+                                  port: "portal",
+                                  value: "data.data",
+                                  path: `/api/job-levels/organization/${fm?.data?.for_organization_id}`,
+                                  validate: "dropdown",
+                                  keys: { label: "level" },
+                                });
+                                return res;
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"upah_pokok"}
+                              label={"Gaji Pokok"}
+                              type={"money"}
+                              prefix={
+                                <div className="text-xs font-bold px-1">Rp</div>
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"tunjangan_jabatan"}
+                              label={"Tunjangan Jabatan"}
+                              type={"money"}
+                              prefix={
+                                <div className="text-xs font-bold px-1">Rp</div>
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"tunjangan_operasional"}
+                              label={"Tunjangan Operasional Kerja"}
+                              type={"money"}
+                              prefix={
+                                <div className="text-xs font-bold px-1">Rp</div>
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"tunjangan_makan"}
+                              label={"Tunjangan Makan"}
+                              type={"money"}
+                              prefix={
+                                <div className="text-xs font-bold px-1">Rp</div>
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"organization_location_id"}
+                              disabled={
+                                fm?.data?.for_organization_id ? false : true
+                              }
+                              label={"Location"}
+                              type={"dropdown"}
+                              onLoad={async () => {
+                                if (!fm?.data?.for_organization_id) return [];
+                                const res: any = await apix({
+                                  port: "portal",
+                                  value: "data.data",
+                                  path:
+                                    "/api/organization-locations/organization/" +
+                                    fm?.data?.for_organization_id,
+                                  validate: "dropdown",
+                                  keys: { label: "name" },
+                                });
+                                return res;
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"hometrip_ticket"}
+                              label={"Home Trip Ticket"}
+                              type={"text"}
+                            />
+                          </div>
+                          <div className="col-span-2">
+                            <Field
+                              hidden_label={true}
+                              fm={fm}
+                              name={"detail_content"}
+                              label={"Question"}
+                              type={"richtext"}
+                            />
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                 </div>
               </div>
             </div>

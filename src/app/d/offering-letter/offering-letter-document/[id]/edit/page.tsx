@@ -26,6 +26,7 @@ import { IoCheckmarkOutline } from "react-icons/io5";
 import { TbEyeEdit } from "react-icons/tb";
 import { X } from "lucide-react";
 import { RiDownloadCloudLine } from "react-icons/ri";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id");
@@ -178,6 +179,7 @@ function Page() {
           method: "put",
           data: {
             ...fm.data,
+            document_date: normalDate(fm.data?.document_date),
           },
         });
       }}
@@ -342,6 +344,7 @@ function Page() {
                     name={"document_setup_id"}
                     label={"Document Type"}
                     type={"dropdown"}
+                    required={true}
                     onChange={({ data }) => {
                       const result = data?.header + data?.body + data?.footer;
                       fm.data.detail_content = result;

@@ -5,7 +5,7 @@ import { FaChartSimple, FaClipboardQuestion } from "react-icons/fa6";
 import { SlEnvolopeLetter } from "react-icons/sl";
 import { TbContract } from "react-icons/tb";
 import { TiDocumentText } from "react-icons/ti";
-import { MdGroups, MdOutlineViewDay } from "react-icons/md";
+import { MdGroups } from "react-icons/md";
 
 export const configMenu = [
   {
@@ -280,13 +280,27 @@ export const configMenu = [
   {
     title: "Applicant Document",
     icon: <TiDocumentText />,
-    href: "/d/applicant-document",
-    permision: ["read-applicant-document"],
+    children: [
+      {
+        title: "Document Checking",
+        href: "/d/applicant-document/document-checking",
+        permision: ["read-applicant-document-checking"],
+      },
+      {
+        title: "Cover Letter",
+        href: "/d/applicant-document/cover-letter",
+        permision: ["read-applicant-document-cover-letter"],
+      },
+    ],
+    permision: [
+      "read-applicant-document-checking",
+      "read-applicant-document-cover-letter",
+    ],
   },
-  {
-    title: "Applicant Result",
-    icon: <MdOutlineViewDay />,
-    href: "/d/applicant-result",
-    permision: ["read-applicant-result"],
-  },
+  // {
+  //   title: "Applicant Result",
+  //   icon: <MdOutlineViewDay />,
+  //   href: "/d/applicant-result",
+  //   permision: ["read-applicant-result"],
+  // },
 ];
