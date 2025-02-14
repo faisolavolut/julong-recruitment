@@ -47,42 +47,42 @@ function Page() {
       }}
       column={[
         {
-          name: "document_number",
+          name: "document_sending.document_number",
           header: () => <span>Document No.</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "send_date",
+          name: "created_at",
           header: () => <span>Send Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "recipient_name",
+          name: "applicant.user_profile.name",
           header: () => <span>Recipient's Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "project_name",
+          name: "document_sending.project_recruitment_line.project_recruitment_header.name",
           header: () => <span>Project Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "job_name",
+          name: "document_sending.job_posting.job_name",
           header: () => <span>Job Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "recruitment_type",
+          name: "document_sending.job_posting.recruitment_type",
           header: () => <span>Recruitment Type</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;

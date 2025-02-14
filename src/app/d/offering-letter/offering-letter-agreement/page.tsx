@@ -67,28 +67,28 @@ function Page() {
           },
         },
         {
-          name: "applicant.name",
+          name: "applicant.user_profile.name",
           header: () => <span>Recipient's Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "project_name",
+          name: "document_sending.project_recruitment_line.project_recruitment_header.name",
           header: () => <span>Project Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "job_name",
+          name: "document_sending.job_posting.job_name",
           header: () => <span>Job Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "recruitment_type",
+          name: "document_sending.job_posting.recruitment_type",
           header: () => <span>Recruitment Type</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
