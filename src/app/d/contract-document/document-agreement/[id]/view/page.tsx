@@ -8,14 +8,14 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { RiDownloadCloudLine } from "react-icons/ri";
-import { IoIosSend, IoMdSave } from "react-icons/io";
+import { IoIosSend } from "react-icons/io";
 import { X } from "lucide-react";
 import { TbEyeEdit } from "react-icons/tb";
-import { IoCheckmarkOutline } from "react-icons/io5";
 import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
 import { siteurl } from "@/lib/utils/siteurl";
 import { PDFViewer } from "@/lib/components/export";
 import { access } from "@/lib/utils/getAccess";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -64,26 +64,6 @@ function Page() {
                 classNameList="w-48"
                 list={[
                   {
-                    label: "Submit",
-                    icon: <IoMdSave className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to submit this record?",
-                    alert: true,
-                  },
-                  {
-                    label: "Completed",
-                    icon: <IoCheckmarkOutline className="text-xl" />,
-                    msg: "Are you sure you want to completed this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "COMPLETED";
-                      fm.submit();
-                    },
-                  },
-                  {
                     label: "Revise",
                     icon: <TbEyeEdit className="text-xl" />,
                     msg: "Are you sure you want to revise this record?",
@@ -125,13 +105,23 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        const data = fm?.data?.document_sending;
         await apix({
           port: "recruitment",
           value: "data.data",
           path: "/api/document-sending/update",
           method: "put",
           data: {
-            ...fm.data,
+            ...data,
+            status: fm?.data?.status,
+            recruitment_type: data?.job_posting?.recruitment_type,
+            email: data?.applicant?.user_profile?.user?.email,
+            project_number:
+              data?.job_posting?.project_recruitment_header?.document_number,
+            project_recruitment_header_id:
+              data?.job_posting?.project_recruitment_header_id,
+            order: data?.project_recruitment_line?.order,
+            document_date: normalDate(data?.document_date),
           },
         });
       }}

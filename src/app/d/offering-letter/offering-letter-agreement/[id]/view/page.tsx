@@ -14,6 +14,7 @@ import { IoCheckmarkOutline } from "react-icons/io5";
 import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
 import { siteurl } from "@/lib/utils/siteurl";
 import { PDFViewer } from "@/lib/components/export";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -114,6 +115,7 @@ function Page() {
             project_recruitment_header_id:
               data?.job_posting?.project_recruitment_header_id,
             order: data?.project_recruitment_line?.order,
+            document_date: normalDate(data?.document_date),
           },
         });
       }}
