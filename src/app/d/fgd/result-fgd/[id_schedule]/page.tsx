@@ -311,7 +311,7 @@ function Page() {
                       await actionToast({
                         task: async () => {
                           navigate(
-                            `/d/fgd/result-fgd/${id_schedule}/${assessor.id}/${row?.applicant_id}/view`
+                            `/d/fgd/result-fgd/${id_schedule}/${assessor.id}/${row?.applicant_id}/${row?.id}/view`
                           );
                         },
                         after: () => {},
@@ -328,7 +328,7 @@ function Page() {
                 ) : (
                   <ButtonLink
                     className="bg-primary"
-                    href={`/d/fgd/result-fgd/${id_schedule}/${assessor.id}/${row?.applicant_id}/view`}
+                    href={`/d/fgd/result-fgd/${id_schedule}/${assessor.id}/${row?.applicant_id}/${row?.id}/view`}
                   >
                     <div className="flex items-center gap-x-2">
                       <IoEye className="text-lg" />

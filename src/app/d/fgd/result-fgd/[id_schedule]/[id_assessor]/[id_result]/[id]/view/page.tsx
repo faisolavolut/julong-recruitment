@@ -20,6 +20,7 @@ function Page() {
   const id_schedule = getParams("id_schedule");
   const id_assessor = getParams("id_assessor");
   const id_result = getParams("id_result");
+  const id = getParams("id");
   const labelPage = "Result FGD";
   const urlPage = `/d/fgd/result-fgd`;
   const local = useLocal({
@@ -56,7 +57,7 @@ function Page() {
     <FormBetter
       onTitle={(fm: any) => {
         return (
-          <div className="flex flex-row w-full">
+          <div className="flex flex-col w-full md:flex-row">
             <div className="flex flex-col py-4 pt-0 pb-0 flex-grow">
               <h2 className="text-xl font-semibold text-gray-900">
                 <span className="">{labelPage}</span>
@@ -244,7 +245,7 @@ function Page() {
         const fgd_applicant: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/fgd-results/find?fgd_applicant_id=${id_result}&fgd_assessor_id=${id_assessor}`,
+          path: `/api/fgd-results/find?fgd_applicant_id=${id}&fgd_assessor_id=${id_assessor}`,
           validate: "object",
         });
         const applicant: any = await apix({
