@@ -104,8 +104,8 @@ function Page() {
                               path: `/api/fgd-results`,
                               method: "post",
                               data: {
-                                interview_applicant_id: id_result,
-                                interview_assessor_id: id_assessor,
+                                fgd_applicant_id: id_result,
+                                fgd_assessor_id: id_assessor,
                                 status: "ACCEPTED",
                               },
                             });
@@ -136,8 +136,8 @@ function Page() {
                               path: `/api/fgd-results`,
                               method: "post",
                               data: {
-                                interview_applicant_id: id_result,
-                                interview_assessor_id: id_assessor,
+                                fgd_applicant_id: id_result,
+                                fgd_assessor_id: id_assessor,
                                 status: "REJECTED",
                               },
                             });
