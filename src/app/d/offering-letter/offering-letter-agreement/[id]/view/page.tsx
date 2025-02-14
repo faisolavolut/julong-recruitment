@@ -137,14 +137,10 @@ function Page() {
       }}
       mode="view"
       onLoad={async () => {
-        return {
-          email: "sample@sample.com",
-          applicant_name: "Sample Name",
-        };
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/document-sending/${id}`,
+          path: `/api/document-agreement/${id}`,
           validate: "object",
         });
         return {
@@ -182,15 +178,15 @@ function Page() {
                 </div>
               </div>
               <div className="flex flex-grow flex-row relative">
-                <div className="absolute top-0 left-0 w-full h-full">
-                  <PDFViewer
-                    url={siteurl("https://pdfobject.com/pdf/sample.pdf")}
-                  />
-                </div>
-                {/* <iframe
-                  src={siteurl("/8ebf0cb8-69e4-4c64-bfa9-ce73851f30a8.pdf")}
-                  className="w-full h-full"
-                /> */}
+                {fm?.data?.path ? (
+                  <>
+                    <div className="absolute top-0 left-0 w-full h-full">
+                      <PDFViewer url={siteurl(fm?.data?.path)} />
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
             </div>
           </>

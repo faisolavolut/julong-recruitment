@@ -113,7 +113,7 @@ export const scheduleFase = async ({
       break;
 
     case "OFFERING_LETTER":
-      console.log({ data });
+      let answerOfferingLetter = null;
       try {
         const res: any = await apix({
           port: "recruitment",
@@ -130,7 +130,23 @@ export const scheduleFase = async ({
           path: `/api/document-sending/applicant?applicant_id=${data?.applicant?.id}&document_type_id=${findDocument?.id}`,
           validate: "object",
         });
-        console.log(test);
+        console.log({ test });
+        if (test) {
+          answerOfferingLetter = await apix({
+            port: "recruitment",
+            value: "data.data",
+            path: `/api/document-agreement/find?applicant_id=${data?.applicant?.id}&document_sending_id=${test?.id}`,
+            validate: "object",
+          });
+          if (answerOfferingLetter && test?.status !== "DRAFT") {
+            test = {
+              ...test,
+              file: answerOfferingLetter?.path,
+              status_aggrement: answerOfferingLetter?.status,
+            };
+          }
+        }
+        console.log(answerOfferingLetter);
         if (test?.status === "DRAFT") test = null;
       } catch (ex) {}
       if (test) {
@@ -141,6 +157,49 @@ export const scheduleFase = async ({
         result = detail;
       }
       console.log({ result });
+      break;
+    case "OFFERING_LETTER":
+      try {
+        let answerContractDocument = null;
+        const res: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/document-types",
+          validate: "array",
+        });
+        const findDocument = res.find(
+          (item: any) => item.name === "CONTRACT_DOCUMENT"
+        );
+        test = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/document-sending/applicant?applicant_id=${data?.applicant?.id}&document_type_id=${findDocument?.id}`,
+          validate: "object",
+        });
+        if (test) {
+          answerContractDocument = await apix({
+            port: "recruitment",
+            value: "data.data",
+            path: `/api/document-agreement/find?applicant_id=${data?.applicant?.id}&document_sending_id=${test?.id}`,
+            validate: "object",
+          });
+          if (answerContractDocument && test?.status !== "DRAFT") {
+            test = {
+              ...test,
+              file: answerContractDocument?.path,
+              status_aggrement: answerContractDocument?.status,
+            };
+          }
+        }
+        if (test?.status === "DRAFT") test = null;
+      } catch (ex) {}
+      if (test) {
+        let detail = {
+          ...test,
+          applicant: data?.applicant,
+        };
+        result = detail;
+      }
       break;
   }
   return result;

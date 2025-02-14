@@ -94,7 +94,6 @@ function Page() {
       }
       const stepNow = steps.find((e: any) => e?.id === now);
       const stepName = stepNow?.name;
-      console.log({ steps, res });
       const test = await scheduleFase({
         step: stepName,
         data: {
@@ -200,7 +199,7 @@ function Page() {
                       </div>
                     </div>
                     {local.applied ? (
-                      <ButtonBetter className="bg-second text-black hover:bg-second">
+                      <ButtonBetter className="bg-second text-black hover:bg-second cursor-default	">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width={20}
@@ -483,7 +482,14 @@ function Page() {
                                 return {
                                   employee_contract:
                                     "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                  ...local.detail,
                                 };
+                              }}
+                              afterLoad={async (fm: any) => {
+                                if (fm.data?.status_aggrement === "SUBMITTED") {
+                                  fm.mode = "view";
+                                  fm.render();
+                                }
                               }}
                               showResize={false}
                               header={(fm: any) => {
@@ -527,18 +533,23 @@ function Page() {
                                             />
                                           </div>
                                         </div>
-                                        <div className="flex flex-row items-center">
-                                          <ButtonBetter
-                                            className=" px-6"
-                                            onClick={(event) => {
-                                              event.preventDefault();
-                                              event.stopPropagation();
-                                              fm.submit();
-                                            }}
-                                          >
-                                            Submit
-                                          </ButtonBetter>
-                                        </div>
+                                        {fm.data?.status_aggrement !==
+                                        "SUBMITTED" ? (
+                                          <div className="flex flex-row items-center">
+                                            <ButtonBetter
+                                              className=" px-6"
+                                              onClick={(event) => {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                fm.submit();
+                                              }}
+                                            >
+                                              Submit
+                                            </ButtonBetter>
+                                          </div>
+                                        ) : (
+                                          <></>
+                                        )}
                                       </div>
                                     </div>
                                   </>
@@ -560,16 +571,32 @@ function Page() {
                           </div>
                           <div className="flex flex-col flex-grow py-4 pt-0 px-8">
                             <Form
-                              onSubmit={async (fm: any) => {}}
+                              onSubmit={async (fm: any) => {
+                                await apix({
+                                  port: "recruitment",
+                                  value: "data.data",
+                                  path: "/api/document-agreement",
+                                  method: "post",
+                                  type: "form",
+                                  data: {
+                                    file: fm?.data?.file,
+                                    document_sending_id: local.detail?.id,
+                                    applicant_id: local?.detail?.applicant?.id,
+                                  },
+                                });
+                              }}
                               onLoad={async () => {
                                 return {
                                   employee_contract:
                                     "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                  ...local.detail,
                                 };
                               }}
-                              showResize={false}
-                              header={(fm: any) => {
-                                return <></>;
+                              afterLoad={async (fm: any) => {
+                                if (fm.data?.status_aggrement === "SUBMITTED") {
+                                  fm.mode = "view";
+                                  fm.render();
+                                }
                               }}
                               children={(fm: any) => {
                                 return (
@@ -605,15 +632,28 @@ function Page() {
                                               label={
                                                 "Upload the signed offer letter in PDF format."
                                               }
+                                              required={true}
                                               type={"upload"}
                                             />
                                           </div>
                                         </div>
-                                        <div className="flex flex-row items-center">
-                                          <ButtonBetter className=" px-6">
-                                            Submit
-                                          </ButtonBetter>
-                                        </div>
+                                        {fm.data?.status_aggrement !==
+                                        "SUBMITTED" ? (
+                                          <div className="flex flex-row items-center">
+                                            <ButtonBetter
+                                              className=" px-6"
+                                              onClick={(event) => {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                fm.submit();
+                                              }}
+                                            >
+                                              Submit
+                                            </ButtonBetter>
+                                          </div>
+                                        ) : (
+                                          <></>
+                                        )}
                                       </div>
                                     </div>
                                   </>

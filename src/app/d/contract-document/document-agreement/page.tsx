@@ -131,8 +131,8 @@ function Page() {
         });
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.document_sendings",
-          path: `/api/document-sending${params}`,
+          value: "data.data.document_agreements",
+          path: `/api/document-agreement${params}`,
           validate: "array",
         });
         return result;
@@ -156,7 +156,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/document-sending${params}`,
+          path: `/api/document-agreement${params}`,
           validate: "object",
         });
         return getNumber(result);

@@ -137,14 +137,10 @@ function Page() {
       }}
       mode="view"
       onLoad={async () => {
-        return {
-          email: "sample@sample.com",
-          applicant_name: "Sample Name",
-        };
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/document-sending/${id}`,
+          path: `/api/document-agreement/${id}`,
           validate: "object",
         });
         return {
