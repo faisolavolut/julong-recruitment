@@ -241,6 +241,12 @@ function Page() {
           path: `/api/fgd-schedules/applicant-schedule?project_recruitment_line_id=${data?.project_recruitment_line_id}&job_posting_id=${data?.job_posting_id}&applicant_id=${id_result}`,
           validate: "object",
         });
+        const fgd_applicant: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/fgd-results/find?fgd_applicant_id=${id_result}&fgd_assessor_id=${id_assessor}`,
+          validate: "object",
+        });
         const applicant: any = await apix({
           port: "recruitment",
           value: "data.data",
@@ -256,6 +262,7 @@ function Page() {
 
         return {
           ...data,
+          status: fgd_applicant?.status,
           job_name: data?.job_posting?.job_name,
           applicant,
           assessor_name: assessor?.employee_name,
