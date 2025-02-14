@@ -8,8 +8,6 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { RiDownloadCloudLine } from "react-icons/ri";
-import { IoIosSend, IoMdSave } from "react-icons/io";
 import { X } from "lucide-react";
 import { TbEyeEdit } from "react-icons/tb";
 import { IoCheckmarkOutline } from "react-icons/io5";
@@ -64,32 +62,22 @@ function Page() {
                 classNameList="w-48"
                 list={[
                   {
-                    label: "Submit",
-                    icon: <IoMdSave className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to submit this record?",
-                    alert: true,
-                  },
-                  {
-                    label: "Completed",
-                    icon: <IoCheckmarkOutline className="text-xl" />,
-                    msg: "Are you sure you want to completed this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "COMPLETED";
-                      fm.submit();
-                    },
-                  },
-                  {
                     label: "Revise",
                     icon: <TbEyeEdit className="text-xl" />,
                     msg: "Are you sure you want to revise this record?",
                     alert: true,
                     onClick: async () => {
-                      fm.data.status = "REVISE";
+                      fm.data.status = "REVISED";
+                      fm.submit();
+                    },
+                  },
+                  {
+                    label: "Approved",
+                    icon: <IoCheckmarkOutline className="text-xl" />,
+                    msg: "Are you sure you want to revise this record?",
+                    alert: true,
+                    onClick: async () => {
+                      fm.data.status = "APPROVED";
                       fm.submit();
                     },
                   },
@@ -103,21 +91,6 @@ function Page() {
                       fm.submit();
                     },
                   },
-                  {
-                    label: "Download Document",
-                    icon: <RiDownloadCloudLine className="text-xl" />,
-                    onClick: async () => {},
-                  },
-                  {
-                    label: "Send",
-                    icon: <IoIosSend className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to send this offer letter to the applicant?",
-                    alert: true,
-                  },
                 ]}
               />
             </div>
@@ -125,13 +98,22 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
+        const data = fm?.data?.document_sending;
         await apix({
           port: "recruitment",
           value: "data.data",
           path: "/api/document-sending/update",
           method: "put",
           data: {
-            ...fm.data,
+            ...data,
+            status: fm?.data?.status,
+            recruitment_type: data?.job_posting?.recruitment_type,
+            email: data?.applicant?.user_profile?.user?.email,
+            project_number:
+              data?.job_posting?.project_recruitment_header?.document_number,
+            project_recruitment_header_id:
+              data?.job_posting?.project_recruitment_header_id,
+            order: data?.project_recruitment_line?.order,
           },
         });
       }}

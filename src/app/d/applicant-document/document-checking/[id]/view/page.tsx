@@ -20,8 +20,8 @@ import {
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
-  const labelPage = "Candidate Agreement";
-  const urlPage = `/d/offering-letter/offering-letter-agreement`;
+  const labelPage = "Document Checking";
+  const urlPage = `/d/applicant-document/document-checking`;
   const local = useLocal({
     can_edit: false,
     ready: false as boolean,

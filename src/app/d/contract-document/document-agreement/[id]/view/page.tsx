@@ -89,7 +89,7 @@ function Page() {
                     msg: "Are you sure you want to revise this record?",
                     alert: true,
                     onClick: async () => {
-                      fm.data.status = "REVISE";
+                      fm.data.status = "REVISED";
                       fm.submit();
                     },
                   },

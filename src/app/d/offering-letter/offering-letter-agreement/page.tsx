@@ -53,21 +53,21 @@ function Page() {
       }}
       column={[
         {
-          name: "document_number",
+          name: "document_sending.document_number",
           header: () => <span>Document No.</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "send_date",
+          name: "created_at",
           header: () => <span>Send Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "recipient_name",
+          name: "applicant.name",
           header: () => <span>Recipient's Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;

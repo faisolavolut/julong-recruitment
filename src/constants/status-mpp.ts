@@ -7,6 +7,7 @@ export const statusMpp = [
   { value: "APPROVED", label: "Approved" },
   { value: "REJECTED", label: "Rejected" },
   { value: "COMPLETED", label: "Completed" },
+  { value: "SUBMITTED", label: "Submitted" },
   { value: "open", label: "Open" },
   { value: "close", label: "Close" },
   { value: "complete", label: "Complete" },

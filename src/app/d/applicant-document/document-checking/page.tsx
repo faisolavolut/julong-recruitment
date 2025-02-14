@@ -31,7 +31,7 @@ function Page() {
 
   return (
     <TableUI
-      title="Candidate Agreement"
+      title="Document Checking"
       name="offering-letter"
       header={{
         sideLeft: (data: any) => {
