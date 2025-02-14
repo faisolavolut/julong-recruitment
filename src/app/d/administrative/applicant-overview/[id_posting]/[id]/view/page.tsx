@@ -14,10 +14,6 @@ import {
 import { cloneFM } from "@/lib/utils/cloneFm";
 import { siteurl } from "@/lib/utils/siteurl";
 import { apix } from "@/lib/utils/apix";
-import { Alert } from "@/lib/components/ui/alert";
-import { ButtonContainer } from "@/lib/components/ui/button";
-import { IoCheckmarkOutline } from "react-icons/io5";
-import { X } from "lucide-react";
 import { access } from "@/lib/utils/getAccess";
 import notFound from "@/app/not-found";
 
@@ -77,7 +73,7 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_approve &&
+              {/* {local.can_approve &&
                 !["APPROVED", "REJECTED"].includes(fm.data?.status) && (
                   <>
                     <Alert
@@ -112,7 +108,7 @@ function Page() {
                       </ButtonContainer>
                     </Alert>
                   </>
-                )}
+                )} */}
             </div>
           </div>
         );
@@ -120,17 +116,11 @@ function Page() {
       onSubmit={async (fm: any) => {}}
       onLoad={async () => {
         // sekedar testing data, nanti dihapus jika sudah ada
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/user-profiles/user",
-          method: "get",
-        });
-        return res;
+
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/applicants/me?job_posting_id=${id_posting}&user_id=${id}`,
+          path: `/api/user-profiles/${id}`,
           validate: "object",
         });
         return {
@@ -152,7 +142,9 @@ function Page() {
                 <div className="col-span-2">
                   <div className="w-48 h-48">
                     <img
-                      src={siteurl("/dog.jpg")}
+                      src={siteurl(
+                        fm?.data?.avatar ? fm?.data?.avatar : "/dog.jpg"
+                      )}
                       alt="John Cena"
                       className="rounded-full w-full h-full object-cover border-2 border-white"
                     />

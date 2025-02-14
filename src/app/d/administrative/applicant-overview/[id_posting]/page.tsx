@@ -154,7 +154,7 @@ function Page() {
                       <ButtonBetterTooltip
                         tooltip={"View Profile"}
                         className="bg-primary"
-                        href={`/d/administrative/applicant-overview/${id_posting}/${row.id}/view`}
+                        href={`/d/administrative/applicant-overview/${id_posting}/${row.user_profile_id}/view`}
                       >
                         <div className="flex items-center gap-x-2">
                           <IoEye className="text-lg" />
@@ -217,7 +217,7 @@ function Page() {
                       <ButtonBetterTooltip
                         tooltip={"View Profile"}
                         className="bg-primary"
-                        href={`/d/administrative/applicant-overview/${id_posting}/${row.id}/view`}
+                        href={`/d/administrative/applicant-overview/${id_posting}/${row.user_profile_id}/view`}
                       >
                         <div className="flex items-center gap-x-2">
                           <IoEye className="text-lg" />

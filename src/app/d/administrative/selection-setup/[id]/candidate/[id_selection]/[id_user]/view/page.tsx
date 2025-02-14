@@ -20,6 +20,7 @@ import { Alert } from "@/lib/components/ui/alert";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { IoCheckmarkOutline } from "react-icons/io5";
 import { X } from "lucide-react";
+import { actionToast } from "@/lib/utils/action";
 
 function Page() {
   const id = getParams("id_user");
@@ -71,42 +72,68 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {local.can_approve &&
-                !["APPROVED", "REJECTED"].includes(fm.data?.status) && (
-                  <>
-                    <Alert
-                      type={"save"}
-                      msg={
-                        "Are you sure you approve this applicant? This decision is final and cannot be reversed."
-                      }
-                      onClick={() => {
-                        fm.data.status = "ACCEPTED";
-                        fm.submit();
-                      }}
-                    >
-                      <ButtonContainer className={"bg-primary"}>
-                        <IoCheckmarkOutline className="text-xl" />
-                        Approved
-                      </ButtonContainer>
-                    </Alert>
-                    <Alert
-                      type={"delete"}
-                      msg={
-                        "Are you certain you want to reject this applicant? This decision is final and cannot be reversed."
-                      }
-                      onClick={async () => {
-                        fm.data.status = "REJECTED";
-
-                        fm.submit();
-                      }}
-                    >
-                      <ButtonContainer variant={"destructive"}>
-                        <X className="text-xl" />
-                        Rejected
-                      </ButtonContainer>
-                    </Alert>
-                  </>
-                )}
+              {local.can_approve && ["PENDING"].includes(fm.data?.status) && (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={
+                      "Are you sure you approve this applicant? This decision is final and cannot be reversed."
+                    }
+                    onClick={async () => {
+                      await actionToast({
+                        task: async () => {
+                          await apix({
+                            port: "recruitment",
+                            path: `/api/administrative-results/${id_selection}/update-status?status=ACCEPTED`,
+                            method: "get",
+                          });
+                        },
+                        after: () => {
+                          fm.data.status === "ACCEPTED";
+                          fm.render();
+                        },
+                        msg_load: "Accepted ",
+                        msg_error: "Accepted failed ",
+                        msg_succes: "Accepted success ",
+                      });
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoCheckmarkOutline className="text-xl" />
+                      Approved
+                    </ButtonContainer>
+                  </Alert>
+                  <Alert
+                    type={"delete"}
+                    msg={
+                      "Are you certain you want to reject this applicant? This decision is final and cannot be reversed."
+                    }
+                    onClick={async () => {
+                      await actionToast({
+                        task: async () => {
+                          await apix({
+                            port: "recruitment",
+                            path: `/api/administrative-results/${id_selection}/update-status?status=REJECTED`,
+                            method: "get",
+                          });
+                        },
+                        after: () => {
+                          fm.data.status === "REJECTED";
+                          fm.render();
+                        },
+                        msg_load: "Rejected ",
+                        msg_error: "Rejected failed ",
+                        msg_succes: "Rejected success ",
+                      });
+                    }}
+                  >
+                    <ButtonContainer variant={"destructive"}>
+                      <X className="text-xl" />
+                      Rejected
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              )}
             </div>
           </div>
         );
@@ -132,22 +159,21 @@ function Page() {
       }}
       onLoad={async () => {
         // sekedar testing data, nanti dihapus jika sudah ada
-
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/user-profiles/user",
-          method: "get",
-        });
-        return res;
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
           path: `/api/user-profiles/${id}`,
           validate: "object",
         });
+        const res: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/administrative-results/${id_selection}`,
+          validate: "object",
+        });
         return {
           ...data,
+          status: res?.status,
           email: data?.user?.email,
           address: data?.user?.address,
         };

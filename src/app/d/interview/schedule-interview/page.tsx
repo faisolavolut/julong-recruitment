@@ -79,7 +79,7 @@ function Page() {
       column={[
         {
           name: "project_recruitment_line.template_activity_line.name",
-          header: () => <span>Schedule Name</span>,
+          header: () => <span>Activity Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },

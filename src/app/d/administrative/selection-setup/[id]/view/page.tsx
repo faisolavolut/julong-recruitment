@@ -268,13 +268,7 @@ function Page() {
                 <TableList
                   selectionPaging={true}
                   name="job-posting"
-                  feature={
-                    fm.data.status === "COMPLETED"
-                      ? []
-                      : local.can_selection
-                      ? ["checkbox"]
-                      : []
-                  }
+                  feature={[]}
                   header={{
                     sideLeft: (data: any) => {
                       return (
@@ -385,13 +379,6 @@ function Page() {
                     },
                   }}
                   column={[
-                    {
-                      name: "id_applicant",
-                      header: () => <span>ID Applicant</span>,
-                      renderCell: ({ row, name }: any) => {
-                        return <>{getValue(row, name)}</>;
-                      },
-                    },
                     {
                       name: "user_profile.name",
                       header: () => <span>Applicant Name</span>,

@@ -77,7 +77,6 @@ function Page() {
           path: `/api/user-profiles/${id}`,
           validate: "object",
         });
-        console.log({ data });
         return {
           ...data,
           email: data?.user?.email,
