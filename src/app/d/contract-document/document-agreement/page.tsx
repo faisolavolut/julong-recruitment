@@ -68,7 +68,7 @@ function Page() {
           },
         },
         {
-          name: "document_sending.project_recruitment_line.project_recruitment_header.name",
+          name: "document_sending.job_posting.project_recruitment_header.name",
           header: () => <span>Project Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
