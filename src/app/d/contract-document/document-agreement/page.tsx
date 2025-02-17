@@ -104,7 +104,7 @@ function Page() {
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                 <ButtonLink
                   className="bg-primary"
-                  href={`/d/offering-letter/offering-letter-agreement/${row.id}/view`}
+                  href={`/d/contract-document/document-agreement/${row.id}/view`}
                 >
                   <div className="flex items-center gap-x-2">
                     <IoEye className="text-lg" />

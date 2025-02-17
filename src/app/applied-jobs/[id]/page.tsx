@@ -102,6 +102,7 @@ function Page() {
           applicant,
         },
       });
+      console.log({ test });
       if (!test) {
         local.readyTest = false;
       } else {
@@ -457,106 +458,124 @@ function Page() {
                             Congratulations Your Offer Letter is Ready!{" "}
                             <LuPartyPopper className="text-pink-500" />
                           </div>
-                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
-                            We are thrilled to inform you that you have
-                            successfully completed the recruitment process, and
-                            your offer letter has been prepared.
-                          </div>
-                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                            <Form
-                              onSubmit={async (fm: any) => {
-                                await apix({
-                                  port: "recruitment",
-                                  value: "data.data",
-                                  path: "/api/document-agreement",
-                                  method: "post",
-                                  type: "form",
-                                  data: {
-                                    file: fm?.data?.file,
-                                    document_sending_id: local.detail?.id,
-                                    applicant_id: local?.detail?.applicant?.id,
-                                  },
-                                });
-                              }}
-                              onLoad={async () => {
-                                return {
-                                  employee_contract:
-                                    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
-                                  ...local.detail,
-                                };
-                              }}
-                              afterLoad={async (fm: any) => {
-                                if (fm.data?.status_aggrement === "SUBMITTED") {
-                                  fm.mode = "view";
-                                  fm.render();
-                                }
-                              }}
-                              showResize={false}
-                              header={(fm: any) => {
-                                return <></>;
-                              }}
-                              children={(fm: any) => {
-                                return (
-                                  <>
-                                    <div
-                                      className={cx(
-                                        "flex flex-row flex-wrap py-2"
-                                      )}
-                                    >
-                                      <div className="flex-grow grid gap-4 grid-cols-1">
-                                        <div>
-                                          <div className="flex">
-                                            <Field
-                                              fm={fm}
-                                              classField={""}
-                                              name={"employee_contract"}
-                                              label={
-                                                "Upload the signed offer letter in PDF format."
-                                              }
-                                              disabled={true}
-                                              type={"upload"}
-                                              required={true}
-                                            />
+                          {local?.readyTest ? (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                We are thrilled to inform you that you have
+                                successfully completed the recruitment process,
+                                and your offer letter has been prepared.
+                              </div>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <Form
+                                  onSubmit={async (fm: any) => {
+                                    await apix({
+                                      port: "recruitment",
+                                      value: "data.data",
+                                      path: "/api/document-agreement",
+                                      method: "post",
+                                      type: "form",
+                                      data: {
+                                        file: fm?.data?.file,
+                                        document_sending_id: local.detail?.id,
+                                        applicant_id:
+                                          local?.detail?.applicant?.id,
+                                      },
+                                    });
+                                  }}
+                                  onLoad={async () => {
+                                    return {
+                                      employee_contract:
+                                        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                      ...local.detail,
+                                    };
+                                  }}
+                                  afterLoad={async (fm: any) => {
+                                    if (
+                                      fm.data?.status_aggrement === "SUBMITTED"
+                                    ) {
+                                      fm.mode = "view";
+                                      fm.render();
+                                    }
+                                  }}
+                                  showResize={false}
+                                  header={(fm: any) => {
+                                    return <></>;
+                                  }}
+                                  children={(fm: any) => {
+                                    return (
+                                      <>
+                                        <div
+                                          className={cx(
+                                            "flex flex-row flex-wrap py-2"
+                                          )}
+                                        >
+                                          <div className="flex-grow grid gap-4 grid-cols-1">
+                                            <div>
+                                              <div className="flex">
+                                                <Field
+                                                  fm={fm}
+                                                  classField={""}
+                                                  name={"employee_contract"}
+                                                  label={
+                                                    "Upload the signed offer letter in PDF format."
+                                                  }
+                                                  disabled={true}
+                                                  type={"upload"}
+                                                  required={true}
+                                                />
+                                              </div>
+                                            </div>
+                                            <div>
+                                              <div className="flex">
+                                                <Field
+                                                  fm={fm}
+                                                  hidden_label={true}
+                                                  classField={""}
+                                                  name={"file"}
+                                                  label={
+                                                    "Upload the signed offer letter in PDF format."
+                                                  }
+                                                  type={"upload"}
+                                                />
+                                              </div>
+                                            </div>
+                                            {fm.data?.status_aggrement !==
+                                            "SUBMITTED" ? (
+                                              <div className="flex flex-row items-center">
+                                                <ButtonBetter
+                                                  className=" px-6"
+                                                  onClick={(event) => {
+                                                    event.preventDefault();
+                                                    event.stopPropagation();
+                                                    fm.submit();
+                                                  }}
+                                                >
+                                                  Submit
+                                                </ButtonBetter>
+                                              </div>
+                                            ) : (
+                                              <></>
+                                            )}
                                           </div>
                                         </div>
-                                        <div>
-                                          <div className="flex">
-                                            <Field
-                                              fm={fm}
-                                              hidden_label={true}
-                                              classField={""}
-                                              name={"file"}
-                                              label={
-                                                "Upload the signed offer letter in PDF format."
-                                              }
-                                              type={"upload"}
-                                            />
-                                          </div>
-                                        </div>
-                                        {fm.data?.status_aggrement !==
-                                        "SUBMITTED" ? (
-                                          <div className="flex flex-row items-center">
-                                            <ButtonBetter
-                                              className=" px-6"
-                                              onClick={(event) => {
-                                                event.preventDefault();
-                                                event.stopPropagation();
-                                                fm.submit();
-                                              }}
-                                            >
-                                              Submit
-                                            </ButtonBetter>
-                                          </div>
-                                        ) : (
-                                          <></>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </>
-                                );
-                              }}
-                            />
-                          </div>
+                                      </>
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                We are pleased to inform you that you have
+                                successfully completed the recruitment process.
+                                Your offer letter is currently being processed.
+                                Please check your email or our website regularly
+                                for updates. We will notify you as soon as it is
+                                ready.
+                              </div>
+                            </>
+                          )}
                         </div>
                       ) : local.stepName === "CONTRACT_DOCUMENT" ? (
                         <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
@@ -564,103 +583,120 @@ function Page() {
                             Congratulations{" "}
                             <LuPartyPopper className="text-pink-500" />
                           </div>
-                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
-                            Your Contract is Ready! We are pleased to inform you
-                            that you have successfully completed the necessary
-                            steps, and your job contract is now ready.
-                          </div>
-                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                            <Form
-                              onSubmit={async (fm: any) => {
-                                await apix({
-                                  port: "recruitment",
-                                  value: "data.data",
-                                  path: "/api/document-agreement",
-                                  method: "post",
-                                  type: "form",
-                                  data: {
-                                    file: fm?.data?.file,
-                                    document_sending_id: local.detail?.id,
-                                    applicant_id: local?.detail?.applicant?.id,
-                                  },
-                                });
-                              }}
-                              onLoad={async () => {
-                                return {
-                                  employee_contract:
-                                    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
-                                  ...local.detail,
-                                };
-                              }}
-                              afterLoad={async (fm: any) => {
-                                if (fm.data?.status_aggrement === "SUBMITTED") {
-                                  fm.mode = "view";
-                                  fm.render();
-                                }
-                              }}
-                              children={(fm: any) => {
-                                return (
-                                  <>
-                                    <div
-                                      className={cx(
-                                        "flex flex-row flex-wrap py-2"
-                                      )}
-                                    >
-                                      <div className="flex-grow grid gap-4 grid-cols-1">
-                                        <div>
-                                          <div className="flex">
-                                            <Field
-                                              fm={fm}
-                                              classField={""}
-                                              name={"employee_contract"}
-                                              label={
-                                                "Upload the signed offer letter in PDF format."
-                                              }
-                                              disabled={true}
-                                              type={"upload"}
-                                              required={true}
-                                            />
+                          {local.readyTest ? (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                Your Contract is Ready! We are pleased to inform
+                                you that you have successfully completed the
+                                necessary steps, and your job contract is now
+                                ready.
+                              </div>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <Form
+                                  onSubmit={async (fm: any) => {
+                                    await apix({
+                                      port: "recruitment",
+                                      value: "data.data",
+                                      path: "/api/document-agreement",
+                                      method: "post",
+                                      type: "form",
+                                      data: {
+                                        file: fm?.data?.file,
+                                        document_sending_id: local.detail?.id,
+                                        applicant_id:
+                                          local?.detail?.applicant?.id,
+                                      },
+                                    });
+                                  }}
+                                  onLoad={async () => {
+                                    return {
+                                      employee_contract:
+                                        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                      ...local.detail,
+                                    };
+                                  }}
+                                  afterLoad={async (fm: any) => {
+                                    if (
+                                      fm.data?.status_aggrement === "SUBMITTED"
+                                    ) {
+                                      fm.mode = "view";
+                                      fm.render();
+                                    }
+                                  }}
+                                  children={(fm: any) => {
+                                    return (
+                                      <>
+                                        <div
+                                          className={cx(
+                                            "flex flex-row flex-wrap py-2"
+                                          )}
+                                        >
+                                          <div className="flex-grow grid gap-4 grid-cols-1">
+                                            <div>
+                                              <div className="flex">
+                                                <Field
+                                                  fm={fm}
+                                                  classField={""}
+                                                  name={"employee_contract"}
+                                                  label={
+                                                    "Upload the signed offer letter in PDF format."
+                                                  }
+                                                  disabled={true}
+                                                  type={"upload"}
+                                                  required={true}
+                                                />
+                                              </div>
+                                            </div>
+                                            <div>
+                                              <div className="flex">
+                                                <Field
+                                                  fm={fm}
+                                                  hidden_label={true}
+                                                  classField={""}
+                                                  name={"file"}
+                                                  label={
+                                                    "Upload the signed offer letter in PDF format."
+                                                  }
+                                                  required={true}
+                                                  type={"upload"}
+                                                />
+                                              </div>
+                                            </div>
+                                            {fm.data?.status_aggrement !==
+                                            "SUBMITTED" ? (
+                                              <div className="flex flex-row items-center">
+                                                <ButtonBetter
+                                                  className=" px-6"
+                                                  onClick={(event) => {
+                                                    event.preventDefault();
+                                                    event.stopPropagation();
+                                                    fm.submit();
+                                                  }}
+                                                >
+                                                  Submit
+                                                </ButtonBetter>
+                                              </div>
+                                            ) : (
+                                              <></>
+                                            )}
                                           </div>
                                         </div>
-                                        <div>
-                                          <div className="flex">
-                                            <Field
-                                              fm={fm}
-                                              hidden_label={true}
-                                              classField={""}
-                                              name={"contract"}
-                                              label={
-                                                "Upload the signed offer letter in PDF format."
-                                              }
-                                              required={true}
-                                              type={"upload"}
-                                            />
-                                          </div>
-                                        </div>
-                                        {fm.data?.status_aggrement !==
-                                        "SUBMITTED" ? (
-                                          <div className="flex flex-row items-center">
-                                            <ButtonBetter
-                                              className=" px-6"
-                                              onClick={(event) => {
-                                                event.preventDefault();
-                                                event.stopPropagation();
-                                                fm.submit();
-                                              }}
-                                            >
-                                              Submit
-                                            </ButtonBetter>
-                                          </div>
-                                        ) : (
-                                          <></>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </>
-                                );
-                              }}
-                            />
-                          </div>
+                                      </>
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                We are currently processing your job contract.
+                                Please check your email or our website regularly
+                                for updates. We will notify you as soon as it is
+                                ready.
+                              </div>
+                            </>
+                          )}
                         </div>
                       ) : local.stepName === "final_result" ? (
                         <div className="border border-gray-200 flex flex-col py-4 rounded-lg">

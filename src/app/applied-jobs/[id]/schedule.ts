@@ -158,7 +158,7 @@ export const scheduleFase = async ({
       }
       console.log({ result });
       break;
-    case "OFFERING_LETTER":
+    case "CONTRACT_DOCUMENT":
       try {
         let answerContractDocument = null;
         const res: any = await apix({

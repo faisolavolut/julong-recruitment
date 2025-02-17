@@ -7,8 +7,6 @@ import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
-import { RiDownloadCloudLine } from "react-icons/ri";
-import { IoIosSend } from "react-icons/io";
 import { X } from "lucide-react";
 import { TbEyeEdit } from "react-icons/tb";
 import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
@@ -16,6 +14,7 @@ import { siteurl } from "@/lib/utils/siteurl";
 import { PDFViewer } from "@/lib/components/export";
 import { access } from "@/lib/utils/getAccess";
 import { normalDate } from "@/lib/utils/date";
+import { IoCheckmarkOutline } from "react-icons/io5";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -74,6 +73,16 @@ function Page() {
                     },
                   },
                   {
+                    label: "Approved",
+                    icon: <IoCheckmarkOutline className="text-xl" />,
+                    msg: "Are you sure you want to revise this record?",
+                    alert: true,
+                    onClick: async () => {
+                      fm.data.status = "APPROVED";
+                      fm.submit();
+                    },
+                  },
+                  {
                     label: "Rejected",
                     icon: <X className="text-xl" />,
                     msg: "Are you sure you want to rejected this record?",
@@ -83,21 +92,6 @@ function Page() {
                       fm.submit();
                     },
                   },
-                  {
-                    label: "Download Document",
-                    icon: <RiDownloadCloudLine className="text-xl" />,
-                    onClick: async () => {},
-                  },
-                  {
-                    label: "Send",
-                    icon: <IoIosSend className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to send this offer letter to the applicant?",
-                    alert: true,
-                  },
                 ]}
               />
             </div>
@@ -106,6 +100,20 @@ function Page() {
       }}
       onSubmit={async (fm: any) => {
         const data = fm?.data?.document_sending;
+        console.log({ data });
+        console.log({
+          ...data,
+          status: fm?.data?.status,
+          recruitment_type: data?.job_posting?.recruitment_type,
+          email: data?.applicant?.user_profile?.user?.email,
+          project_number:
+            data?.job_posting?.project_recruitment_header?.document_number,
+          project_recruitment_header_id:
+            data?.job_posting?.project_recruitment_header_id,
+          order: data?.project_recruitment_line?.order,
+          document_date: normalDate(data?.document_date),
+          joined_date: normalDate(data?.joined_date),
+        });
         await apix({
           port: "recruitment",
           value: "data.data",
@@ -122,6 +130,7 @@ function Page() {
               data?.job_posting?.project_recruitment_header_id,
             order: data?.project_recruitment_line?.order,
             document_date: normalDate(data?.document_date),
+            joined_date: normalDate(data?.joined_date),
           },
         });
       }}
@@ -169,9 +178,7 @@ function Page() {
               </div>
               <div className="flex flex-grow flex-row relative">
                 <div className="absolute top-0 left-0 w-full h-full">
-                  <PDFViewer
-                    url={siteurl("https://pdfobject.com/pdf/sample.pdf")}
-                  />
+                  <PDFViewer url={siteurl(fm?.data?.path)} />
                 </div>
                 {/* <iframe
                   src={siteurl("/8ebf0cb8-69e4-4c64-bfa9-ce73851f30a8.pdf")}

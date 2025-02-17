@@ -22,8 +22,8 @@ function Page() {
   useEffect(() => {
     const run = async () => {
       const roles = await userRoleMe();
-      local.can_add = getAccess("create-offering-letter", roles);
-      local.can_edit = getAccess("edit-offering-letter", roles);
+      local.can_add = getAccess("create-applicant-document-checking", roles);
+      local.can_edit = getAccess("edit-applicant-document-checking", roles);
       local.render();
     };
     run();
@@ -40,7 +40,7 @@ function Page() {
             <div className="flex flex-row flex-grow">
               <ButtonLink
                 className="bg-primary"
-                href={"/d/offering-letter/offering-letter-document/new"}
+                href={"/d/applicant-document/document-checking/new"}
               >
                 <div className="flex items-center gap-x-0.5">
                   <HiPlus className="text-xl" />
@@ -115,39 +115,19 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const res: any = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/document-types",
-          validate: "array",
-        });
-        const findDocument = res.find(
-          (item: any) => item.name === "DOCUMENT_CHECKING"
-        );
         const params = await events("onload-param", {
           ...param,
-          document_type_id: findDocument?.id,
         });
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data.document_sendings",
-          path: `/api/document-sending${params}`,
+          value: "data.data.document_verification_headers",
+          path: `/api/document-verification-headers${params}`,
           validate: "array",
         });
         return result;
       }}
       onCount={async () => {
-        const res: any = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/document-types",
-          validate: "array",
-        });
-        const findDocument = res.find(
-          (item: any) => item.name === "DOCUMENT_CHECKING"
-        );
         const params = await events("onload-param", {
-          document_type_id: findDocument?.id,
           paging: 1,
           take: 1,
         });
@@ -155,7 +135,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/document-sending${params}`,
+          path: `/api/document-verification-headers${params}`,
           validate: "object",
         });
         return getNumber(result);

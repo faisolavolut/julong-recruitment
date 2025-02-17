@@ -1,51 +1,38 @@
 "use client";
-import { getParams } from "@/lib/utils/get-params";
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
+import { Alert } from "@/lib/components/ui/alert";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
-import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoIosSend, IoMdSave } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
-import { actionToast } from "@/lib/utils/action";
+import { IoMdSave } from "react-icons/io";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import get from "lodash.get";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
-import { labelDocumentType } from "@/lib/utils/document_type";
-import get from "lodash.get";
-import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
-import { IoCheckmarkOutline } from "react-icons/io5";
-import { TbEyeEdit } from "react-icons/tb";
-import { X } from "lucide-react";
-import { RiDownloadCloudLine } from "react-icons/ri";
 import { normalDate } from "@/lib/utils/date";
 
 function Page() {
-  const id = getParams("id");
-  const labelPage = "Contract Document";
-  const urlPage = "/d/contract-document/contract-document";
+  const labelPage = "Document Checking";
+  const urlPage = "/d/applicant-document/document-checking";
   const local = useLocal({
-    can_edit: false,
+    can_add: true as boolean,
     ready: false as boolean,
   });
 
   useEffect(() => {
     const run = async () => {
-      local.can_edit = true;
       local.ready = true;
       local.render();
     };
     run();
   }, []);
-
-  if (local.ready && !local.can_edit) return notFound();
 
   return (
     <FormBetter
@@ -63,12 +50,12 @@ function Page() {
                     url: urlPage,
                   },
                   {
-                    title: "Edit",
+                    title: "New",
                   },
                 ]}
               />
             </div>
-            <div className="flex flex-row gap-x-2 items-center">
+            <div className="flex flex-row space-x-2 items-center">
               <Alert
                 type={"save"}
                 msg={"Are you sure you want to save this record?"}
@@ -81,128 +68,32 @@ function Page() {
                   Save
                 </ButtonContainer>
               </Alert>
-              <DropdownHamburgerBetter
-                className=""
-                classNameList="w-48"
-                list={[
-                  {
-                    label: "Submit",
-                    icon: <IoMdSave className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to submit this record?",
-                    alert: true,
-                  },
-                  {
-                    label: "Completed",
-                    icon: <IoCheckmarkOutline className="text-xl" />,
-                    msg: "Are you sure you want to completed this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "APPROVED";
-                      fm.submit();
-                    },
-                  },
-                  {
-                    label: "Revise",
-                    icon: <TbEyeEdit className="text-xl" />,
-                    msg: "Are you sure you want to revise this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "REVISED";
-                      fm.submit();
-                    },
-                  },
-                  {
-                    label: "Rejected",
-                    icon: <X className="text-xl" />,
-                    msg: "Are you sure you want to rejected this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "REJECTED";
-                      fm.submit();
-                    },
-                  },
-                  {
-                    label: "Download Document",
-                    icon: <RiDownloadCloudLine className="text-xl" />,
-                    onClick: async () => {},
-                  },
-                  {
-                    label: "Send",
-                    icon: <IoIosSend className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to send this offer letter to the applicant?",
-                    alert: true,
-                  },
-                  {
-                    label: "Delete",
-                    icon: <MdDelete className="text-xl" />,
-                    className: "text-red-500",
-                    onClick: async () => {
-                      await actionToast({
-                        task: async () => {
-                          await apix({
-                            port: "recruitment",
-                            path: `/api/document-sending/${id}`,
-                            method: "delete",
-                          });
-                        },
-                        after: () => {
-                          navigate(urlPage);
-                        },
-                        msg_load: "Delete ",
-                        msg_error: "Delete failed ",
-                        msg_succes: "Delete success ",
-                      });
-                    },
-                    msg: "Are you sure you want to delete this record?",
-                    alert: true,
-                  },
-                ]}
-              />
             </div>
           </div>
         );
       }}
       onSubmit={async (fm: any) => {
-        await apix({
+        const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-sending/update",
-          method: "put",
+          path: "/api/document-sending",
+          method: "post",
           data: {
             ...fm.data,
             document_date: normalDate(fm.data?.document_date),
-            joined_date: normalDate(fm.data?.joined_date),
           },
         });
+        if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
-        const data: any = await apix({
+        const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/document-sending/${id}`,
-          validate: "object",
+          path: "/api/document-sending/document-number",
         });
         return {
-          ...data,
-          email: data?.applicant?.user_profile?.user?.email,
-          project_number:
-            data?.job_posting?.project_recruitment_header?.document_number,
-          project_recruitment_header_id:
-            data?.job_posting?.project_recruitment_header_id,
-          recruitment_type: data?.job_posting?.recruitment_type,
-          for_organization_id: data?.job_posting?.for_organization_id,
-          organization_location_id: data?.organization_location_id,
-          document_number: data?.document_number,
-          job_posting_id: data?.job_posting_id,
-          order: data?.project_recruitment_line?.order,
+          status: "DRAFT",
+          document_number: res,
         };
       }}
       showResize={false}
@@ -242,8 +133,6 @@ function Page() {
                     onChange={({ data }) => {
                       fm.data.project_recruitment_header_id =
                         data?.project_recruitment_header_id;
-                      fm.data.organization_location_id =
-                        data?.organization_location_id;
                       fm.data.project_number =
                         data?.project_recruitment_header?.document_number;
                       fm.data.for_organization_id = data?.for_organization_id;
@@ -437,113 +326,6 @@ function Page() {
                               label={"Recipient's Email"}
                               type={"text"}
                               disabled={true}
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"joined_date"}
-                              label={"Start Date of Employment"}
-                              type={"date"}
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"job_level_id"}
-                              label={"Job Level"}
-                              required={true}
-                              disabled={
-                                fm?.data?.for_organization_id ? false : true
-                              }
-                              type={"dropdown"}
-                              onLoad={async () => {
-                                if (!fm?.data?.for_organization_id) return [];
-                                const res: any = await apix({
-                                  port: "portal",
-                                  value: "data.data",
-                                  path: `/api/job-levels/organization/${fm?.data?.for_organization_id}`,
-                                  validate: "dropdown",
-                                  keys: { label: "level" },
-                                });
-                                return res;
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"basic_wage"}
-                              label={"Gaji Pokok"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"positional_allowance"}
-                              label={"Tunjangan Jabatan"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"operational_allowance"}
-                              label={"Tunjangan Operasional Kerja"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"meal_allowance"}
-                              label={"Tunjangan Makan"}
-                              type={"money"}
-                              prefix={
-                                <div className="text-xs font-bold px-1">Rp</div>
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"organization_location_id"}
-                              disabled={
-                                fm?.data?.for_organization_id ? false : true
-                              }
-                              label={"Location"}
-                              type={"dropdown"}
-                              onLoad={async () => {
-                                if (!fm?.data?.for_organization_id) return [];
-                                const res: any = await apix({
-                                  port: "portal",
-                                  value: "data.data",
-                                  path:
-                                    "/api/organization-locations/organization/" +
-                                    fm?.data?.for_organization_id,
-                                  validate: "dropdown",
-                                  keys: { label: "name" },
-                                });
-                                return res;
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"hometrip_ticket"}
-                              label={"Home Trip Ticket"}
-                              type={"text"}
                             />
                           </div>
                           <div className="col-span-2">

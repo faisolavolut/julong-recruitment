@@ -92,7 +92,7 @@ function Page() {
           data: {
             ...fm.data,
             document_date: normalDate(fm.data?.document_date),
-            tanggal_masuk: normalDate(fm.data?.tanggal_masuk),
+            joined_date: normalDate(fm.data?.joined_date),
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
@@ -348,7 +348,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tanggal_masuk"}
+                              name={"joined_date"}
                               label={"Start Date of Employment"}
                               type={"date"}
                             />
@@ -379,7 +379,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"upah_pokok"}
+                              name={"basic_wage"}
                               label={"Gaji Pokok"}
                               type={"money"}
                               prefix={
@@ -390,7 +390,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tunjangan_jabatan"}
+                              name={"positional_allowance"}
                               label={"Tunjangan Jabatan"}
                               type={"money"}
                               prefix={
@@ -401,7 +401,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tunjangan_operasional"}
+                              name={"operational_allowance"}
                               label={"Tunjangan Operasional Kerja"}
                               type={"money"}
                               prefix={
@@ -412,7 +412,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tunjangan_makan"}
+                              name={"meal_allowance"}
                               label={"Tunjangan Makan"}
                               type={"money"}
                               prefix={
