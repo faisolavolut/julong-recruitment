@@ -725,7 +725,7 @@ function Page() {
                                       type: "form",
                                       data: {
                                         id: fm?.data?.id,
-                                        status: "SUBMIT",
+                                        status: "SUBMITTED",
                                       },
                                     });
                                   }}
@@ -778,9 +778,7 @@ function Page() {
                                                             item
                                                           )}
                                                           name={"path"}
-                                                          label={
-                                                            "Kartu Keluarga"
-                                                          }
+                                                          label={item?.name}
                                                           onChange={async () => {
                                                             await actionToast({
                                                               task: async () => {
@@ -842,8 +840,7 @@ function Page() {
                                             ) : (
                                               <></>
                                             )}
-                                            {fm.data?.status_aggrement !==
-                                            "SUBMITTED" ? (
+                                            {fm.data?.status !== "SUBMITTED" ? (
                                               <div className="flex flex-row items-center col-span-2">
                                                 <ButtonBetter
                                                   className=" px-6"
@@ -887,110 +884,70 @@ function Page() {
                             Congratulations{" "}
                             <LuPartyPopper className="text-pink-500" />
                           </div>
-                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
-                            Congratulations on becoming a part of{" "}
-                            {get(local, "data.for_organization_name")}! As part
-                            of the new employee verification process, we kindly
-                            request you to submit the following documents:
-                          </div>
-                          <div className="flex flex-col flex-grow py-4 pt-0 px-8">
-                            <Form
-                              onSubmit={async (fm: any) => {}}
-                              onLoad={async () => {
-                                return {
-                                  employee_contract:
-                                    "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
-                                };
-                              }}
-                              showResize={false}
-                              header={(fm: any) => {
-                                return <></>;
-                              }}
-                              children={(fm: any) => {
-                                return (
-                                  <>
-                                    <div
-                                      className={cx(
-                                        "flex flex-row flex-wrap py-2"
-                                      )}
-                                    >
-                                      <div className="flex-grow grid gap-4 grid-cols-1 md:grid-cols-2">
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"ktp"}
-                                            label={"KTP"}
-                                            type={"upload"}
-                                          />
+                          {local.readyTest ? (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                Your Cover Letter is Ready! Welcome to Julong
+                                Group Indonesia ! We are excited to have you on
+                                board and look forward to working with you.
+                              </div>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <Form
+                                  onSubmit={async (fm: any) => {}}
+                                  onLoad={async () => {
+                                    return {
+                                      employee_contract:
+                                        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                    };
+                                  }}
+                                  showResize={false}
+                                  header={(fm: any) => {
+                                    return <></>;
+                                  }}
+                                  children={(fm: any) => {
+                                    return (
+                                      <>
+                                        <div
+                                          className={cx(
+                                            "flex flex-row flex-wrap py-2"
+                                          )}
+                                        >
+                                          <div className="flex-grow grid gap-4 grid-cols-1">
+                                            <div>
+                                              <div className="flex">
+                                                <Field
+                                                  fm={fm}
+                                                  classField={""}
+                                                  name={"employee_contract"}
+                                                  label={
+                                                    "Upload the signed offer letter in PDF format."
+                                                  }
+                                                  disabled={true}
+                                                  type={"upload"}
+                                                  required={true}
+                                                />
+                                              </div>
+                                            </div>
+                                          </div>
                                         </div>
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"kartu_keluarga"}
-                                            label={"Kartu Keluarga"}
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"ijazah"}
-                                            label={"Ijazah"}
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"kartu_bpjs"}
-                                            label={"Kartu BPJS"}
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"surat_keterangan_kerja"}
-                                            label={"Surat Keterangan Kerja"}
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"surat_keterangan_kesehatan"}
-                                            label={"Surat Keterangan Kesehatan"}
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"skck"}
-                                            label={"SKCK"}
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                        <div>
-                                          <Field
-                                            fm={fm}
-                                            name={"npwp"}
-                                            label={"NPWP"}
-                                            type={"upload"}
-                                          />
-                                        </div>
-                                        <div className="flex flex-row items-center">
-                                          <ButtonBetter className=" px-6">
-                                            Submit
-                                          </ButtonBetter>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </>
-                                );
-                              }}
-                            />
-                          </div>
+                                      </>
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                Welcome to Julong Group Indonesia! We are
+                                excited to have you on board. Your cover letter
+                                is currently being processed. Please stay tuned
+                                and check your email or our website regularly
+                                for updates. We will notify you as soon as it is
+                                ready.
+                              </div>
+                            </>
+                          )}
                         </div>
                       ) : (
                         <></>

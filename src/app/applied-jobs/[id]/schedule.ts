@@ -214,6 +214,16 @@ export const scheduleFase = async ({
       if (test) {
         let detail = {
           ...test,
+          document_verification_lines: test?.document_verification_lines?.length
+            ? test.document_verification_lines.map((e: any) => {
+                return {
+                  ...e,
+                  name: e?.document_verification?.name
+                    ? e?.document_verification?.name
+                    : "",
+                };
+              })
+            : [],
           applicant: data?.applicant,
         };
         result = detail;
