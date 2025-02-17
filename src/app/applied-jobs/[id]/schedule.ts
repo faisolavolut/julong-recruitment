@@ -201,6 +201,24 @@ export const scheduleFase = async ({
         result = detail;
       }
       break;
+    case "DOCUMENT_CHECKING":
+      try {
+        test = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/document-verification-headers/find?applicant_id=${data?.applicant?.id}&job_posting_id=${data?.id}`,
+          validate: "object",
+        });
+        if (test?.status === "DRAFT") test = null;
+      } catch (ex) {}
+      if (test) {
+        let detail = {
+          ...test,
+          applicant: data?.applicant,
+        };
+        result = detail;
+      }
+      break;
   }
   return result;
 };

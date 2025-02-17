@@ -9,7 +9,7 @@ import { dayDate } from "@/lib/utils/date";
 import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
-import { HiPlus } from "react-icons/hi";
+import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
 
@@ -60,14 +60,7 @@ function Page() {
           },
         },
         {
-          name: "user_profile.name",
-          header: () => <span>Send Date</span>,
-          renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
-          },
-        },
-        {
-          name: "job_name",
+          name: "job_posting.job_name",
           header: () => <span>Job Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
@@ -99,6 +92,21 @@ function Page() {
           header: () => <span>Action</span>,
           sortable: false,
           renderCell: ({ row }: any) => {
+            console.log(row?.status);
+            if (local.can_edit && row?.status === "DRAFT") {
+              return (
+                <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                  <ButtonLink
+                    className="bg-primary"
+                    href={`/d/applicant-document/document-checking/${row.id}/edit`}
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <HiOutlinePencilAlt className="text-lg" />
+                    </div>
+                  </ButtonLink>
+                </div>
+              );
+            }
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                 <ButtonLink

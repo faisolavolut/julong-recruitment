@@ -10,13 +10,6 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
-import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const labelPage = "Document Checking";
@@ -76,24 +69,43 @@ function Page() {
         const res = await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-sending",
+          path: "/api/document-verification-headers",
           method: "post",
           data: {
             ...fm.data,
-            document_date: normalDate(fm.data?.document_date),
           },
         });
+
+        const lines = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/document-verifications/template-question/${fm?.data?.template_question_id}`,
+          method: "get",
+        });
+        const maps = lines.map((e: any) => {
+          return {
+            document_verification_id: e?.id,
+          };
+        });
+        const data_line = {
+          document_verification_header_id: res?.id,
+          document_verification_lines: maps,
+          deleted_document_verification_line_ids: [],
+        };
+        try {
+          await apix({
+            port: "recruitment",
+            value: "data.data",
+            path: "/api/document-verification-lines",
+            method: "post",
+            data: data_line,
+          });
+        } catch (ex) {}
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/document-sending/document-number",
-        });
         return {
           status: "DRAFT",
-          document_number: res,
         };
       }}
       showResize={false}
@@ -105,24 +117,6 @@ function Page() {
           <>
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"document_number"}
-                    label={"Document Number"}
-                    type={"text"}
-                    disabled={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"document_date"}
-                    label={"Document Date"}
-                    required={true}
-                    type={"date"}
-                  />
-                </div>
                 <div>
                   <Field
                     fm={fm}
@@ -157,48 +151,10 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    required={true}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: { value: "value", label: "value" },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
                     name={"project_number"}
                     label={"Project Number"}
                     type={"text"}
                     disabled={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"for_organization_id"}
-                    label={"Organization Name"}
-                    required={true}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
-                        port: "portal",
-                        value: "data.data.organizations",
-                        path: "/api/organizations",
-                        validate: "dropdown",
-                        keys: { label: "name" },
-                      });
-                      return res;
-                    }}
                   />
                 </div>
                 <div>
@@ -213,6 +169,8 @@ function Page() {
                     type={"dropdown"}
                     onChange={({ data }) => {
                       fm.data.order = data?.order;
+                      fm.data.template_question_id =
+                        data?.template_activity_line?.question_template_id;
                       fm.render();
                     }}
                     onLoad={async () => {
@@ -238,27 +196,30 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_setup_id"}
-                    label={"Document Type"}
+                    name={"applicant_id"}
+                    label={"Recipient's Name"}
+                    disabled={
+                      fm?.data?.project_recruitment_line_id &&
+                      fm?.data?.job_posting_id
+                        ? false
+                        : true
+                    }
                     type={"dropdown"}
-                    required={true}
                     onChange={({ data }) => {
-                      const result = data?.header + data?.body + data?.footer;
-                      fm.data.detail_content = result;
-                      fm.render();
-                      if (
-                        typeof fm?.fields?.detail_content?.reload === "function"
-                      ) {
-                        fm?.fields?.detail_content?.reload();
-                      }
+                      fm.data.email = data?.user_profile?.user?.email;
                     }}
                     onLoad={async () => {
+                      if (
+                        !fm?.data?.project_recruitment_line_id ||
+                        !fm?.data?.job_posting_id
+                      )
+                        return [];
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data.document_setups",
-                        path: "/api/document-setup",
+                        value: "data.data.applicants",
+                        path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}?order=${fm?.data?.order}`,
                         validate: "dropdown",
-                        keys: { label: "title" },
+                        keys: { label: "user_profile.name" },
                       });
                       return res;
                     }}
@@ -272,75 +233,6 @@ function Page() {
                     type={"text"}
                     disabled={true}
                   />
-                </div>
-
-                <div className="col-span-2">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="w-full"
-                    defaultValue={"item-1"}
-                  >
-                    <AccordionItem value="item-1">
-                      <AccordionTriggerCustom className="flex flex-row items-center">
-                        Document Content
-                      </AccordionTriggerCustom>
-                      <AccordionContent>
-                        <div className="grid grid-cols-2 gap-4 md:gap-6">
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"applicant_id"}
-                              label={"Recipient's Name"}
-                              disabled={
-                                fm?.data?.project_recruitment_line_id &&
-                                fm?.data?.job_posting_id
-                                  ? false
-                                  : true
-                              }
-                              type={"dropdown"}
-                              onChange={({ data }) => {
-                                fm.data.email = data?.user_profile?.user?.email;
-                              }}
-                              onLoad={async () => {
-                                if (
-                                  !fm?.data?.project_recruitment_line_id ||
-                                  !fm?.data?.job_posting_id
-                                )
-                                  return [];
-                                const res: any = await apix({
-                                  port: "recruitment",
-                                  value: "data.data.applicants",
-                                  path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}?order=${fm?.data?.order}`,
-                                  validate: "dropdown",
-                                  keys: { label: "user_profile.name" },
-                                });
-                                return res;
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <Field
-                              fm={fm}
-                              name={"email"}
-                              label={"Recipient's Email"}
-                              type={"text"}
-                              disabled={true}
-                            />
-                          </div>
-                          <div className="col-span-2">
-                            <Field
-                              hidden_label={true}
-                              fm={fm}
-                              name={"detail_content"}
-                              label={"Question"}
-                              type={"richtext"}
-                            />
-                          </div>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
                 </div>
               </div>
             </div>

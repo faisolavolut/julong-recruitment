@@ -24,6 +24,7 @@ import { RiCalendarScheduleLine } from "react-icons/ri";
 import { GoClock } from "react-icons/go";
 import { IoLinkOutline } from "react-icons/io5";
 import { scheduleFase } from "./schedule";
+import { cloneFM } from "@/lib/utils/cloneFm";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -694,6 +695,188 @@ function Page() {
                                 Please check your email or our website regularly
                                 for updates. We will notify you as soon as it is
                                 ready.
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ) : local.stepName === "DOCUMENT_CHECKING" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations{" "}
+                            <LuPartyPopper className="text-pink-500" />
+                          </div>
+                          {local.readyTest ? (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                Congratulations on becoming a part of{" "}
+                                {get(local, "data.for_organization_name")}! As
+                                part of the new employee verification process,
+                                we kindly request you to submit the following
+                                documents:
+                              </div>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <Form
+                                  onSubmit={async (fm: any) => {
+                                    await apix({
+                                      port: "recruitment",
+                                      value: "data.data",
+                                      path: "/api/document-verification-headers/update",
+                                      method: "post",
+                                      type: "form",
+                                      data: {
+                                        id: fm?.data?.id,
+                                        status: "SUBMIT",
+                                      },
+                                    });
+                                  }}
+                                  onLoad={async () => {
+                                    const data = local.detail;
+                                    return {
+                                      employee_contract:
+                                        "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
+                                      ...local.detail,
+                                    };
+                                  }}
+                                  afterLoad={async (fm: any) => {
+                                    if (
+                                      fm.data?.status_aggrement === "SUBMITTED"
+                                    ) {
+                                      fm.mode = "view";
+                                      fm.render();
+                                    }
+                                  }}
+                                  children={(fm: any) => {
+                                    return (
+                                      <>
+                                        <div
+                                          className={cx(
+                                            "flex flex-row flex-wrap py-2"
+                                          )}
+                                        >
+                                          <div className="flex-grow grid gap-4 grid-cols-1 md:grid-cols-2">
+                                            {fm?.data
+                                              ?.document_verification_lines
+                                              ?.length ? (
+                                              <>
+                                                {fm?.data?.document_verification_lines.map(
+                                                  (item: any, idx: number) => {
+                                                    return (
+                                                      <div
+                                                        key={`files-${idx + 1}`}
+                                                      >
+                                                        <Field
+                                                          fm={cloneFM(
+                                                            {
+                                                              ...fm,
+                                                              render: () => {
+                                                                fm.data.document_verification_lines[
+                                                                  idx
+                                                                ] = item;
+                                                                fm.render();
+                                                              },
+                                                            },
+                                                            item
+                                                          )}
+                                                          name={"path"}
+                                                          label={
+                                                            "Kartu Keluarga"
+                                                          }
+                                                          onChange={async () => {
+                                                            await actionToast({
+                                                              task: async () => {
+                                                                const res =
+                                                                  await apix({
+                                                                    port: "recruitment",
+                                                                    value:
+                                                                      "data.data",
+                                                                    path: "/api/document-verification-lines/upload",
+                                                                    method:
+                                                                      "post",
+                                                                    type: "form",
+                                                                    data: {
+                                                                      file: item?.path,
+                                                                      id: item?.id,
+                                                                    },
+                                                                  });
+                                                                if (res) {
+                                                                  fm.data.document_verification_lines[
+                                                                    idx
+                                                                  ] = {
+                                                                    ...fm.data
+                                                                      .document_verification_lines[
+                                                                      idx
+                                                                    ],
+                                                                    path: res?.path,
+                                                                  };
+                                                                  fm.render();
+                                                                }
+                                                              },
+                                                              failed: () => {
+                                                                fm.data.document_verification_lines[
+                                                                  idx
+                                                                ] = {
+                                                                  ...fm.data
+                                                                    .document_verification_lines[
+                                                                    idx
+                                                                  ],
+                                                                  path: null,
+                                                                };
+                                                                fm.render();
+                                                              },
+                                                              after: () => {},
+                                                              msg_load:
+                                                                "Upload ",
+                                                              msg_error:
+                                                                "Upload failed ",
+                                                              msg_succes:
+                                                                "Upload success ",
+                                                            });
+                                                          }}
+                                                          type={"upload"}
+                                                        />
+                                                      </div>
+                                                    );
+                                                  }
+                                                )}
+                                              </>
+                                            ) : (
+                                              <></>
+                                            )}
+                                            {fm.data?.status_aggrement !==
+                                            "SUBMITTED" ? (
+                                              <div className="flex flex-row items-center col-span-2">
+                                                <ButtonBetter
+                                                  className=" px-6"
+                                                  onClick={(event) => {
+                                                    event.preventDefault();
+                                                    event.stopPropagation();
+                                                    fm.submit();
+                                                  }}
+                                                >
+                                                  Submit
+                                                </ButtonBetter>
+                                              </div>
+                                            ) : (
+                                              <></>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </>
+                                    );
+                                  }}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                                Congratulations on becoming a part of{" "}
+                                {get(local, "data.for_organization_name")}! We
+                                are currently preparing the list of documents
+                                required for the new employee verification
+                                process. Please stay tuned and check your email
+                                or our website regularly for updates. We will
+                                notify you once the details are ready.
                               </div>
                             </>
                           )}
