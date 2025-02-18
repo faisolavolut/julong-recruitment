@@ -6,6 +6,7 @@ import { get_params_url } from "@/lib/utils/getParamsUrl";
 import api from "@/lib/utils/axios";
 import { userRoleMe } from "@/lib/utils/getAccess";
 import ServerErrorPage from "@/lib/components/comp/500";
+import { apix } from "@/lib/utils/apix";
 
 function Portal() {
   const local = useLocal({
@@ -23,12 +24,27 @@ function Portal() {
         await api.post(process.env.NEXT_PUBLIC_BASE_URL + "/api/cookies", {
           token: jwt,
         });
-        const user = await api.get(
-          `${process.env.NEXT_PUBLIC_API_PORTAL}/api/users/me`
-        );
-        const us = user.data.data;
-        if (us) {
-          localStorage.setItem("user", JSON.stringify(user.data.data));
+        let user = await apix({
+          port: "portal",
+          value: "data.data",
+          path: "/api/users/me",
+        });
+        if (user) {
+          let profile = null;
+          try {
+            const data = await apix({
+              port: "recruitment",
+              value: "data.data",
+              path: "/api/user-profiles/user",
+            });
+            profile = data;
+            delete profile["user"];
+            user = {
+              ...user,
+              profile,
+            };
+          } catch (ex) {}
+          localStorage.setItem("user", JSON.stringify(user));
           const roles = await userRoleMe();
           router.push("/");
           local.ready = true;

@@ -9,12 +9,13 @@ import { get_user } from "@/lib/utils/get_user";
 import { userRoleMe } from "@/lib/utils/getAccess";
 import { siteurl } from "@/lib/utils/siteurl";
 import { useLocal } from "@/lib/utils/use-local";
-import { Avatar, Dropdown } from "flowbite-react";
+import { Dropdown } from "flowbite-react";
 import get from "lodash.get";
 import Link from "next/link";
 import { useEffect, type FC } from "react";
 import { configMenu } from "../d/config-menu";
 import { apix } from "@/lib/utils/apix";
+import ImageBetter from "@/lib/components/ui/Image";
 
 const DefaultHeaderNavigation: FC = function () {
   const local = useLocal({
@@ -118,23 +119,30 @@ const UserDropdown: FC<{ user: any }> = function ({ user }) {
       label={
         <span>
           <span className="sr-only">User menu</span>
-          <Avatar
-            alt=""
-            img={siteurl(user?.avatar ? user?.avatar : "/dog.jpg")}
-            rounded
-            size="sm"
+          <ImageBetter
+            src={
+              get_user("profile.avatar")
+                ? get_user("profile.avatar")
+                : get_user("photo")
+            }
+            alt="Profile"
+            className="h-8 w-8 rounded-full object-cover"
+            defaultSrc={siteurl("/404-img.jpg")}
           />
         </span>
       }
     >
-      <Dropdown.Header>
-        <span className="block text-md">
-          {get_user("name") ? get_user("name") : "-"}
-        </span>
-        <span className="block truncate text-md font-medium">
-          {get_user("email") ? get_user("email") : "-"}
-        </span>
-      </Dropdown.Header>
+      <Dropdown.Item className="flex flex-col">
+        <div className="flex flex-col flex-grow">
+          <div className=" text-md w-full text-start">
+            {get_user("name") ? get_user("name") : "-"}
+          </div>
+          <div className=" truncate text-md font-medium  w-full  text-start">
+            {get_user("email") ? get_user("email") : "-"}
+          </div>
+        </div>
+      </Dropdown.Item>
+      <Dropdown.Divider className="my-0" />
       {get(user, "roles[0].permissions.length") ? (
         <>
           <Dropdown.Item
@@ -160,7 +168,7 @@ const UserDropdown: FC<{ user: any }> = function ({ user }) {
           >
             Dashboard
           </Dropdown.Item>
-          <Dropdown.Divider />
+          <Dropdown.Divider className="my-0" />
         </>
       ) : (
         <></>
@@ -178,7 +186,7 @@ const UserDropdown: FC<{ user: any }> = function ({ user }) {
           >
             Switch Role
           </Dropdown.Item>
-          <Dropdown.Divider />
+          <Dropdown.Divider className="my-0" />
         </>
       ) : (
         <></>
@@ -192,7 +200,7 @@ const UserDropdown: FC<{ user: any }> = function ({ user }) {
       >
         Setting
       </Dropdown.Item>
-      <Dropdown.Divider />
+      <Dropdown.Divider className="my-0" />
       <Dropdown.Item
         className="flex flex-row items-center gap-x-1"
         onClick={async () => {

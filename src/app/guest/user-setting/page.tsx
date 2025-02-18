@@ -15,6 +15,8 @@ import { actionToast } from "@/lib/utils/action";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { GoVerified } from "react-icons/go";
 import { flattenObject } from "@/lib/utils/flattenObject";
+import ImageBetter from "@/lib/components/ui/Image";
+import { get_user } from "@/lib/utils/get_user";
 
 function Page() {
   const list = [
@@ -92,12 +94,11 @@ function Page() {
       >
         <div className="flex flex-row px-10 gap-x-4">
           <div className="w-16 h-16 rounded-full relative overflow-hidden border-2 border-white">
-            <img
-              src={siteurl(
-                local?.user?.avatar ? local?.user?.avatar : "/dog.jpg"
-              )}
-              alt="John Cena"
+            <ImageBetter
+              src={get_user("profile.avatar")}
+              alt="Profile"
               className=" w-full h-full object-cover "
+              defaultSrc={siteurl("/404-img.jpg")}
             />
             <label
               htmlFor="dropzone-file"
