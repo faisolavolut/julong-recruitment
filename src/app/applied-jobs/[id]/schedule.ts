@@ -229,6 +229,40 @@ export const scheduleFase = async ({
         result = detail;
       }
       break;
+    case "FINAL_RESULT":
+      try {
+        let answerContractDocument = null;
+        const res: any = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/document-types",
+          validate: "array",
+        });
+        const findDocument = res.find(
+          (item: any) => item?.name === "FINAL_RESULT"
+        );
+
+        test = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: `/api/document-sending/applicant?applicant_id=${data?.applicant?.id}&document_type_id=${findDocument?.id}`,
+          validate: "object",
+        });
+        if (test && test?.status !== "DRAFT") {
+          test = {
+            ...test,
+          };
+        }
+        if (test?.status === "DRAFT") test = null;
+      } catch (ex) {}
+      if (test) {
+        let detail = {
+          ...test,
+          applicant: data?.applicant,
+        };
+        result = detail;
+      }
+      break;
   }
   return result;
 };

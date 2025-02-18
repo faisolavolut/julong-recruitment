@@ -86,13 +86,6 @@ function Page() {
         };
       });
       steps = steps?.sort((a: any, b: any) => a?.id - b?.id);
-      if (steps?.length) {
-        steps.push({
-          id: steps?.length + 1,
-          label: "Final Result",
-          name: "final_result",
-        });
-      }
       const stepNow = steps.find((e: any) => e?.id === now);
       const stepName = stepNow?.name;
       const test = await scheduleFase({
@@ -103,7 +96,9 @@ function Page() {
           applicant,
         },
       });
-      console.log({ test });
+      if (stepName === "FINAL_RESULT") {
+        local.step = stepNow?.id + 1;
+      }
       if (!test) {
         local.readyTest = false;
       } else {
@@ -717,20 +712,28 @@ function Page() {
                               <div className="flex flex-col flex-grow py-4 pt-0 px-8">
                                 <Form
                                   onSubmit={async (fm: any) => {
+                                    const data = fm?.data;
                                     await apix({
                                       port: "recruitment",
                                       value: "data.data",
                                       path: "/api/document-verification-headers/update",
-                                      method: "post",
-                                      type: "form",
+                                      method: "put",
                                       data: {
                                         id: fm?.data?.id,
+                                        project_recruitment_line_id:
+                                          data?.project_recruitment_line_id,
+                                        applicant_id: data?.applicant_id,
+                                        job_posting_id: data?.job_posting_id,
                                         status: "SUBMITTED",
                                       },
                                     });
+                                    fm.data.status = "SUBMITTED";
+                                    fm.mode = "view";
+                                    fm.render();
                                   }}
                                   onLoad={async () => {
                                     const data = local.detail;
+                                    console.log({ data });
                                     return {
                                       employee_contract:
                                         "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
@@ -867,7 +870,7 @@ function Page() {
                             </>
                           )}
                         </div>
-                      ) : local.stepName === "final_result" ? (
+                      ) : local.stepName === "FINAL_RESULT" ? (
                         <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
                           <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
                             Congratulations{" "}
@@ -909,7 +912,7 @@ function Page() {
                                                   classField={""}
                                                   name={"employee_contract"}
                                                   label={
-                                                    "Upload the signed offer letter in PDF format."
+                                                    "Cover Letter New Employee"
                                                   }
                                                   disabled={true}
                                                   type={"upload"}

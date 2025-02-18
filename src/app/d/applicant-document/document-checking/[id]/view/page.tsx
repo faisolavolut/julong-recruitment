@@ -8,15 +8,17 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { Alert } from "@/lib/components/ui/alert";
-import { ButtonContainer } from "@/lib/components/ui/button";
-import { IoMdSave } from "react-icons/io";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
+import { getValue } from "@/lib/utils/getValue";
+import { FilePreview } from "@/lib/components/form/field/FilePreview";
+import { TableEditBetter } from "@/lib/components/tablelist/TableBetter";
+import { MdDelete } from "react-icons/md";
+import { actionToast } from "@/lib/utils/action";
+import { X } from "lucide-react";
+import { TbEyeEdit } from "react-icons/tb";
+import { IoCheckmarkOutline } from "react-icons/io5";
+import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import get from "lodash.get";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -60,32 +62,66 @@ function Page() {
               />
             </div>
             <div className="flex flex-row gap-x-2 items-center">
-              <Alert
-                type={"save"}
-                msg={"Are you sure you want to submit this record?"}
-                onClick={() => {
-                  fm.data.status = "IN PROGRESS";
-                  fm.render();
-                  fm.submit();
-                }}
-              >
-                <ButtonContainer className={"bg-primary"}>
-                  <IoMdSave className="text-xl" />
-                  Submit
-                </ButtonContainer>
-              </Alert>
-              <Alert
-                type={"save"}
-                msg={"Are you sure you want to save this record?"}
-                onClick={() => {
-                  fm.submit();
-                }}
-              >
-                <ButtonContainer className={"bg-primary"}>
-                  <IoMdSave className="text-xl" />
-                  Save
-                </ButtonContainer>
-              </Alert>
+              <DropdownHamburgerBetter
+                className=""
+                classNameList="w-48"
+                list={[
+                  {
+                    label: "Completed",
+                    icon: <IoCheckmarkOutline className="text-xl" />,
+                    msg: "Are you sure you want to completed this record?",
+                    alert: true,
+                    onClick: async () => {
+                      fm.data.status = "APPROVED";
+                      fm.submit();
+                    },
+                  },
+                  {
+                    label: "Revise",
+                    icon: <TbEyeEdit className="text-xl" />,
+                    msg: "Are you sure you want to revise this record?",
+                    alert: true,
+                    onClick: async () => {
+                      fm.data.status = "REVISED";
+                      fm.submit();
+                    },
+                  },
+                  {
+                    label: "Rejected",
+                    icon: <X className="text-xl" />,
+                    msg: "Are you sure you want to rejected this record?",
+                    alert: true,
+                    onClick: async () => {
+                      fm.data.status = "REJECTED";
+                      fm.submit();
+                    },
+                  },
+                  {
+                    label: "Delete",
+                    icon: <MdDelete className="text-xl" />,
+                    className: "text-red-500",
+                    onClick: async () => {
+                      await actionToast({
+                        task: async () => {
+                          await apix({
+                            port: "recruitment",
+                            path: `/api/document-verification-headers/${id}`,
+                            method: "delete",
+                          });
+                        },
+                        after: () => {
+                          navigate(urlPage);
+                        },
+                        msg_load: "Delete ",
+                        msg_error: "Delete failed ",
+                        msg_succes: "Delete success ",
+                      });
+                    },
+                    msg: "Are you sure you want to delete this record?",
+                    alert: true,
+                  },
+                ]}
+              />
             </div>
           </div>
         );
@@ -103,20 +139,26 @@ function Page() {
       }}
       mode="view"
       onLoad={async () => {
-        return {
-          email: "sample@sample.com",
-          applicant_name: "Sample Name",
-        };
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
-          path: `/api/document-sending/${id}`,
+          path: `/api/document-verification-headers/${id}`,
           validate: "object",
         });
+        console.log(data);
         return {
           ...data,
           email: data?.applicant?.user_profile?.user?.email,
-          applicant_name: data?.applicant?.user_profile?.name,
+          project_number:
+            data?.job_posting?.project_recruitment_header?.document_number,
+          project_recruitment_header_id:
+            data?.job_posting?.project_recruitment_header_id,
+          recruitment_type: data?.job_posting?.recruitment_type,
+          for_organization_id: data?.job_posting?.for_organization_id,
+          organization_location_id: data?.organization_location_id,
+          document_number: data?.document_number,
+          job_posting_id: data?.job_posting_id,
+          order: data?.project_recruitment_line?.order,
         };
       }}
       showResize={false}
@@ -127,38 +169,44 @@ function Page() {
       children={(fm: any) => {
         return (
           <>
-            <div className={"flex flex-col flex-wrap px-4 py-2 flex-grow"}>
+            <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
                   <Field
                     fm={fm}
-                    name={"project_name"}
-                    label={"Project Name"}
-                    type={"text"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    type={"text"}
-                    disabled={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"job_name"}
+                    name={"job_posting_id"}
                     label={"Job Name"}
-                    type={"text"}
+                    required={true}
+                    type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.project_recruitment_header_id =
+                        data?.project_recruitment_header_id;
+                      fm.data.project_number =
+                        data?.project_recruitment_header?.document_number;
+                      fm.data.for_organization_id = data?.for_organization_id;
+                      fm.render();
+                    }}
+                    onLoad={async () => {
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.job_postings",
+                        path: "/api/job-postings?status=IN PROGRESS",
+                        validate: "dropdown",
+                        keys: {
+                          label: (item: any) => {
+                            return `${item.job_name} - ${item.document_number}`;
+                          },
+                        },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"name"}
-                    label={"Employee Name"}
+                    name={"project_number"}
+                    label={"Project Number"}
                     type={"text"}
                     disabled={true}
                   />
@@ -166,138 +214,168 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"for_organization_name"}
-                    label={"Organization"}
-                    type={"text"}
+                    name={"project_recruitment_line_id"}
+                    label={"Activity"}
+                    disabled={
+                      fm?.data?.project_recruitment_header_id ? false : true
+                    }
+                    required={true}
+                    type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.order = data?.order;
+                      fm.data.template_question_id =
+                        data?.template_activity_line?.question_template_id;
+                      fm.render();
+                    }}
+                    onLoad={async () => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path:
+                          "/api/project-recruitment-lines/header/" +
+                          fm?.data?.project_recruitment_header_id,
+                        validate: "dropdown",
+                        keys: {
+                          label: (row: any) =>
+                            labelDocumentType(
+                              get(row, "template_activity_line.name")
+                            ) || "",
+                        },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"for_organization_structure"}
-                    label={"Department"}
-                    type={"text"}
-                    disabled={true}
+                    name={"applicant_id"}
+                    label={"Recipient's Name"}
+                    disabled={
+                      fm?.data?.project_recruitment_line_id &&
+                      fm?.data?.job_posting_id
+                        ? false
+                        : true
+                    }
+                    type={"dropdown"}
+                    onChange={({ data }) => {
+                      fm.data.email = data?.user_profile?.user?.email;
+                    }}
+                    onLoad={async () => {
+                      if (
+                        !fm?.data?.project_recruitment_line_id ||
+                        !fm?.data?.job_posting_id
+                      )
+                        return [];
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.applicants",
+                        path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}?order=${fm?.data?.order}`,
+                        validate: "dropdown",
+                        keys: { label: "user_profile.name" },
+                      });
+                      return res;
+                    }}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"description"}
-                    label={"Description"}
-                    type={"textarea"}
+                    name={"status"}
+                    label={"Status"}
+                    type={"text"}
                     disabled={true}
                   />
                 </div>
-              </div>
-              <div className="col-span-2">
-                <Accordion
-                  type="single"
-                  collapsible
-                  className="w-full"
-                  defaultValue={"item-1"}
-                >
-                  <AccordionItem value="item-1">
-                    <AccordionTriggerCustom className="flex flex-row items-center">
-                      List Document
-                    </AccordionTriggerCustom>
-                    <AccordionContent>
-                      <div className="grid grid-cols-2 gap-4 md:gap-6">
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"offering_letter"}
-                            label={"Offering Letter"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"contract_document"}
-                            label={"Contract Document"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"surat_pengantar_masuk"}
-                            label={"Surat Pengantar Masuk"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"ktp"}
-                            label={"KTP"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"kartu_keluarga"}
-                            label={"Kartu Keluarga"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"ijazah"}
-                            label={"Ijazah"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"kartu_bpjs"}
-                            label={"Kartu BPJS"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"surat_keterangan_kerja"}
-                            label={"Surat Keterangan Kerja"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"surat_keterangan_kesehatan"}
-                            label={"Surat Keterangan Kesehatan"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"skck"}
-                            label={"SKCK"}
-                            type={"upload"}
-                          />
-                        </div>
-                        <div>
-                          <Field
-                            fm={fm}
-                            name={"npwp"}
-                            label={"NPWP"}
-                            type={"upload"}
-                          />
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
               </div>
             </div>
           </>
+        );
+      }}
+      onFooter={(fm: any) => {
+        if (!fm?.data?.id) return <></>;
+        return (
+          <div
+            className={cx(
+              css`
+                .tbl-search {
+                  display: none !important;
+                }
+                .tbl-pagination {
+                  display: none !important;
+                }
+              `
+            )}
+          >
+            <div className="w-full flex flex-row">
+              <div className="flex flex-grow flex-col h-[350px]">
+                <TableEditBetter
+                  name="document_verification_lines"
+                  delete_name="deleted_document_verification_line_ids"
+                  fm={fm}
+                  disabledHoverRow={true}
+                  disabledPagination={true}
+                  header={{
+                    sideLeft: (tbl: any) => {
+                      return <></>;
+                    },
+                    sideRight: (tbl: any) => {
+                      return <></>;
+                    },
+                  }}
+                  column={[
+                    {
+                      name: "name",
+                      sortable: false,
+                      header: () => <span>Document Name</span>,
+                      renderCell: ({ row, name, cell, idx, fm_row }: any) => {
+                        return (
+                          <>
+                            <Field
+                              hidden_label={true}
+                              fm={fm_row}
+                              name={"document_verification_id"}
+                              label={""}
+                              type={"dropdown"}
+                              onLoad={async () => {
+                                const res: any = await apix({
+                                  port: "recruitment",
+                                  value: "data.data.document_verifications",
+                                  path: "/api/document-verifications",
+                                  validate: "dropdown",
+                                  keys: {
+                                    label: "name",
+                                  },
+                                });
+                                console.log({ res });
+                                return res;
+                              }}
+                            />
+                          </>
+                        );
+                      },
+                    },
+                    {
+                      name: "path",
+                      sortable: false,
+                      header: () => <span>File</span>,
+                      renderCell: ({ row, name }: any) => {
+                        return (
+                          <FilePreview
+                            url={getValue(row, name)}
+                            disabled={true}
+                            limit_name={10}
+                          />
+                        );
+                      },
+                    },
+                  ]}
+                  onInit={async (list: any) => {}}
+                />
+              </div>
+            </div>
+          </div>
         );
       }}
     />

@@ -5,7 +5,6 @@ import { events } from "@/lib/utils/event";
 import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
-import { dayDate } from "@/lib/utils/date";
 import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
@@ -52,13 +51,6 @@ function Page() {
         },
       }}
       column={[
-        {
-          name: "contract_date",
-          header: () => <span>Contract Date</span>,
-          renderCell: ({ row, name }: any) => {
-            return <>{dayDate(getValue(row, name))}</>;
-          },
-        },
         {
           name: "job_posting.job_name",
           header: () => <span>Job Name</span>,

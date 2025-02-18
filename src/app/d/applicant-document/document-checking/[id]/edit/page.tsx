@@ -200,7 +200,6 @@ function Page() {
           path: `/api/document-verification-headers/${id}`,
           validate: "object",
         });
-        console.log(data);
         return {
           ...data,
           email: data?.applicant?.user_profile?.user?.email,

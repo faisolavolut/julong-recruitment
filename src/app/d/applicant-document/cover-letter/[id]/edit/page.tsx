@@ -81,6 +81,18 @@ function Page() {
                   Save
                 </ButtonContainer>
               </Alert>
+              <Alert
+                type={"save"}
+                msg={"Are you sure you want to save this record?"}
+                onClick={() => {
+                  fm.submit();
+                }}
+              >
+                <ButtonContainer className={"bg-primary"}>
+                  <IoMdSave className="text-xl" />
+                  COMPLETED
+                </ButtonContainer>
+              </Alert>
               <DropdownHamburgerBetter
                 className=""
                 classNameList="w-48"
