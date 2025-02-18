@@ -37,7 +37,6 @@ function HomePage() {
           }job-postings?page=1&page_size=8&status=IN PROGRESS`,
           method: "get",
         });
-        console.log(res);
         local.jobs = res;
         local.render();
       } catch (ex) {}
@@ -53,10 +52,6 @@ function HomePage() {
           ...res,
           verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
         };
-        console.log({
-          ...res,
-          verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
-        });
       } catch (ex) {}
       local.ready = true;
       local.render();

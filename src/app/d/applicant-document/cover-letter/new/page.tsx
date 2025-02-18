@@ -80,8 +80,8 @@ function Page() {
           method: "post",
           data: {
             ...fm.data,
-            tanggal_masuk: normalDate(fm.data?.tanggal_masuk),
             document_date: normalDate(fm.data?.document_date),
+            joined_date: normalDate(fm.data?.joined_date),
           },
         });
         if (res) navigate(`${urlPage}/${res?.id}/edit`);
@@ -139,9 +139,6 @@ function Page() {
                       fm.data.project_number =
                         data?.project_recruitment_header?.document_number;
                       fm.data.for_organization_id = data?.for_organization_id;
-
-                      // fm.data["job_level_id"] = get(e, "data.job_level_id.name");
-                      // fm.data["job_level_id_id"] = e.data?.job_level_id?.id;
                       fm.render();
                     }}
                     onLoad={async () => {
@@ -337,7 +334,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tanggal_masuk"}
+                              name={"joined_date"}
                               label={"Start Date of Employment"}
                               type={"date"}
                             />

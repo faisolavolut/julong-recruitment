@@ -179,7 +179,7 @@ function Page() {
           data: {
             ...fm.data,
             document_date: normalDate(fm.data?.document_date),
-            tanggal_masuk: normalDate(fm.data?.tanggal_masuk),
+            joined_date: normalDate(fm.data?.joined_date),
           },
         });
       }}
@@ -442,7 +442,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tanggal_masuk"}
+                              name={"joined_date"}
                               label={"Start Date of Employment"}
                               type={"date"}
                             />

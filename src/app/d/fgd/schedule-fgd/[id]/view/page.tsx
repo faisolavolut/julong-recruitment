@@ -68,16 +68,15 @@ function Page() {
       onSubmit={async (fm: any) => {}}
       mode="view"
       onLoad={async () => {
-        // sekedar testing
         const data: any = await apix({
           port: "recruitment",
           value: "data.data",
           path: `/api/fgd-schedules/${id}`,
           validate: "object",
         });
-        const assessors = data?.interview_assessors?.map(
-          (e: any) => e?.employee_name
-        );
+        const assessors = data?.interview_assessors?.length
+          ? data?.interview_assessors?.map((e: any) => e?.employee_name)
+          : [];
         return {
           ...data,
           type_name: data?.test_type?.name,
@@ -93,7 +92,7 @@ function Page() {
             "project_recruitment_line.template_activity_line.name"
           ),
           job_name: get(data, "job_posting.job_name"),
-          interview_assessors: assessors.join(", "),
+          interview_assessors: assessors?.length ? assessors.join(", ") : "",
         };
       }}
       showResize={false}

@@ -765,18 +765,7 @@ function Page() {
                                                         key={`files-${idx + 1}`}
                                                       >
                                                         <Field
-                                                          fm={cloneFM(
-                                                            {
-                                                              ...fm,
-                                                              render: () => {
-                                                                fm.data.document_verification_lines[
-                                                                  idx
-                                                                ] = item;
-                                                                fm.render();
-                                                              },
-                                                            },
-                                                            item
-                                                          )}
+                                                          fm={cloneFM(fm, item)}
                                                           name={"path"}
                                                           label={item?.name}
                                                           onChange={async () => {

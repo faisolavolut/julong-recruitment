@@ -211,7 +211,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tanggal_masuk"}
+                              name={"joined_date"}
                               label={"Start Date of Employment"}
                               type={"date"}
                             />

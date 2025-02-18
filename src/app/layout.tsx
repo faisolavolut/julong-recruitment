@@ -13,6 +13,8 @@ import dotenv from "dotenv";
 import { userRoleMe } from "@/lib/utils/getAccess";
 import { useLocal } from "@/lib/utils/use-local";
 import { userToken } from "@/lib/helpers/user";
+import get from "lodash.get";
+import { apix } from "@/lib/utils/apix";
 dotenv.config();
 
 interface RootLayoutProps {
@@ -30,25 +32,46 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const routerInstance = useRouter();
   useEffect(() => {
     setIsClient(true);
+    globalThis.router = routerInstance;
     const run = async () => {
       let isUser = false;
       try {
         isUser = await userToken();
-      } catch (ex) {}
+      } catch (ex: any) {
+        isUser = false;
+      }
       if (!isUser) {
         local.ready = true;
         local.render();
       } else {
+        let authorized = false;
         try {
           const roles = await userRoleMe();
           globalThis.userRole = roles;
-        } catch (ex) {}
-        globalThis.router = routerInstance;
-        const user = localStorage.getItem("user");
-        if (user) {
-          const w = window as any;
-          w.user = JSON.parse(user);
+          authorized = true;
+        } catch (ex: any) {
+          const error = get(ex, "response.data.meta.message") || ex.message;
+          if (error === "Request failed with status code 401") {
+            authorized = false;
+            await apix({
+              port: "public",
+              method: "delete",
+              path: "/api/destroy-cookies",
+            });
+            const w = window as any;
+            w.user = null;
+          }
         }
+        if (authorized) {
+          const user = localStorage.getItem("user");
+          if (user) {
+            const w = window as any;
+            w.user = JSON.parse(user);
+          }
+        } else {
+          localStorage.removeItem("user");
+        }
+
         local.ready = true;
         local.render();
       }

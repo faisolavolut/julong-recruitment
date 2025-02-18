@@ -150,9 +150,6 @@ function Page() {
                       fm.data.project_number =
                         data?.project_recruitment_header?.document_number;
                       fm.data.for_organization_id = data?.for_organization_id;
-
-                      // fm.data["job_level_id"] = get(e, "data.job_level_id.name");
-                      // fm.data["job_level_id_id"] = e.data?.job_level_id?.id;
                       fm.render();
                     }}
                     onLoad={async () => {
