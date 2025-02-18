@@ -239,21 +239,21 @@ function HomePage() {
                     },
                   },
                   {
-                    name: "form_type",
+                    name: "applied_date",
                     sortable: false,
                     resize: false,
                     header: () => <span>Date Applied</span>,
                     renderCell: ({ row, name, cell }: any) => {
-                      return dayDate(new Date());
+                      return dayDate(getValue(row, name));
                     },
                   },
                   {
-                    name: "status",
+                    name: "apply_process_status",
                     sortable: false,
                     resize: false,
                     header: () => <span>Status</span>,
                     renderCell: ({ row, name, cell }: any) => {
-                      if (row?.[name] === "IN PROGRESS") {
+                      if (row?.[name] === "IN_PROGRESS") {
                         return (
                           <div className="text-green-500">In Progress</div>
                         );
@@ -287,7 +287,7 @@ function HomePage() {
                   const params = await events("onload-param", param);
                   const result: any = await apix({
                     port: "recruitment",
-                    value: "data.data",
+                    value: "data.data.job_postings",
                     path: `/api/job-postings/applied${params}`,
                     validate: "array",
                   });
