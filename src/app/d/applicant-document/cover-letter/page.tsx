@@ -139,7 +139,7 @@ function Page() {
           validate: "array",
         });
         const findDocument = res.find(
-          (item: any) => item.name === "SURAT_PENGANTAR_MASUK"
+          (item: any) => item.name === "FINAL_RESULT"
         );
         const params = await events("onload-param", {
           ...param,
@@ -161,7 +161,7 @@ function Page() {
           validate: "array",
         });
         const findDocument = res.find(
-          (item: any) => item.name === "SURAT_PENGANTAR_MASUK"
+          (item: any) => item.name === "FINAL_RESULT"
         );
         const params = await events("onload-param", {
           document_type_id: findDocument?.id,
