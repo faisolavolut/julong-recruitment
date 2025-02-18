@@ -52,6 +52,13 @@ function Page() {
       }}
       column={[
         {
+          name: "applicant.user_profile.name",
+          header: () => <span>Applicant Name</span>,
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
           name: "job_posting.job_name",
           header: () => <span>Job Name</span>,
           renderCell: ({ row, name }: any) => {

@@ -11,14 +11,11 @@ import { useEffect } from "react";
 import { getValue } from "@/lib/utils/getValue";
 import { FilePreview } from "@/lib/components/form/field/FilePreview";
 import { TableEditBetter } from "@/lib/components/tablelist/TableBetter";
-import { MdDelete } from "react-icons/md";
-import { actionToast } from "@/lib/utils/action";
-import { X } from "lucide-react";
-import { TbEyeEdit } from "react-icons/tb";
-import { IoCheckmarkOutline } from "react-icons/io5";
-import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
+import { Alert } from "@/lib/components/ui/alert";
+import { ButtonContainer } from "@/lib/components/ui/button";
+import { IoMdSave } from "react-icons/io";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -62,66 +59,26 @@ function Page() {
               />
             </div>
             <div className="flex flex-row gap-x-2 items-center">
-              <DropdownHamburgerBetter
-                className=""
-                classNameList="w-48"
-                list={[
-                  {
-                    label: "Completed",
-                    icon: <IoCheckmarkOutline className="text-xl" />,
-                    msg: "Are you sure you want to completed this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "APPROVED";
+              {fm?.data?.status !== "COMPLETED" ? (
+                <>
+                  {" "}
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.data.status = "COMPLETED";
                       fm.submit();
-                    },
-                  },
-                  {
-                    label: "Revise",
-                    icon: <TbEyeEdit className="text-xl" />,
-                    msg: "Are you sure you want to revise this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "REVISED";
-                      fm.submit();
-                    },
-                  },
-                  {
-                    label: "Rejected",
-                    icon: <X className="text-xl" />,
-                    msg: "Are you sure you want to rejected this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "REJECTED";
-                      fm.submit();
-                    },
-                  },
-                  {
-                    label: "Delete",
-                    icon: <MdDelete className="text-xl" />,
-                    className: "text-red-500",
-                    onClick: async () => {
-                      await actionToast({
-                        task: async () => {
-                          await apix({
-                            port: "recruitment",
-                            path: `/api/document-verification-headers/${id}`,
-                            method: "delete",
-                          });
-                        },
-                        after: () => {
-                          navigate(urlPage);
-                        },
-                        msg_load: "Delete ",
-                        msg_error: "Delete failed ",
-                        msg_succes: "Delete success ",
-                      });
-                    },
-                    msg: "Are you sure you want to delete this record?",
-                    alert: true,
-                  },
-                ]}
-              />
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Completed
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         );

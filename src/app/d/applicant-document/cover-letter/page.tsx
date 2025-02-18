@@ -60,35 +60,35 @@ function Page() {
           },
         },
         {
-          name: "send_date",
+          name: "created_at",
           header: () => <span>Send Date</span>,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
-          name: "recipient_name",
+          name: "applicant.user_profile.name",
           header: () => <span>Recipient's Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "project_name",
+          name: "job_posting.project_recruitment_header.name",
           header: () => <span>Project Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "job_name",
+          name: "job_posting.job_name",
           header: () => <span>Job Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "recruitment_type",
+          name: "job_posting.recruitment_type",
           header: () => <span>Recruitment Type</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;

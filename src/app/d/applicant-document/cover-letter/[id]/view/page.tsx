@@ -13,6 +13,10 @@ import {
   AccordionItem,
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
+import { normalDate } from "@/lib/utils/date";
+import { ButtonContainer } from "@/lib/components/ui/button";
+import { IoMdSave } from "react-icons/io";
+import { Alert } from "@/lib/components/ui/alert";
 
 function Page() {
   const id = getParams("id");
@@ -55,11 +59,43 @@ function Page() {
                 ]}
               />
             </div>
-            <div className="flex flex-row gap-x-2 items-center"></div>
+            <div className="flex flex-row gap-x-2 items-center">
+              {fm?.data?.status === "PENDING" ? (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.data.status = "COMPLETED";
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Completed
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {}}
+      onSubmit={async (fm: any) => {
+        await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/document-sending/update",
+          method: "put",
+          data: {
+            ...fm.data,
+            document_date: normalDate(fm.data?.document_date),
+            joined_date: normalDate(fm.data?.joined_date),
+          },
+        });
+      }}
       mode="view"
       onLoad={async () => {
         const data: any = await apix({
@@ -83,6 +119,10 @@ function Page() {
           applicant_name: data?.applicant?.user_profile?.user?.name,
           job_level_name: data?.job_level?.name,
           location_name: data?.for_organization_location_name,
+          for_organization_id: data?.job_posting?.for_organization_id,
+          organization_location_id: data?.job_posting?.organization_location_id,
+          order: data?.project_recruitment_line?.order,
+          job_posting_id: data?.job_posting_id,
         };
       }}
       showResize={false}

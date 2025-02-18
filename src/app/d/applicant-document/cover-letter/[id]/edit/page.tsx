@@ -9,9 +9,7 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoIosSend, IoMdSave } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
-import { actionToast } from "@/lib/utils/action";
+import { IoMdSave } from "react-icons/io";
 import {
   Accordion,
   AccordionContent,
@@ -20,11 +18,6 @@ import {
 } from "@/lib/components/ui/accordion";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
-import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
-import { IoCheckmarkOutline } from "react-icons/io5";
-import { TbEyeEdit } from "react-icons/tb";
-import { X } from "lucide-react";
-import { RiDownloadCloudLine } from "react-icons/ri";
 import { normalDate } from "@/lib/utils/date";
 
 function Page() {
@@ -69,115 +62,56 @@ function Page() {
               />
             </div>
             <div className="flex flex-row gap-x-2 items-center">
-              <Alert
-                type={"save"}
-                msg={"Are you sure you want to save this record?"}
-                onClick={() => {
-                  fm.submit();
-                }}
-              >
-                <ButtonContainer className={"bg-primary"}>
-                  <IoMdSave className="text-xl" />
-                  Save
-                </ButtonContainer>
-              </Alert>
-              <Alert
-                type={"save"}
-                msg={"Are you sure you want to save this record?"}
-                onClick={() => {
-                  fm.submit();
-                }}
-              >
-                <ButtonContainer className={"bg-primary"}>
-                  <IoMdSave className="text-xl" />
-                  COMPLETED
-                </ButtonContainer>
-              </Alert>
-              <DropdownHamburgerBetter
-                className=""
-                classNameList="w-48"
-                list={[
-                  {
-                    label: "Submit",
-                    icon: <IoMdSave className="text-xl" />,
-                    onClick: async () => {
+              {fm?.data?.status === "DRAFT" ? (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Save
+                    </ButtonContainer>
+                  </Alert>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
                       fm.data.status = "PENDING";
                       fm.submit();
-                    },
-                    msg: "Are you sure you want to submit this record?",
-                    alert: true,
-                  },
-                  {
-                    label: "Completed",
-                    icon: <IoCheckmarkOutline className="text-xl" />,
-                    msg: "Are you sure you want to completed this record?",
-                    alert: true,
-                    onClick: async () => {
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Submit
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              ) : (
+                <></>
+              )}
+              {fm?.data?.status === "PENDING" ? (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
                       fm.data.status = "COMPLETED";
                       fm.submit();
-                    },
-                  },
-                  {
-                    label: "Revise",
-                    icon: <TbEyeEdit className="text-xl" />,
-                    msg: "Are you sure you want to revise this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "REVISED";
-                      fm.submit();
-                    },
-                  },
-                  {
-                    label: "Rejected",
-                    icon: <X className="text-xl" />,
-                    msg: "Are you sure you want to rejected this record?",
-                    alert: true,
-                    onClick: async () => {
-                      fm.data.status = "REJECTED";
-                      fm.submit();
-                    },
-                  },
-                  {
-                    label: "Download Document",
-                    icon: <RiDownloadCloudLine className="text-xl" />,
-                    onClick: async () => {},
-                  },
-                  {
-                    label: "Send",
-                    icon: <IoIosSend className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to send this offer letter to the applicant?",
-                    alert: true,
-                  },
-                  {
-                    label: "Delete",
-                    icon: <MdDelete className="text-xl" />,
-                    className: "text-red-500",
-                    onClick: async () => {
-                      await actionToast({
-                        task: async () => {
-                          await apix({
-                            port: "recruitment",
-                            path: `/api/document-sending/${id}`,
-                            method: "delete",
-                          });
-                        },
-                        after: () => {
-                          navigate(urlPage);
-                        },
-                        msg_load: "Delete ",
-                        msg_error: "Delete failed ",
-                        msg_succes: "Delete success ",
-                      });
-                    },
-                    msg: "Are you sure you want to delete this record?",
-                    alert: true,
-                  },
-                ]}
-              />
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Completed
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         );
@@ -202,6 +136,7 @@ function Page() {
           path: `/api/document-sending/${id}`,
           validate: "object",
         });
+        if (data?.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
         return {
           ...data,
           email: data?.applicant?.user_profile?.user?.email,
