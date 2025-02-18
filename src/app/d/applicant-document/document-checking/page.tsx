@@ -66,14 +66,14 @@ function Page() {
           },
         },
         {
-          name: "for_organization_name",
+          name: "job_posting.for_organization_name",
           header: () => <span>Company</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "recruitment_type",
+          name: "job_posting.recruitment_type",
           header: () => <span>Recruitment Type</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
