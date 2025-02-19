@@ -170,17 +170,16 @@ function Page() {
           const result = {
             ...schedule,
             start_date: new Date(
-              `${normalDate(
-                schedule?.project_recruitment_line?.start_date
-              )} ${convertToTimeOnly(schedule?.start_time)}`
+              `${normalDate(schedule?.schedule_date)} ${convertToTimeOnly(
+                schedule?.start_time
+              )}`
             ),
             end_date: new Date(
-              `${normalDate(
-                schedule?.project_recruitment_line?.end_date
-              )} ${convertToTimeOnly(schedule?.end_time)}`
+              `${normalDate(schedule?.schedule_date)} ${convertToTimeOnly(
+                schedule?.end_time
+              )}`
             ),
           };
-          console.log({ result });
           local.detail = result;
           setStartTime(new Date(result.start_date));
           setEndTime(new Date(result.end_date));
