@@ -240,7 +240,9 @@ function Page() {
                         path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}?status=IN PROGRESS`,
                         validate: "dropdown",
                         keys: {
-                          label: "job_name",
+                          label: (item: any) => {
+                            return `${item.job_name} - ${item.document_number}`;
+                          },
                         },
                       });
                       return res;

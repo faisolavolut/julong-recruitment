@@ -9,11 +9,11 @@ const ProfileCard = () => {
     <div className="flex flex-col items-center p-4 bg-[#FAFAFA] rounded-md border border-gray-300  w-64">
       <div className="relative w-24 h-24 mb-4">
         <ImageBetter
-          src={
+          src={siteurl(
             get_user("profile.avatar")
               ? get_user("profile.avatar")
               : get_user("photo")
-          }
+          )}
           alt="Profile"
           className="w-full h-full rounded-full object-cover"
           defaultSrc={siteurl("/404-img.jpg")}

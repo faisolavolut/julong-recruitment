@@ -120,11 +120,11 @@ const UserDropdown: FC<{ user: any }> = function ({ user }) {
         <span>
           <span className="sr-only">User menu</span>
           <ImageBetter
-            src={
+            src={siteurl(
               get_user("profile.avatar")
                 ? get_user("profile.avatar")
                 : get_user("photo")
-            }
+            )}
             alt="Profile"
             className="h-8 w-8 rounded-full object-cover"
             defaultSrc={siteurl("/404-img.jpg")}

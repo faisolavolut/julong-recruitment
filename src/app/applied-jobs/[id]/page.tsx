@@ -25,6 +25,7 @@ import { GoClock } from "react-icons/go";
 import { IoLinkOutline } from "react-icons/io5";
 import { scheduleFase } from "./schedule";
 import { cloneFM } from "@/lib/utils/cloneFm";
+import { MdOutlineLocationOn } from "react-icons/md";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -320,14 +321,9 @@ function Page() {
                                 <p className="font-bold">Schedule Test:</p>
                                 <p className=" flex flex-row gap-x-2 items-center">
                                   <RiCalendarScheduleLine />
-                                  {dayDate(get(local, "detail.start_date")) ===
-                                  dayDate(get(local, "detail.end_date"))
-                                    ? dayDate(get(local, "detail.start_date"))
-                                    : `${dayDate(
-                                        get(local, "detail.start_date")
-                                      )} - ${dayDate(
-                                        get(local, "detail.end_date")
-                                      )}`}
+                                  {`${dayDate(
+                                    get(local, "detail.schedule_date")
+                                  )}`}
                                 </p>
                                 <p className=" flex flex-row gap-x-2 items-center">
                                   <GoClock />
@@ -336,16 +332,34 @@ function Page() {
                                     "detail.end_time"
                                   )}`}
                                 </p>
-                                <p className=" flex flex-row gap-x-2 items-center">
-                                  <IoLinkOutline />
-                                  <a
-                                    target="_blank"
-                                    className="text-primary underline"
-                                    href={get(local, "detail.url")}
-                                  >
-                                    Link Test
-                                  </a>
-                                </p>
+                                {get(local, "detail.location") ? (
+                                  <p className=" flex flex-row gap-x-2 items-center">
+                                    <MdOutlineLocationOn />
+                                    <a
+                                      target="_blank"
+                                      className="text-primary underline"
+                                      href={get(local, "detail.location")}
+                                    >
+                                      Link Location
+                                    </a>
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
+                                {get(local, "detail.url") ? (
+                                  <p className=" flex flex-row gap-x-2 items-center">
+                                    <IoLinkOutline />
+                                    <a
+                                      target="_blank"
+                                      className="text-primary underline"
+                                      href={get(local, "detail.url")}
+                                    >
+                                      Link Test
+                                    </a>
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
                               </div>
                             </>
                           ) : (
@@ -368,14 +382,9 @@ function Page() {
                                 <p className="font-bold">Schedule Interview:</p>
                                 <p className=" flex flex-row gap-x-2 items-center">
                                   <RiCalendarScheduleLine />
-                                  {dayDate(get(local, "detail.start_date")) ===
-                                  dayDate(get(local, "detail.end_date"))
-                                    ? dayDate(get(local, "detail.start_date"))
-                                    : `${dayDate(
-                                        get(local, "detail.start_date")
-                                      )} - ${dayDate(
-                                        get(local, "detail.end_date")
-                                      )}`}
+                                  {`${dayDate(
+                                    get(local, "detail.schedule_date")
+                                  )}`}
                                 </p>
                                 <p className=" flex flex-row gap-x-2 items-center">
                                   <GoClock />
@@ -384,16 +393,34 @@ function Page() {
                                     "detail.end_time"
                                   )}`}
                                 </p>
-                                <p className=" flex flex-row gap-x-2 items-center">
-                                  <IoLinkOutline />
-                                  <a
-                                    target="_blank"
-                                    className="text-primary underline"
-                                    href={get(local, "detail.url")}
-                                  >
-                                    Link Interview
-                                  </a>
-                                </p>
+                                {get(local, "detail.location") ? (
+                                  <p className=" flex flex-row gap-x-2 items-center">
+                                    <MdOutlineLocationOn />
+                                    <a
+                                      target="_blank"
+                                      className="text-primary underline"
+                                      href={get(local, "detail.location")}
+                                    >
+                                      Link Location
+                                    </a>
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
+                                {get(local, "detail.url") ? (
+                                  <p className=" flex flex-row gap-x-2 items-center">
+                                    <IoLinkOutline />
+                                    <a
+                                      target="_blank"
+                                      className="text-primary underline"
+                                      href={get(local, "detail.url")}
+                                    >
+                                      Link Interview
+                                    </a>
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
                               </div>
                             </>
                           ) : (

@@ -141,7 +141,13 @@ function Page() {
                 name: "status",
                 header: () => <span>Status</span>,
                 renderCell: ({ row, name }: any) => {
-                  return <>{getStatusLabel(getValue(row, name))}</>;
+                  return (
+                    <>
+                      {getStatusLabel(getValue(row, name)) === "Applied"
+                        ? "Accepted"
+                        : getStatusLabel(getValue(row, name))}
+                    </>
+                  );
                 },
               },
               {

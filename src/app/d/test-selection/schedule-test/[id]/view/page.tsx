@@ -280,7 +280,9 @@ function Page() {
                         path: `/api/job-postings?status=IN PROGRESS`,
                         validate: "dropdown",
                         keys: {
-                          label: "document_number",
+                          label: (item: any) => {
+                            return `${item.job_name} - ${item.document_number}`;
+                          },
                         },
                       });
                       return res;

@@ -95,7 +95,7 @@ function Page() {
         <div className="flex flex-row px-10 gap-x-4">
           <div className="w-16 h-16 rounded-full relative overflow-hidden border-2 border-white">
             <ImageBetter
-              src={get_user("profile.avatar")}
+              src={siteurl(get_user("profile.avatar"))}
               alt="Profile"
               className=" w-full h-full object-cover "
               defaultSrc={siteurl("/404-img.jpg")}
