@@ -78,11 +78,12 @@ function Page() {
         local.profile = null;
       }
       local.render();
+      console.log({ res });
       let steps = res.map((e: any) => {
         return {
           id: e?.order,
           label: labelDocumentType(e?.template_activity_line?.name),
-          name: e?.template_activity_line?.name,
+          name: e?.template_activity_line?.template_question?.form_type,
           id_line: e?.id,
         };
       });
