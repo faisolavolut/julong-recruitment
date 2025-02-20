@@ -25,21 +25,27 @@ const DefaultHeaderNavigation: FC = function () {
   });
   useEffect(() => {
     const run = async () => {
-      userToken();
+      try {
+        await userToken();
+      } catch (ex) {}
       const w: any = window;
       local.user = w?.user;
       local.render();
-      const res = await apix({
-        port: "recruitment",
-        value: "data.data",
-        path: "/api/user-profiles/user",
-        method: "get",
-      });
+
+      let profile = null as any;
+      try {
+        profile = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/user-profiles/user",
+          method: "get",
+        });
+      } catch (ex) {}
       local.user = {
         ...local?.user,
-        avatar: res?.avatar,
+        avatar: profile?.avatar,
       };
-      local.profile = res;
+      local.profile = profile;
       local.render();
     };
     run();

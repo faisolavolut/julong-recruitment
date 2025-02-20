@@ -87,7 +87,7 @@ function Page() {
         await apix({
           port: "recruitment",
           value: "data.data",
-          path: "/api/document-sending/update",
+          path: "/api/document-verification-headers/update",
           method: "put",
           data: {
             ...fm.data,
@@ -102,7 +102,20 @@ function Page() {
           path: `/api/document-verification-headers/${id}`,
           validate: "object",
         });
-        console.log(data);
+        console.log({
+          ...data,
+          email: data?.applicant?.user_profile?.user?.email,
+          project_number:
+            data?.job_posting?.project_recruitment_header?.document_number,
+          project_recruitment_header_id:
+            data?.job_posting?.project_recruitment_header_id,
+          recruitment_type: data?.job_posting?.recruitment_type,
+          for_organization_id: data?.job_posting?.for_organization_id,
+          organization_location_id: data?.organization_location_id,
+          document_number: data?.document_number,
+          job_posting_id: data?.job_posting_id,
+          order: data?.project_recruitment_line?.order,
+        });
         return {
           ...data,
           email: data?.applicant?.user_profile?.user?.email,
