@@ -1,20 +1,17 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonContainer } from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
 import { getParams } from "@/lib/utils/get-params";
 import { useLocal } from "@/lib/utils/use-local";
-import get from "lodash.get";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { HiPlus } from "react-icons/hi";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
@@ -226,64 +223,9 @@ function Page() {
                             <Field
                               hidden_label={true}
                               fm={cloneFM(fm, row)}
-                              name={"question_template_id"}
+                              name={"name"}
                               label={"Template"}
-                              type={"dropdown"}
-                              onLoad={async () => {
-                                const res: any = await apix({
-                                  port: "recruitment",
-                                  value: "data.data",
-                                  path: "/api/template-questions/form-types",
-                                  validate: "dropdown",
-                                  keys: {
-                                    value: "value",
-                                    label: (item: any) => {
-                                      switch (get(item, "value")) {
-                                        case "ADMINISTRATIVE_SELECTION":
-                                          return "Administrative";
-                                          break;
-                                        case "TEST":
-                                          return "Test";
-                                          break;
-
-                                        case "INTERVIEW":
-                                          return "Interview";
-                                          break;
-
-                                        case "SURAT_PENGANTAR_MASUK":
-                                          return "Surat Pengantar Masuk";
-                                          break;
-                                        case "SURAT_IZIN_ORANG_TUA":
-                                          return "Surat Izin Orang Tua";
-                                          break;
-                                        case "FGD":
-                                          return "FGD";
-                                          break;
-
-                                        case "FINAL_INTERVIEW":
-                                          return "Final Interview";
-                                          break;
-
-                                        case "OFFERING_LETTER":
-                                          return "Offering Letter";
-                                          break;
-
-                                        case "CONTRACT_DOCUMENT":
-                                          return "Contract Document";
-                                          break;
-
-                                        case "DOCUMENT_CHECKING":
-                                          return "Document Checking";
-                                          break;
-
-                                        default:
-                                          return get(item, "value");
-                                      }
-                                    },
-                                  },
-                                });
-                                return res;
-                              }}
+                              type={"text"}
                             />
                           </>
                         );

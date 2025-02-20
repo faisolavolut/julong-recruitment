@@ -1,19 +1,15 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { TableEditBetter } from "@/lib/components/tablelist/TableBetter";
-import { TableList } from "@/lib/components/tablelist/TableList";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
-import { labelDocumentType } from "@/lib/utils/document_type";
 import { getParams } from "@/lib/utils/get-params";
 import { useLocal } from "@/lib/utils/use-local";
-import get from "lodash.get";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { HiPlus } from "react-icons/hi";
@@ -282,25 +278,7 @@ function Page() {
                               fm={cloneFM(fm, row)}
                               name={"name"}
                               label={"Template"}
-                              type={"dropdown"}
-                              onLoad={async () => {
-                                const res: any = await apix({
-                                  port: "recruitment",
-                                  value: "data.data",
-                                  path: "/api/template-questions/form-types",
-                                  validate: "dropdown",
-                                  keys: {
-                                    value: "value",
-                                    label: (item: any) => {
-                                      return (
-                                        labelDocumentType(get(item, "value")) ||
-                                        ""
-                                      );
-                                    },
-                                  },
-                                });
-                                return res;
-                              }}
+                              type={"text"}
                             />
                           </>
                         );
