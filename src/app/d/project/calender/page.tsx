@@ -1,20 +1,8 @@
 "use client";
-import { TableList } from "@/lib/components/tablelist/TableList";
-import { ButtonLink } from "@/lib/components/ui/button-link";
-import CalenderFull from "@/lib/components/ui/CalenderFull";
-import { apix } from "@/lib/utils/apix";
-import { shortDate } from "@/lib/utils/date";
-import { events } from "@/lib/utils/event";
+import { CalenderGoogle } from "@/lib/components/ui/CalenderGoogle";
 import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
-import { getNumber } from "@/lib/utils/getNumber";
-import { getValue } from "@/lib/utils/getValue";
-import mapEventsByDate from "@/lib/utils/mapEventsByDate";
 import { useLocal } from "@/lib/utils/use-local";
-import get from "lodash.get";
 import { useEffect } from "react";
-import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
-import { IoEye } from "react-icons/io5";
-import { v4 } from "uuid";
 
 function Page() {
   const local = useLocal({
@@ -90,7 +78,8 @@ function Page() {
               `
             )}
           >
-            <CalenderFull
+            <CalenderGoogle />
+            {/* <CalenderFull
               disabled={false}
               onMark={(day, date, data) => {
                 // console.log({ data });
@@ -256,7 +245,7 @@ function Page() {
               }}
               onChange={async (value: any) => {}}
               value={null}
-            />
+            /> */}
           </div>
         </div>
       </div>

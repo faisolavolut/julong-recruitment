@@ -2,15 +2,15 @@
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
 import { events } from "@/lib/utils/event";
-import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
+import { access, getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
-import { IoEye } from "react-icons/io5";
+import { IoEye, IoSync } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
-import { ButtonBetterTooltip } from "@/lib/components/ui/button";
+import { ButtonBetter, ButtonBetterTooltip } from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
 import { templateContentJobPosting } from "@/app/lib/templateContent";
 import { RiAiGenerate } from "react-icons/ri";
@@ -25,6 +25,8 @@ function Page() {
       { id: "IN PROGRESS", name: "On Going", count: 0 },
       { id: "COMPLETED", name: "Completed", count: 0 },
     ],
+    sync: false,
+    ready: true,
   });
 
   useEffect(() => {
@@ -48,8 +50,8 @@ function Page() {
         { id: "IN PROGRESS", name: "On Going", count: getNumber(result) },
         { id: "COMPLETED", name: "Completed", count: getNumber(completed) },
       ];
+      local.sync = access("sync-mpr");
       local.render();
-      console.log(local.list);
     };
     run();
   }, []);
@@ -65,7 +67,37 @@ function Page() {
       name="mpr"
       header={{
         sideLeft: (data: any) => {
-          return <></>;
+          if (!local.sync) return <></>;
+          return (
+            <div className="flex flex-row items-center gap-x-2">
+              <ButtonBetter
+                onClick={async () => {
+                  local.ready = false;
+                  local.render();
+                  await actionToast({
+                    task: async () => {
+                      await apix({
+                        port: "mpp",
+                        path: `/api/job-plafons/sync`,
+                        method: "get",
+                      });
+                    },
+                    after: () => {
+                      window.location.reload();
+                      local.ready = true;
+                      local.render();
+                    },
+                    msg_load: "Synchronization ",
+                    msg_error: "Synchronization failed ",
+                    msg_succes: "Synchronization success ",
+                  });
+                }}
+              >
+                <IoSync className={cx(!local.ready ? "animate-spin" : "")} />{" "}
+                Synchronization
+              </ButtonBetter>
+            </div>
+          );
         },
       }}
       column={[

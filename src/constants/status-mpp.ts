@@ -15,6 +15,7 @@ export const statusMpp = [
   { value: "OFF_BUDGET", label: "Off Budget" },
   { value: "ON_BUDGET", label: "On Budget" },
   { value: "APPLIED", label: "Applied" },
+  { value: "PENDING", label: "Pending" },
 ];
 export const getStatusLabel = (value: string) => {
   const status = statusMpp.find(

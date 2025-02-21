@@ -13,6 +13,7 @@ import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
 import { actionToast } from "@/lib/utils/action";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id");
@@ -144,6 +145,9 @@ function Page() {
           type: "form",
           data: {
             ...data,
+            document_date: normalDate(fm?.data?.document_date),
+            start_date: normalDate(fm?.data?.start_date),
+            end_date: normalDate(fm?.data?.end_date),
           },
         });
         if (res) {

@@ -85,9 +85,19 @@ function Page() {
                 className=""
                 classNameList="w-48"
                 list={[
+                  // {
+                  //   label: "Submit",
+                  //   icon: <IoMdSave className="text-xl" />,
+                  //   onClick: async () => {
+                  //     fm.data.status = "PENDING";
+                  //     fm.submit();
+                  //   },
+                  //   msg: "Are you sure you want to submit this record?",
+                  //   alert: true,
+                  // },w
                   {
-                    label: "Submit",
-                    icon: <IoMdSave className="text-xl" />,
+                    label: "Send",
+                    icon: <IoIosSend className="text-xl" />,
                     onClick: async () => {
                       fm.data.status = "PENDING";
                       fm.submit();
@@ -129,16 +139,6 @@ function Page() {
                     label: "Download Document",
                     icon: <RiDownloadCloudLine className="text-xl" />,
                     onClick: async () => {},
-                  },
-                  {
-                    label: "Send",
-                    icon: <IoIosSend className="text-xl" />,
-                    onClick: async () => {
-                      fm.data.status = "PENDING";
-                      fm.submit();
-                    },
-                    msg: "Are you sure you want to send this offer letter to the applicant?",
-                    alert: true,
                   },
                   {
                     label: "Delete",

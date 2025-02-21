@@ -26,6 +26,7 @@ import { IoLinkOutline } from "react-icons/io5";
 import { scheduleFase } from "./schedule";
 import { cloneFM } from "@/lib/utils/cloneFm";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { ButtonLink } from "@/lib/components/ui/button-link";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -88,8 +89,10 @@ function Page() {
         };
       });
       steps = steps?.sort((a: any, b: any) => a?.id - b?.id);
+
       const stepNow = steps.find((e: any) => e?.id === now);
       const stepName = stepNow?.name;
+      console.log(stepName);
       const test = await scheduleFase({
         step: stepName,
         data: {
@@ -198,7 +201,10 @@ function Page() {
                       </div>
                     </div>
                     {local.applied ? (
-                      <ButtonBetter className="bg-second text-black hover:bg-second cursor-default	">
+                      <ButtonLink
+                        className="bg-second text-black hover:bg-second cursor-pointer	"
+                        href={`/job-posting/${id}`}
+                      >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width={20}
@@ -211,7 +217,7 @@ function Page() {
                           ></path>
                         </svg>
                         View Detail
-                      </ButtonBetter>
+                      </ButtonLink>
                     ) : (
                       <ButtonBetter
                         className="text-primary bg-gradient-to-r from-blue-100 to-blue-50"
