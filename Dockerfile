@@ -11,6 +11,12 @@ COPY package.json package-lock.json ./
 # Install dependencies
 RUN npm install
 
+WORKDIR /app/src/lib
+
+RUN npm install
+
+WORKDIR /app
+
 # Stage 2: Build aplikasi
 FROM node:22-slim AS builder
 WORKDIR /app
