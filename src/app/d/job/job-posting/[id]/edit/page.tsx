@@ -365,6 +365,18 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
+                    name={"minimum_experience"}
+                    label={"Minimum Experience"}
+                    type={"money"}
+                    suffix={() => {
+                      return <div className="text-sm px-2">Year</div>;
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    required={true}
                     name={"salary_min"}
                     label={"Minimal Range Salary"}
                     type={"money"}
