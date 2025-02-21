@@ -7,8 +7,11 @@ RUN apt-get update && apt-get install -y git && apt-get clean
 
 RUN git clone https://github.com/faisolavolut/julong-lib.git src/lib
 
+# Salin file package.json dan package-lock.json dari root
 COPY package.json package-lock.json ./
-# Install dependencies
+
+# Salin file package.json dari workspace (agar npm install membaca dependencies-nya)
+COPY src/lib/package*.json src/lib/
 
 RUN npm install
 
