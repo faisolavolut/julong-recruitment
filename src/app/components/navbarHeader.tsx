@@ -16,12 +16,24 @@ import { useEffect, type FC } from "react";
 import { configMenu } from "../d/config-menu";
 import { apix } from "@/lib/utils/apix";
 import ImageBetter from "@/lib/components/ui/Image";
+import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { Down } from "@/lib/svg/Down";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/lib/components/ui/dialog";
+import { Up } from "@/lib/svg/Up";
 
 const DefaultHeaderNavigation: FC = function () {
   const local = useLocal({
     user: null as any,
     role: null as any,
     profile: null as any,
+    open: false as any,
   });
   useEffect(() => {
     const run = async () => {
@@ -47,12 +59,78 @@ const DefaultHeaderNavigation: FC = function () {
       };
       local.profile = profile;
       local.render();
+      console.log({ local });
     };
     run();
   }, []);
+  const menuNavbar = (
+    <>
+      {local.user ? (
+        <>
+          <ButtonLink href="/guest/user-setting" variant={"noline"}>
+            My Profile
+          </ButtonLink>
+          <ButtonLink href="/all-jobs" variant={"noline"}>
+            Find Jobs
+          </ButtonLink>
+          <ButtonLink href="/favorite-jobs" variant={"noline"}>
+            Favorite Jobs
+          </ButtonLink>
+          <ButtonLink href="/applied-jobs" variant={"noline"}>
+            Applied Jobs
+          </ButtonLink>
+        </>
+      ) : (
+        <>
+          <ButtonLink href="/" variant={"noline"}>
+            Home
+          </ButtonLink>
+          <ButtonLink href="/all-jobs" variant={"noline"}>
+            Find Jobs
+          </ButtonLink>
+          <ButtonLink href="/" variant={"noline"}>
+            About Us
+          </ButtonLink>
+        </>
+      )}
+    </>
+  );
+  // || local.user
+  const userMenu = (
+    <>
+      {local.user ? (
+        <>
+          <UserDropdown user={local.user} />
+        </>
+      ) : (
+        <>
+          <ButtonLink
+            href={`${siteurl("/login", "portal")}`}
+            variant={"noline"}
+            className="md:flex hidden"
+          >
+            Log in
+          </ButtonLink>
+          <ButtonLink
+            href={`${siteurl("/login", "portal")}`}
+            className="md:hidden flex w-full text-primary font-bold"
+            variant={"noline"}
+          >
+            Log in
+          </ButtonLink>
+          <ButtonLink
+            href={`${siteurl("/register", "portal")}`}
+            className="md:w-auto w-full"
+          >
+            Sign up
+          </ButtonLink>
+        </>
+      )}
+    </>
+  );
   return (
     <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
-      <div className="grid grid-cols-5 max-w-screen-xl items-center w-full">
+      <div className="grid grid-cols-2 md:grid-cols-5 max-w-screen-xl items-center w-full">
         <Link href={siteurl("/")} className="flex flex-row items-center px-4">
           <img
             src={siteurl("/logo-full.png")}
@@ -60,58 +138,87 @@ const DefaultHeaderNavigation: FC = function () {
             alt="Flowbite Logo"
           />
         </Link>
-        <div className="flex flex-row flex-grow items-center justify-center col-span-3">
-          {local.user ? (
-            <>
-              <ButtonLink href="/guest/user-setting" variant={"noline"}>
-                My Profile
-              </ButtonLink>
-              <ButtonLink href="/all-jobs" variant={"noline"}>
-                Find Jobs
-              </ButtonLink>
-              <ButtonLink href="/favorite-jobs" variant={"noline"}>
-                Favorite Jobs
-              </ButtonLink>
-              <ButtonLink href="/applied-jobs" variant={"noline"}>
-                Applied Jobs
-              </ButtonLink>
-              {/* <ButtonLink href="/about" variant={"noline"}>
-                About Us
-              </ButtonLink> */}
-            </>
-          ) : (
-            <>
-              <ButtonLink href="/" variant={"noline"}>
-                Home
-              </ButtonLink>
-              <ButtonLink href="/all-jobs" variant={"noline"}>
-                Find Jobs
-              </ButtonLink>
-              <ButtonLink href="/" variant={"noline"}>
-                About Us
-              </ButtonLink>
-            </>
-          )}
+        <div className="md:hidden flex justify-end">
+          <Dialog open={local.open}>
+            <DialogTrigger
+              asChild
+              onClick={() => {
+                local.open = true;
+                local.render();
+                console.log("HALO");
+              }}
+            >
+              <div>
+                <ButtonContainer
+                  onClick={() => {
+                    console.log("HALO");
+                  }}
+                  variant="clean"
+                  className="flex flex-row items-center gap-x-2"
+                >
+                  Menu
+                  <Down />
+                </ButtonContainer>
+              </div>
+            </DialogTrigger>
+            <DialogContent
+              className={cx(
+                " flex flex-col w-screen h-screen py-0 px-0",
+                css`
+                  .dialog-close {
+                    display: none;
+                  }
+                `
+              )}
+              onClick={() => {
+                local.open = false;
+                local.render();
+              }}
+            >
+              <DialogHeader className="hidden">
+                <DialogTitle>Applicant</DialogTitle>
+                <DialogDescription className="hidden"></DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
+                <div className="grid grid-cols-2 md:grid-cols-5 max-w-screen-xl items-center w-full">
+                  <Link
+                    href={siteurl("/")}
+                    className="flex flex-row items-center px-4"
+                  >
+                    <img
+                      src={siteurl("/logo-full.png")}
+                      className="mr-3 h-6"
+                      alt="Flowbite Logo"
+                    />
+                  </Link>
+                  <div className="md:hidden flex justify-end">
+                    <ButtonBetter
+                      onClick={() => {
+                        local.open = false;
+                        local.render();
+                      }}
+                      variant="clean"
+                      className="flex flex-row items-center gap-x-2"
+                    >
+                      Menu
+                      <Up />
+                    </ButtonBetter>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col flex-grow gap-y-2 px-2">
+                {menuNavbar}
+                {userMenu}
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+        <div className="md:flex hidden flex flex-row flex-grow items-center justify-center col-span-3">
+          {menuNavbar}
         </div>
 
-        <div className="flex items-center gap-3 lg:order-2 justify-end">
-          {local.user ? (
-            <>
-              <UserDropdown user={local.user} />
-            </>
-          ) : (
-            <>
-              <ButtonLink
-                href={`${siteurl("/login", "portal")}`}
-                variant={"noline"}
-              >
-                Log in
-              </ButtonLink>
-              <ButtonLink href={`${siteurl("/register", "portal")}`}>
-                Sign up
-              </ButtonLink>
-            </>
-          )}
+        <div className="md:flex hidden flex items-center gap-3 lg:order-2 justify-end">
+          {userMenu}
         </div>
       </div>
     </div>

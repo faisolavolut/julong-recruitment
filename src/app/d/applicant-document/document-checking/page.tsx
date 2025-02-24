@@ -5,12 +5,12 @@ import { events } from "@/lib/utils/event";
 import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
-import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
+import { getLabel } from "@/lib/utils/getLabel";
 
 function Page() {
   const local = useLocal({
@@ -83,7 +83,7 @@ function Page() {
           name: "status",
           header: () => <span>Status</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getStatusLabel(getValue(row, name))}</>;
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {

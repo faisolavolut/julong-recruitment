@@ -10,6 +10,7 @@ export const scheduleFase = async ({
 }) => {
   let result = null as any;
   let test = null as any;
+  console.log(step);
   switch (step) {
     case "TEST":
       try {

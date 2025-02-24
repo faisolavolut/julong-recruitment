@@ -1,5 +1,6 @@
 import { Alert } from "@/lib/components/ui/alert";
 import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import ImageBetter from "@/lib/components/ui/Image";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { get_user } from "@/lib/utils/get_user";
@@ -25,7 +26,7 @@ export const JobCard: React.FC<any> = ({
     setTimeout(() => setIsZooming(false), 300); // Durasi animasi 300ms
   };
   return (
-    <div className="border rounded-lg shadow-md p-4 w-72 bg-white">
+    <div className="border rounded-lg shadow-md p-4 w-full bg-white">
       <div className="flex justify-between items-center">
         <div
           className="text-black font-bold text-xl"
@@ -35,10 +36,11 @@ export const JobCard: React.FC<any> = ({
           }}
         >
           <div className="w-12 h-12">
-            <img
-              src={siteurl("/dog.jpg")}
-              alt="John Cena"
+            <ImageBetter
+              src={siteurl(data?.organization_logo)}
+              alt="Logo Company"
               className="rounded-full w-full h-full object-cover border-2 border-white"
+              defaultSrc={siteurl("/404-img.jpg")}
             />
           </div>
         </div>
@@ -137,7 +139,9 @@ export const JobCard: React.FC<any> = ({
         }}
         className="cursor-pointer flex flex-col"
       >
-        <h2 className="mt-3 font-bold text-lg">{data?.job_name}</h2>
+        <h2 className="mt-3 font-bold text-lg line-clamp-2">
+          {data?.job_name}
+        </h2>
         <p className="text-gray-600 text-sm line-clamp-1">
           {data?.for_organization_name} &bull; {data?.for_organization_location}
         </p>
@@ -150,9 +154,9 @@ export const JobCard: React.FC<any> = ({
 
         {/* Tags */}
         <div className="flex gap-2 mt-4 flex-row justify-between items-center">
-          <span className="bg-yellow-100 text-yellow-600 text-xs font-medium px-3 py-1 rounded-full line-clamp-1">
+          <p className="bg-yellow-100 text-yellow-600 text-xs font-medium px-3 py-1 rounded-full line-clamp-1">
             {data?.recruitment_type}
-          </span>
+          </p>
           {user ? (
             <div
               className={cx(

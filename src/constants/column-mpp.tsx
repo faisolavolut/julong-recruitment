@@ -5,7 +5,6 @@ import { getValue } from "@/lib/utils/getValue";
 import get from "lodash.get";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
-import { getStatusLabel } from "./status-mpp";
 export const rolesMpp = (roles: any[]) => {
   const data = [
     {
@@ -83,7 +82,7 @@ export const columnMpp = (data: any) => {
             name: "status",
             header: () => <span>Status</span>,
             renderCell: ({ row, name, cell }: any) => {
-              return <>{getStatusLabel(getValue(row, name))}</>;
+              return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
@@ -155,7 +154,7 @@ export const columnMpp = (data: any) => {
             name: "mp_planning_header.status",
             header: () => <span>Status</span>,
             renderCell: ({ row, name, cell }: any) => {
-              return <>{getStatusLabel(getValue(row, name))}</>;
+              return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
@@ -314,7 +313,7 @@ export const columnMpp = (data: any) => {
             name: "mp_planning_header.status",
             header: () => <span>Status</span>,
             renderCell: ({ row, name, cell }: any) => {
-              return <>{getStatusLabel(getValue(row, name))}</>;
+              return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
@@ -395,7 +394,7 @@ export const columnMpp = (data: any) => {
             name: "status",
             header: () => <span>Status</span>,
             renderCell: ({ row, name, cell }: any) => {
-              return <>{getStatusLabel(getValue(row, name))}</>;
+              return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
@@ -465,7 +464,7 @@ export const columnMpp = (data: any) => {
             name: "status",
             header: () => <span>Status</span>,
             renderCell: ({ row, name, cell }: any) => {
-              return <>{getStatusLabel(getValue(row, name))}</>;
+              return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
@@ -607,7 +606,7 @@ export const columnMpp = (data: any) => {
             name: "status",
             header: () => <span>Status</span>,
             renderCell: ({ row, name, cell }: any) => {
-              return <>{getStatusLabel(getValue(row, name))}</>;
+              return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {

@@ -7,7 +7,6 @@ import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { dayDate } from "@/lib/utils/date";
-import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { HiPlus } from "react-icons/hi";
@@ -141,7 +140,7 @@ function Page() {
                     name: "status",
                     header: () => <span>Status</span>,
                     renderCell: ({ row, name }: any) => {
-                      return <>{getStatusLabel(getValue(row, name))}</>;
+                      return <>{getLabel(getValue(row, name))}</>;
                     },
                   },
                   {
@@ -218,7 +217,7 @@ function Page() {
                     name: "selection_result",
                     header: () => <span>Selection Result</span>,
                     renderCell: ({ row, name }: any) => {
-                      return <>{getStatusLabel(getValue(row, name))}</>;
+                      return <>{getLabel(getValue(row, name))}</>;
                     },
                   },
                   {

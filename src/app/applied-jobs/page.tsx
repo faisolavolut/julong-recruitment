@@ -17,6 +17,7 @@ import { ButtonBetter } from "@/lib/components/ui/button";
 import { Field } from "@/lib/components/form/Field";
 import { IoIosSearch } from "react-icons/io";
 import { Form } from "@/lib/components/form/Form";
+import ImageBetter from "@/lib/components/ui/Image";
 
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
@@ -200,16 +201,14 @@ function HomePage() {
                         <div className="flex items-center py-4 space-x-4">
                           {/* Icon */}
                           <div className="flex-shrink-0">
-                            <div
-                              className={cx(
-                                "w-10 h-10 bg-green-500 flex items-center justify-center rounded bg-no-repeat bg-cover	bg-center",
-                                css`
-                                  background-image: url("${siteurl(
-                                    "/dog.jpg"
-                                  )}");
-                                `
-                              )}
-                            ></div>
+                            <div className="w-10 h-10 rounded">
+                              <ImageBetter
+                                src={siteurl(row?.organization_logo)}
+                                alt="Logo Company"
+                                className="w-full h-full object-cover  bg-green-500 flex items-center justify-center  bg-no-repeat bg-cover	bg-center"
+                                defaultSrc={siteurl("/404-img.jpg")}
+                              />
+                            </div>
                           </div>
 
                           {/* Job Details */}

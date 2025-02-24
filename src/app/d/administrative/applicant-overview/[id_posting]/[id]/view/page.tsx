@@ -16,6 +16,7 @@ import { siteurl } from "@/lib/utils/siteurl";
 import { apix } from "@/lib/utils/apix";
 import { access } from "@/lib/utils/getAccess";
 import notFound from "@/app/not-found";
+import ImageBetter from "@/lib/components/ui/Image";
 
 function Page() {
   const id = getParams("id");
@@ -123,6 +124,7 @@ function Page() {
           path: `/api/user-profiles/${id}`,
           validate: "object",
         });
+        console.log({ data });
         return {
           ...data,
           email: data?.user?.email,
@@ -141,12 +143,15 @@ function Page() {
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div className="col-span-2">
                   <div className="w-48 h-48">
-                    <img
-                      src={siteurl(
-                        fm?.data?.avatar ? fm?.data?.avatar : "/dog.jpg"
+                    <ImageBetter
+                      src={siteurl(fm?.data?.avatar)}
+                      alt="Profile"
+                      className="rounded-full w-full h-full object-cover  object-center border-2 border-white"
+                      defaultSrc={siteurl(
+                        fm?.data?.gender === "FEMALE"
+                          ? "/default-avatar-women.jpeg"
+                          : "/default-avatar.webp"
                       )}
-                      alt="John Cena"
-                      className="rounded-full w-full h-full object-cover border-2 border-white"
                     />
                   </div>
                 </div>

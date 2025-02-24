@@ -89,10 +89,9 @@ function Page() {
         };
       });
       steps = steps?.sort((a: any, b: any) => a?.id - b?.id);
-
+      console.log({ now, steps });
       const stepNow = steps.find((e: any) => e?.id === now);
       const stepName = stepNow?.name;
-      console.log(stepName);
       const test = await scheduleFase({
         step: stepName,
         data: {

@@ -2,10 +2,8 @@ import { ButtonLink } from "@/lib/components/ui/button-link";
 import { shortDate } from "@/lib/utils/date";
 import { getAccess } from "@/lib/utils/getAccess";
 import { getValue } from "@/lib/utils/getValue";
-import get from "lodash.get";
 import { HiOutlinePencilAlt } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
-import { getStatusLabel } from "./status-mpp";
 export const rolesMpr = (roles: any[]) => {
   const data = [
     {
@@ -78,7 +76,7 @@ export const columnMpr = (data: any) => {
           name: "status",
           header: () => <span>Status</span>,
           renderCell: ({ row, name, cell }: any) => {
-            return <>{getStatusLabel(getValue(row, name))}</>;
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
@@ -141,7 +139,7 @@ export const columnMpr = (data: any) => {
           name: "status",
           header: () => <span>Status</span>,
           renderCell: ({ row, name, cell }: any) => {
-            return <>{getStatusLabel(getValue(row, name))}</>;
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
@@ -211,7 +209,7 @@ export const columnMpr = (data: any) => {
           name: "status",
           header: () => <span>Status</span>,
           renderCell: ({ row, name, cell }: any) => {
-            return <>{getStatusLabel(getValue(row, name))}</>;
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
@@ -269,7 +267,7 @@ export const columnMpr = (data: any) => {
           name: "status",
           header: () => <span>Status</span>,
           renderCell: ({ row, name, cell }: any) => {
-            return <>{getStatusLabel(getValue(row, name))}</>;
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
@@ -334,7 +332,7 @@ export const columnMpr = (data: any) => {
           name: "status",
           header: () => <span>Status</span>,
           renderCell: ({ row, name, cell }: any) => {
-            return <>{getStatusLabel(getValue(row, name))}</>;
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {

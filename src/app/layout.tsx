@@ -40,8 +40,10 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       try {
         isUser = await userToken();
       } catch (ex: any) {
+        console.error(ex);
         isUser = false;
       }
+
       if (!isUser) {
         local.ready = true;
         local.render();

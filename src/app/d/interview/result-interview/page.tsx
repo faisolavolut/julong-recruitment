@@ -4,11 +4,11 @@ import { apix } from "@/lib/utils/apix";
 import { events } from "@/lib/utils/event";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
-import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
+import { getLabel } from "@/lib/utils/getLabel";
 import { formatMoney } from "@/lib/components/form/field/TypeInput";
 import { dayDate, formatTime } from "@/lib/utils/date";
 
@@ -53,7 +53,7 @@ function Page() {
         local.tab = e;
         local.render();
       }}
-      title="Job Posting"
+      title="Schedule Interview"
       name="job-posting"
       header={{
         sideLeft: (data: any) => {
@@ -63,7 +63,7 @@ function Page() {
       column={[
         {
           name: "project_recruitment_line.template_activity_line.name",
-          header: () => <span>Schedule Name</span>,
+          header: () => <span>Activity Name</span>,
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
@@ -107,7 +107,7 @@ function Page() {
           name: "status",
           header: () => <span>Status</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{getStatusLabel(getValue(row, name))}</>;
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {

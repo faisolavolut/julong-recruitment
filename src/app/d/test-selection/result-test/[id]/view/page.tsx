@@ -297,7 +297,7 @@ function Page() {
         if (!fm?.data?.id) return <></>;
         return (
           <div className={cx("flex-grow flex-col flex")}>
-            <div className="w-full flex flex-row flex-grow">
+            <div className="w-full flex flex-col flex-grow">
               <div className="flex flex-row px-2 w-full items-center">
                 <div className="grid grid-cols-2 flex-grow border-b border-gray-300 text-sm font-bold py-1">
                   <div className="flex flex-grow items-center">Test Result</div>

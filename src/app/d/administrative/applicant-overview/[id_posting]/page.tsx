@@ -6,12 +6,12 @@ import { getAccess, userRoleMe } from "@/lib/utils/getAccess";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { dayDate } from "@/lib/utils/date";
-import { getStatusLabel } from "@/constants/status-mpp";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
+import { getLabel } from "@/lib/utils/getLabel";
 import { getParams } from "@/lib/utils/get-params";
 import { detectUniqueExperience } from "@/app/lib/workExperiences";
 import { ButtonBetterTooltip } from "@/lib/components/ui/button";
@@ -143,9 +143,9 @@ function Page() {
                 renderCell: ({ row, name }: any) => {
                   return (
                     <>
-                      {getStatusLabel(getValue(row, name)) === "Applied"
+                      {getLabel(getValue(row, name)) === "Applied"
                         ? "Accepted"
-                        : getStatusLabel(getValue(row, name))}
+                        : getLabel(getValue(row, name))}
                     </>
                   );
                 },
@@ -210,7 +210,7 @@ function Page() {
                 name: "status",
                 header: () => <span>Status</span>,
                 renderCell: ({ row, name }: any) => {
-                  return <>{getStatusLabel(getValue(row, name))}</>;
+                  return <>{getLabel(getValue(row, name))}</>;
                 },
               },
               {

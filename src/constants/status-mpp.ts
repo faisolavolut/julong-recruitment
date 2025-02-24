@@ -16,6 +16,18 @@ export const statusMpp = [
   { value: "ON_BUDGET", label: "On Budget" },
   { value: "APPLIED", label: "Applied" },
   { value: "PENDING", label: "Pending" },
+  { value: "ADMINISTRATIVE_SELECTION", label: "Administrative" },
+  { value: "TEST", label: "Test" },
+  { value: "INTERVIEW", label: "Interview" },
+  { value: "FGD", label: "FGD" },
+  { value: "SURAT_PENGANTAR_MASUK", label: "Surat Pengantar Masuk" },
+  { value: "SURAT_IZIN_ORANG_TUA", label: "Surat Izin Orang Tua" },
+  { value: "FINAL_INTERVIEW", label: "Final Interview" },
+  { value: "KARYAWAN_TETAP", label: "Karyawan Tetap" },
+  { value: "OFFERING_LETTER", label: "Offering Letter" },
+  { value: "CONTRACT_DOCUMENT", label: "Contract Document" },
+  { value: "DOCUMENT_CHECKING", label: "Document Checking" },
+  { value: "FINAL_RESULT", label: "Final Result" },
 ];
 export const getStatusLabel = (value: string) => {
   const status = statusMpp.find(

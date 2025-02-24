@@ -135,6 +135,7 @@ function Page() {
           path: `/api/administrative-selections/${id}`,
           validate: "object",
         });
+        console.log({ data });
         return {
           ...data,
           activity: "Administration Selection",
@@ -216,7 +217,7 @@ function Page() {
                     fm={fm}
                     name={"status"}
                     label={"Status"}
-                    type={"text"}
+                    type={"status"}
                   />
                 </div>
                 <div>
