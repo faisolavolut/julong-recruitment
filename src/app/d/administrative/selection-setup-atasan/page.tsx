@@ -13,6 +13,7 @@ import { HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TabHeader } from "@/lib/components/tablist/TabHeader";
 import get from "lodash.get";
+import { getLabel } from "@/lib/utils/getLabel";
 
 function Page() {
   const list = [

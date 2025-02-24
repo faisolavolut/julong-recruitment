@@ -5,6 +5,7 @@ import { ButtonLink } from "@/lib/components/ui/button-link";
 import { apix } from "@/lib/utils/apix";
 import { events } from "@/lib/utils/event";
 import { access } from "@/lib/utils/getAccess";
+import { getLabel } from "@/lib/utils/getLabel";
 import { getNumber } from "@/lib/utils/getNumber";
 import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
@@ -62,39 +63,7 @@ function Page() {
           name: "form_type",
           header: () => <span>Document Type</span>,
           renderCell: ({ row, name, cell }: any) => {
-            switch (getValue(row, name)) {
-              case "ADMINISTRATIVE_SELECTION":
-                return "Administrative";
-                break;
-              case "TEST":
-                return "Test";
-                break;
-              case "INTERVIEW":
-                return "Interview";
-                break;
-              case "FGD":
-                return "FGD";
-                break;
-
-              case "FINAL_INTERVIEW":
-                return "Final Interview";
-                break;
-
-              case "OFFERING_LETTER":
-                return "Offering Letter";
-                break;
-
-              case "CONTRACT_DOCUMENT":
-                return "Contract Document";
-                break;
-
-              case "DOCUMENT_CHECKING":
-                return "Document Checking";
-                break;
-
-              default:
-                return getValue(row, name);
-            }
+            return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
