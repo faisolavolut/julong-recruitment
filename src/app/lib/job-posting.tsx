@@ -22,6 +22,7 @@ export const generateLineActivity = async (id: string, id_template: string) => {
         const result = line.map((e, idx) => {
           return {
             template_activity_line_id: e?.id,
+            template_activity_line: e,
             order:
               e?.template_question?.form_type === "ADMINISTRATIVE_SELECTION"
                 ? 1
@@ -48,7 +49,12 @@ export const generateLineActivity = async (id: string, id_template: string) => {
   });
 };
 
-export const getLine = async (id_template: string, fm: any, name: any) => {
+export const getLine = async (
+  id_template: string,
+  fm: any,
+  name: any,
+  name_dels: any
+) => {
   const line: any = await apix({
     port: "recruitment",
     value: "data.data",
@@ -57,10 +63,12 @@ export const getLine = async (id_template: string, fm: any, name: any) => {
   });
   let lines = [] as any[];
   let del_ids = [];
+  console.log({ line });
   if (Array.isArray(line) && line.length) {
     const result = line.map((e, idx) => {
       return {
         template_activity_line_id: e?.id,
+        template_activity_line: e,
         name: e?.name,
         order:
           e?.template_question?.form_type === "ADMINISTRATIVE_SELECTION"
@@ -68,12 +76,15 @@ export const getLine = async (id_template: string, fm: any, name: any) => {
             : idx + 1,
       };
     });
+    console.log({ result });
     if (fm?.data?.[name]?.length) {
       const ids = fm.data[name].filter((e: any) => e?.id);
-      const del_ids = fm.data.del_ids || [];
-      fm.data.del_ids = del_ids.concat(ids);
+      del_ids = fm.data?.[name_dels] || [];
+      fm.data[name_dels] = del_ids.concat(ids);
     }
     fm.data[name] = result;
-    return;
+  } else {
+    fm.data[name] = [];
   }
+  fm.render();
 };

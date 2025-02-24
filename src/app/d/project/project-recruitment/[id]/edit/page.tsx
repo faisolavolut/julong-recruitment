@@ -13,7 +13,7 @@ import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
 import { actionToast } from "@/lib/utils/action";
 import { normalDate } from "@/lib/utils/date";
-import { generateLineActivity } from "@/app/lib/job-posting";
+import { getLine } from "@/app/lib/job-posting";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import { TableList } from "@/lib/components/tablelist/TableList";
 import { events } from "@/lib/utils/event";
@@ -221,7 +221,7 @@ function Page() {
         }
         console.log(lines);
         console.log({ ...data, line: lines, del_ids });
-        return { ...data, line: lines, del_ids };
+        return { ...data, line: lines, del_ids, ready: true };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -278,11 +278,18 @@ function Page() {
                     onChange={() => {
                       const run = async () => {
                         if (typeof id === "string") {
-                          await generateLineActivity(
-                            id,
-                            fm?.data?.template_activity_id
+                          await getLine(
+                            fm?.data?.template_activity_id,
+                            fm,
+                            "line",
+                            "deleted_line_ids"
                           );
-                          fm.reload();
+                          fm.data.ready = false;
+                          fm.render();
+                          setTimeout(() => {
+                            fm.data.ready = true;
+                            fm.render();
+                          }, 100);
                         }
                       };
                       run();
@@ -344,7 +351,7 @@ function Page() {
         );
       }}
       onFooter={(fm: any) => {
-        // if (!fm?.data?.id) return <></>;
+        if (!fm?.data?.ready) return <></>;
         return (
           <div
             className={cx(
@@ -386,30 +393,20 @@ function Page() {
                                   event.stopPropagation();
                                   await actionToast({
                                     task: async () => {
-                                      const lines =
-                                        fm?.data?.project_recruitment_lines ||
-                                        [];
-                                      let del_ids = lines?.length
-                                        ? lines.filter((e: any) => e?.id)
-                                        : [];
-                                      del_ids = del_ids?.length
-                                        ? del_ids.map((e: any) => e?.id)
-                                        : [];
-                                      const tempIds = fm.data.deleted_line_ids
-                                        ?.length
-                                        ? fm.data.deleted_line_ids
-                                        : [];
-                                      fm.data.deleted_line_ids =
-                                        tempIds.concat(del_ids);
-                                      fm.render();
-                                      await generateLineActivity(
-                                        fm.data?.id,
-                                        fm.data?.template_activity_id
+                                      await getLine(
+                                        fm?.data?.template_activity_id,
+                                        fm,
+                                        "line",
+                                        "deleted_line_ids"
                                       );
+                                      fm.data.ready = false;
+                                      fm.render();
+                                      setTimeout(() => {
+                                        fm.data.ready = true;
+                                        fm.render();
+                                      }, 100);
                                     },
-                                    after: () => {
-                                      fm.reload();
-                                    },
+                                    after: () => {},
                                     msg_load: "Saving ",
                                     msg_error: "Saving failed ",
                                     msg_succes: "Saving success ",
