@@ -12,11 +12,11 @@ import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
 import { actionToast } from "@/lib/utils/action";
-import get from "lodash.get";
 import { normalDate } from "@/lib/utils/date";
 import { generateLineActivity } from "@/app/lib/job-posting";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import { TableList } from "@/lib/components/tablelist/TableList";
+import { events } from "@/lib/utils/event";
 
 function Page() {
   const id = getParams("id");
@@ -149,7 +149,7 @@ function Page() {
                 project_pics: e.pic?.length
                   ? e.pic.map((e: any) => {
                       return {
-                        employee_id: e,
+                        employee_id: e?.id,
                       };
                     })
                   : [],
@@ -166,6 +166,7 @@ function Page() {
             },
           });
         }
+        fm.reload();
       }}
       onLoad={async () => {
         const data: any = await apix({
@@ -174,7 +175,6 @@ function Page() {
           path: `/api/project-recruitment-headers/${id}`,
           validate: "object",
         });
-
         const lineData = data?.project_recruitment_lines || [];
         const ids = lineData.map((e: any) => e?.id);
         const line: any = await apix({
@@ -184,7 +184,7 @@ function Page() {
           validate: "array",
         });
         let lines = lineData || [];
-        let del_ids = [];
+        let del_ids: any[] = [];
         if (Array.isArray(line) && line.length) {
           const result = line.map((e, idx) => {
             return {
@@ -196,28 +196,29 @@ function Page() {
                   : idx + 1,
             };
           });
-          if (
-            get(lines, "[0].template_activity_line.id") !==
-            get(result, "[0].template_activity_line_id")
-          ) {
-            del_ids = lines.map((e: any) => e?.id) || [];
-            lines = result;
-          } else {
-            lines = lines.map((e: any, idx: number) => {
-              return {
-                ...e,
-                template_activity_line_id: e?.template_activity_id,
-                name: e?.template_activity_line?.name,
-                end_date: normalDate(e?.end_date),
-                start_date: normalDate(e?.start_date),
-                pic: e?.project_pics?.length
-                  ? e.project_pics.map((e: any) => e?.employee_id)
-                  : [],
-              };
-            });
-          }
+        }
+        if (lines?.length) {
+          lines = lines.map((e: any, idx: number) => {
+            return {
+              ...e,
+              template_activity_line_id: e?.template_activity_id,
+              name: e?.template_activity_line?.name,
+              end_date: normalDate(e?.end_date),
+              start_date: normalDate(e?.start_date),
+              pic: e?.project_pics?.length
+                ? e.project_pics.map((e: any) => {
+                    return {
+                      ...e,
+                      name: e?.employee_name,
+                      id: e?.employee_id,
+                    };
+                  })
+                : [],
+            };
+          });
         }
         console.log(lines);
+        console.log({ ...data, line: lines, del_ids });
         return { ...data, line: lines, del_ids };
       }}
       showResize={false}
@@ -268,13 +269,14 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_activity_id"}
+                    target={"template_activity_id"}
+                    name={"template_activity"}
                     label={"Template"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
                     onChange={() => {
                       const run = async () => {
                         if (typeof id === "string") {
-                          const res = await generateLineActivity(
+                          await generateLineActivity(
                             id,
                             fm?.data?.template_activity_id
                           );
@@ -283,18 +285,17 @@ function Page() {
                       };
                       run();
                     }}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.template_activities",
-                        path: "/api/template-activities",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
+                        path: `/api/template-activities${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"name"}
                   />
                 </div>
                 <div>
@@ -302,20 +303,20 @@ function Page() {
                     fm={fm}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
                 <div className="col-span-2">
@@ -344,17 +345,20 @@ function Page() {
         // if (!fm?.data?.id) return <></>;
         return (
           <div
-            className={cx(css`
-              .tbl-search {
-                display: none !important;
-              }
-              .tbl-pagination {
-                display: none !important;
-              }
-            `)}
+            className={cx(
+              css`
+                .tbl-search {
+                  display: none !important;
+                }
+                .tbl-pagination {
+                  display: none !important;
+                }
+              `,
+              "flex-grow flex-col flex"
+            )}
           >
-            <div className="w-full flex flex-row">
-              <div className="flex flex-grow flex-col h-[350px]">
+            <div className="w-full flex flex-row flex-grow">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
                   name="line"
                   delete_name="deleted_line_ids"
@@ -380,6 +384,22 @@ function Page() {
                                   event.stopPropagation();
                                   await actionToast({
                                     task: async () => {
+                                      const lines =
+                                        fm?.data?.project_recruitment_lines ||
+                                        [];
+                                      let del_ids = lines?.length
+                                        ? lines.filter((e: any) => e?.id)
+                                        : [];
+                                      del_ids = del_ids?.length
+                                        ? del_ids.map((e: any) => e?.id)
+                                        : [];
+                                      const tempIds = fm.data.deleted_line_ids
+                                        ?.length
+                                        ? fm.data.deleted_line_ids
+                                        : [];
+                                      fm.data.deleted_line_ids =
+                                        tempIds.concat(del_ids);
+                                      fm.render();
                                       await generateLineActivity(
                                         fm.data?.id,
                                         fm.data?.template_activity_id
@@ -444,21 +464,24 @@ function Page() {
                               fm={fm_row}
                               hidden_label={true}
                               name={"pic"}
-                              label={""}
-                              onChange={() => {}}
-                              onLoad={async () => {
-                                const res: any = await apix({
+                              label={"PIC"}
+                              type={"multi-async"}
+                              required={true}
+                              onLoad={async (param: any) => {
+                                const params = await events(
+                                  "onload-param",
+                                  param
+                                );
+                                const result: any = await apix({
                                   port: "portal",
                                   value: "data.data.employees",
-                                  path: "/api/employees",
-                                  validate: "dropdown",
-                                  keys: {
-                                    label: "name",
-                                  },
+                                  path: `/api/employees${params}`,
+                                  validate: "array",
                                 });
-                                return res;
+                                return result;
                               }}
-                              type={"multi-dropdown"}
+                              onValue={"id"}
+                              onLabel={"name"}
                             />
                           </div>
                         );

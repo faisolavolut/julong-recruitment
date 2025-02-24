@@ -18,6 +18,8 @@ import {
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
@@ -165,12 +167,6 @@ function Page() {
           path: "/api/answer-types",
           validate: "array",
         });
-        const result = res.map((e: any) => {
-          return {
-            value: e.id,
-            label: `${e.name}`,
-          };
-        });
         const question = data?.questions?.length
           ? data.questions.map((e: any) => {
               return {
@@ -186,7 +182,7 @@ function Page() {
           id,
           ...data,
           document_checking: [],
-          list_answer_type: result,
+          list_answer_type: res,
           template_question: question || [],
         };
       }}
@@ -212,62 +208,25 @@ function Page() {
                     fm={fm}
                     name={"form_type"}
                     label={"Document Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/template-questions/form-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: (item: any) => {
-                            switch (get(item, "value")) {
-                              case "ADMINISTRATIVE_SELECTION":
-                                return "Administrative";
-                                break;
-                              case "TEST":
-                                return "Test";
-                                break;
-
-                              case "INTERVIEW":
-                                return "Interview";
-                                break;
-
-                              case "SURAT_PENGANTAR_MASUK":
-                                return "Surat Pengantar Masuk";
-                                break;
-                              case "SURAT_IZIN_ORANG_TUA":
-                                return "Surat Izin Orang Tua";
-                                break;
-                              case "FGD":
-                                return "FGD";
-                                break;
-
-                              case "FINAL_INTERVIEW":
-                                return "Final Interview";
-                                break;
-
-                              case "OFFERING_LETTER":
-                                return "Offering Letter";
-                                break;
-
-                              case "CONTRACT_DOCUMENT":
-                                return "Contract Document";
-                                break;
-
-                              case "DOCUMENT_CHECKING":
-                                return "Document Checking";
-                                break;
-
-                              default:
-                                return get(item, "value");
-                            }
-                          },
-                        },
+                        path: `/api/template-questions/form-types${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(item: any) =>
+                      typeof item === "string"
+                        ? labelDocumentType(item)
+                        : labelDocumentType(get(item, "value"))
+                    }
+                    onValue={"value"}
                   />
                 </div>
                 {["CONTRACT_DOCUMENT", "OFFERING_LETTER"].includes(
@@ -276,23 +235,21 @@ function Page() {
                   <div>
                     <Field
                       fm={fm}
-                      name={"document_setup_id"}
-                      label={"Document Tittle - Recruitment Type"}
-                      type={"dropdown"}
-                      onLoad={async () => {
+                      target={"document_setup_id"}
+                      name={"document_setup"}
+                      label={"Document Title - Recruitment Type"}
+                      type={"dropdown-async"}
+                      onLoad={async (param: any) => {
+                        const params = await events("onload-param", param);
                         const res: any = await apix({
                           port: "recruitment",
                           value: "data.data.document_setups",
-                          path: "/api/document-setup",
-                          validate: "dropdown",
-                          keys: {
-                            label: (item: any) => {
-                              return get(item, "title");
-                            },
-                          },
+                          path: `/api/document-setup${params}`,
+                          validate: "array",
                         });
                         return res;
                       }}
+                      onLabel={(item: any) => get(item, "title")}
                     />
                   </div>
                 )}
@@ -523,11 +480,13 @@ function Page() {
                                         <div className="flex-grow flex flex-col">
                                           <Field
                                             fm={fm_row}
-                                            name={"answer_type_id"}
+                                            target={"answer_type_id"}
+                                            name="answer_types"
                                             label={"Answer Type"}
-                                            type={"dropdown"}
+                                            type={"dropdown-async"}
+                                            pagination={false}
+                                            search={"local"}
                                             onChange={(item: any) => {
-                                              // const existing = item.data.existing;
                                               fm_row.data.answer_type_name =
                                                 item?.label;
                                               fm.render();
@@ -537,6 +496,8 @@ function Page() {
                                                 fm.data?.list_answer_type || []
                                               );
                                             }}
+                                            onLabel={"label"}
+                                            onValue={"value"}
                                           />
                                         </div>
                                         <div className="">

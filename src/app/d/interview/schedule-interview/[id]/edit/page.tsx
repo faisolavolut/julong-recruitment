@@ -227,8 +227,12 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
-                    name={"project_recruitment_header_id"}
+                    target={"project_recruitment_header_id"}
+                    name={"project_recruitment_header"}
                     label={"Project Number"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onChange={() => {
                       fm.data.start_date = null;
                       fm.data.end_date = null;
@@ -238,35 +242,47 @@ function Page() {
                       fm.data.project_pic_id = null;
                       fm.render();
                       if (
-                        typeof fm?.fields?.job_posting_id?.reload === "function"
+                        typeof fm?.fields?.job_posting?.reload === "function"
                       ) {
-                        fm?.fields?.job_posting_id?.reload();
+                        fm?.fields?.job_posting?.reload();
+                      }
+
+                      if (
+                        typeof fm?.fields?.project_recruitment_line?.reload ===
+                        "function"
+                      ) {
+                        fm?.fields?.project_recruitment_line?.reload();
                       }
                     }}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", {
+                        ...param,
+                        status: "IN PROGRESS",
+                      });
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/project-recruitment-headers/pic?status=IN PROGRESS",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
+                        path: `/api/project-recruitment-headers/pic${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"document_number"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"project_recruitment_line_id"}
+                    target={"project_recruitment_line_id"}
+                    name={"project_recruitment_line"}
                     label={"Activity"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
                     disabled={
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
+                    required={true}
+                    pagination={false}
+                    search={"local"}
                     onChange={(row: any) => {
                       fm.data.start_date = row?.data?.start_date;
                       fm.data.end_date = row?.data?.end_date;
@@ -274,25 +290,22 @@ function Page() {
                         row.data?.template_activity_line_id;
                       fm.render();
                     }}
-                    required={true}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
                       if (!fm?.data?.project_recruitment_header_id) return [];
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path:
-                          "/api/project-recruitment-lines/header-pic/" +
-                          fm?.data?.project_recruitment_header_id,
-                        validate: "dropdown",
-                        keys: {
-                          label: (row: any) =>
-                            labelDocumentType(
-                              get(row, "template_activity_line.name")
-                            ) || "",
-                        },
+                        path: `/api/project-recruitment-lines/header-pic/${fm?.data?.project_recruitment_header_id}${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(row: any) =>
+                      labelDocumentType(
+                        get(row, "template_activity_line.name")
+                      ) || ""
+                    }
                   />
                 </div>
                 <div>
@@ -301,25 +314,30 @@ function Page() {
                     disabled={
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
-                    name={"job_posting_id"}
+                    target={"job_posting_id"}
+                    name={"job_posting"}
                     label={"Job Name"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    required={true}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
                       if (!fm?.data?.project_recruitment_header_id) return [];
+                      const params = await events("onload-param", {
+                        ...param,
+                        status: "IN PROGRESS",
+                      });
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}?status=IN PROGRESS`,
-                        validate: "dropdown",
-                        keys: {
-                          label: (item: any) => {
-                            return `${item.job_name} - ${item.document_number}`;
-                          },
-                        },
+                        path: `/api/job-postings/project-recruitment-header/${fm?.data?.project_recruitment_header_id}${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
-                    required={true}
+                    onLabel={(item: any) =>
+                      `${item.job_name} - ${item.document_number}`
+                    }
                   />
                 </div>
                 <div>
@@ -445,9 +463,9 @@ function Page() {
       onFooter={(fm: any) => {
         if (!fm?.data?.id) return <></>;
         return (
-          <div className={cx()}>
-            <div className="w-full flex flex-row">
-              <div className="flex flex-grow flex-col h-[350px]">
+          <div className={cx("flex-grow flex-col flex")}>
+            <div className="w-full flex flex-row flex-grow">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
                   selectionPaging={true}
                   name="job-posting"

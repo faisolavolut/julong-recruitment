@@ -138,20 +138,20 @@ function Page() {
                     fm={fm}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
                 <div className="col-span-2">
@@ -195,11 +195,12 @@ function Page() {
                 .tbl-pagination {
                   display: none !important;
                 }
-              `
+              `,
+              "flex-grow flex-col flex"
             )}
           >
-            <div className="w-full flex flex-row">
-              <div className="flex flex-grow flex-col h-[350px]">
+            <div className="w-full flex flex-row flex-grow">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
                   disabledHoverRow={true}
                   disabledPagination={true}

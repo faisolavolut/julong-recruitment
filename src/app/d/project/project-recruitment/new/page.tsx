@@ -8,6 +8,7 @@ import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { normalDate } from "@/lib/utils/date";
+import { events } from "@/lib/utils/event";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
@@ -146,21 +147,21 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_activity_id"}
+                    name={"template_activity"}
+                    target={"template_activity_id"}
                     label={"Template"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.template_activities",
-                        path: "/api/template-activities",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
+                        path: `/api/template-activities${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"name"}
                   />
                 </div>
                 <div>
@@ -168,20 +169,20 @@ function Page() {
                     fm={fm}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
                 <div className="col-span-2">

@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { actionToast } from "@/lib/utils/action";
+import { events } from "@/lib/utils/event";
 
 function Page() {
   const id = getParams("id");
@@ -143,21 +144,21 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"template_question_id"}
+                    target={"template_question_id"}
+                    name={"template_question"}
                     label={"Template"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.template_questions",
-                        path: "/api/template-questions",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
+                        path: `/api/template-questions${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"name"}
                   />
                 </div>
               </div>

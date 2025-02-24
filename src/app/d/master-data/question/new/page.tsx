@@ -1,19 +1,12 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
-import { cloneFM } from "@/lib/utils/cloneFm";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import { events } from "@/lib/utils/event";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
@@ -139,64 +132,32 @@ function Page() {
                     fm={fm}
                     name={"form_type"}
                     label={"Document Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onChange={() => {
                       if (
-                        typeof fm?.fields?.document_setup_id?.reload ===
-                        "function"
+                        typeof fm?.fields?.document_setup?.reload === "function"
                       ) {
-                        fm.fields.document_setup_id.reload();
+                        fm.fields.document_setup.reload();
                       }
                     }}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/template-questions/form-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: (item: any) => {
-                            switch (get(item, "value")) {
-                              case "ADMINISTRATIVE_SELECTION":
-                                return "Administrative";
-                                break;
-                              case "TEST":
-                                return "Test";
-                                break;
-
-                              case "INTERVIEW":
-                                return "Interview";
-                                break;
-
-                              case "FGD":
-                                return "FGD";
-                                break;
-
-                              case "FINAL_INTERVIEW":
-                                return "Final Interview";
-                                break;
-
-                              case "OFFERING_LETTER":
-                                return "Offering Letter";
-                                break;
-
-                              case "CONTRACT_DOCUMENT":
-                                return "Contract Document";
-                                break;
-
-                              case "DOCUMENT_CHECKING":
-                                return "Document Checking";
-                                break;
-
-                              default:
-                                return get(item, "value");
-                            }
-                          },
-                        },
+                        path: `/api/template-questions/form-types${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(item: any) =>
+                      typeof item === "string"
+                        ? labelDocumentType(item)
+                        : labelDocumentType(get(item, "value"))
+                    }
+                    onValue={"value"}
                   />
                 </div>
                 {["CONTRACT_DOCUMENT", "OFFERING_LETTER"].includes(
@@ -205,24 +166,25 @@ function Page() {
                   <div>
                     <Field
                       fm={fm}
-                      name={"document_setup_id"}
-                      label={"Document Tittle - Recruitment Type"}
-                      type={"dropdown"}
-                      onLoad={async () => {
+                      target={"document_setup_id"}
+                      name={"document_setup"}
+                      label={"Document Title - Recruitment Type"}
+                      type={"dropdown-async"}
+                      onLoad={async (param: any) => {
+                        if (!fm?.data?.form_type) return [];
+                        const params = await events("onload-param", {
+                          ...param,
+                          name: fm?.data?.form_type,
+                        });
                         const res: any = await apix({
                           port: "recruitment",
                           value: "data.data.document_setups",
-                          path:
-                            "/api/document-setup?name=" + fm?.data?.form_type,
-                          validate: "dropdown",
-                          keys: {
-                            label: (item: any) => {
-                              return get(item, "title");
-                            },
-                          },
+                          path: `/api/document-setup${params}`,
+                          validate: "array",
                         });
                         return res;
                       }}
+                      onLabel={(item: any) => get(item, "title")}
                     />
                   </div>
                 )}

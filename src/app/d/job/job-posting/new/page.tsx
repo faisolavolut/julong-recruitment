@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { normalDate } from "@/lib/utils/date";
+import { events } from "@/lib/utils/event";
 
 function Page() {
   const labelPage = "Job Posting";
@@ -116,21 +117,24 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
-                    name={"project_recruitment_header_id"}
+                    target={"project_recruitment_header_id"}
+                    name={"project_recruitment_header"}
                     label={"No. Reference Project"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", {
+                        ...param,
+                        status: "IN PROGRESS",
+                      });
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.project_recruitment_headers",
-                        path: "/api/project-recruitment-headers?status=IN PROGRESS",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
+                        path: `/api/project-recruitment-headers${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"document_number"}
                   />
                 </div>
                 <div>
@@ -157,20 +161,20 @@ function Page() {
                     required={true}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
 
@@ -178,9 +182,10 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
-                    name={"mp_request_id"}
+                    target={"mp_request_id"}
+                    name={"mp_request"}
                     label={"MPR Document No"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
                     onChange={(item: any) => {
                       const data = item?.data;
                       fm.data["job_id"] = data?.job_id;
@@ -188,50 +193,60 @@ function Page() {
                       fm.data["minimum_experience"] = data?.minimum_experience;
                       fm.data["for_organization_location_id"] =
                         data?.for_organization_location_id;
+                      fm.data["for_organization_location"] = {
+                        id: data?.for_organization_location_id,
+                        name: data?.for_organization_location_name,
+                      };
+
                       const template = `<p>Description Post</p><p></p><p>1. Job Description </p><p>{job_description}</p><p></p><p>2. Required Qualification </p><p>{required_qualification}</p><p></p><p>3. Work Experience </p><p>{experiences}</p><p></p><p>4. Specific Skills </p><p>{specific_skills}</p><p></p><p>5. Benefits</p><p></p>`;
+
                       let skill = `
-        ${data?.certificate && `<p>Certificate</p><p>${data?.certificate}</p>`}
-        ${
-          data?.computer_skill &&
-          `<p>Computer</p><p>${data?.computer_skill}</p>`
-        }
-        ${
-          data?.language_skill &&
-          `<p>Computer</p><p>${data?.language_skill}</p>`
-        }
-        ${data?.other_skill && `<p>Others</p><p>${data?.other_skill}</p>`}
-        `;
+      ${
+        data?.certificate ? `<p>Certificate</p><p>${data?.certificate}</p>` : ""
+      }
+      ${
+        data?.computer_skill
+          ? `<p>Computer</p><p>${data?.computer_skill}</p>`
+          : ""
+      }
+      ${
+        data?.language_skill
+          ? `<p>Language</p><p>${data?.language_skill}</p>`
+          : ""
+      }
+      ${data?.other_skill ? `<p>Others</p><p>${data?.other_skill}</p>` : ""}
+    `;
+
                       const result = template
-                        .replace("{job_description}", data.jobdesc)
+                        .replace("{job_description}", data.jobdesc || "")
                         .replace(
                           "{required_qualification}",
-                          data.required_qualification
+                          data.required_qualification || ""
                         )
-                        .replace("{experiences}", data.experiences)
-                        .replace("{specific_skills}", skill);
+                        .replace("{experiences}", data.experiences || "")
+                        .replace("{specific_skills}", skill.trim());
+
                       fm.data.content_description = result;
                       fm.render();
+
                       if (
                         typeof fm?.fields?.content_description.reload ===
                         "function"
                       ) {
                         fm?.fields?.content_description.reload();
                       }
-                      //
-                      console.log({ fm });
                     }}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.mp_request_header",
-                        path: "/api/mp-requests",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
+                        path: `/api/mp-requests${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"document_number"}
                   />
                 </div>
                 <div>
@@ -283,21 +298,21 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
-                    name={"for_organization_id"}
+                    target="for_organization_id"
+                    name={"for_organization"}
                     label={"Company"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "portal",
                         value: "data.data.organizations",
-                        path: "/api/organizations",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
+                        path: `/api/organizations${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"name"}
                   />
                 </div>
                 <div>

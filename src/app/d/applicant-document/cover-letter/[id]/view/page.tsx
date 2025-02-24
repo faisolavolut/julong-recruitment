@@ -119,8 +119,17 @@ function Page() {
           applicant_name: data?.applicant?.user_profile?.user?.name,
           job_level_name: data?.job_level?.name,
           location_name: data?.for_organization_location_name,
+
           for_organization_id: data?.job_posting?.for_organization_id,
+          for_organization: {
+            id: data?.job_posting?.for_organization_id,
+            name: data?.job_posting?.for_organization_name,
+          },
           organization_location_id: data?.job_posting?.organization_location_id,
+          organization_location: {
+            id: data?.job_posting?.organization_location_id,
+            name: data?.job_posting?.organization_location_name,
+          },
           order: data?.project_recruitment_line?.order,
           job_posting_id: data?.job_posting_id,
         };

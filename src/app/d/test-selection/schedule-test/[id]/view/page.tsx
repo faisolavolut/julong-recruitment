@@ -310,19 +310,23 @@ function Page() {
                     fm={fm}
                     name={"platform"}
                     label={"Platform"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data.job_postings",
-                        path: `/api/job-postings?status=IN PROGRESS`,
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
+                      return [
+                        {
+                          value: "link",
+                          label: "link",
                         },
-                      });
-                      return res;
+                        {
+                          value: "by apps",
+                          label: "by apps",
+                        },
+                      ];
                     }}
+                    onLabel={"label"}
+                    onValue={"value"}
                   />
                 </div>
                 <div>
@@ -350,9 +354,9 @@ function Page() {
       onFooter={(fm: any) => {
         if (!fm?.data?.id) return <></>;
         return (
-          <div className={cx()}>
-            <div className="w-full flex flex-row">
-              <div className="flex flex-grow flex-col h-[350px]">
+          <div className={cx("flex-grow flex-col flex")}>
+            <div className="w-full flex flex-row flex-grow">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
                   selectionPaging={true}
                   name="job-posting"

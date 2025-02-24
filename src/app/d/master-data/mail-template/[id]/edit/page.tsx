@@ -1,32 +1,18 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import { TableList } from "@/lib/components/tablelist/TableList";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
-import { ButtonLink } from "@/lib/components/ui/button-link";
+import { ButtonContainer } from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
-import { cloneFM } from "@/lib/utils/cloneFm";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
-import { getNumber } from "@/lib/utils/getNumber";
-import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoMdSave } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 
@@ -155,23 +141,25 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_type_id"}
+                    name={"document_type"}
+                    target={"document_type_id"}
                     label={"Document Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/document-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: (item: any) => {
-                            return labelDocumentType(get(item, "name")) || "-";
-                          },
-                        },
+                        path: `/api/document-types${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(item: any) =>
+                      labelDocumentType(get(item, "name"))
+                    }
                   />
                 </div>
                 <div>

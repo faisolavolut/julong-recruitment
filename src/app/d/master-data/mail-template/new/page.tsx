@@ -1,19 +1,12 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { labelDocumentType } from "@/lib/utils/document_type";
+import { events } from "@/lib/utils/event";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
@@ -111,24 +104,25 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_type_id"}
+                    name={"document_type"}
+                    target={"document_type_id"}
                     label={"Document Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/template-questions/form-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: (item: any) => {
-                            return labelDocumentType(get(item, "value")) || "";
-                          },
-                        },
+                        path: `/api/document-types${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(item: any) =>
+                      labelDocumentType(get(item, "name"))
+                    }
                   />
                 </div>
                 <div>

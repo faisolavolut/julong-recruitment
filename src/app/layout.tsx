@@ -15,6 +15,7 @@ import { useLocal } from "@/lib/utils/use-local";
 import { userToken } from "@/lib/helpers/user";
 import get from "lodash.get";
 import { apix } from "@/lib/utils/apix";
+import { events } from "@/lib/utils/event";
 dotenv.config();
 
 interface RootLayoutProps {
@@ -22,6 +23,7 @@ interface RootLayoutProps {
 }
 globalThis.cx = classnames;
 globalThis.css = css;
+globalThis.events = events;
 globalThis.uuid = uuidv4;
 globalThis.navigate = navigate;
 const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {

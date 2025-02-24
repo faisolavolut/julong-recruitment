@@ -133,32 +133,39 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"job_posting_id"}
+                    target="job_posting_id"
+                    name={"job_posting"}
                     label={"Job Name"}
                     required={true}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
                     onChange={({ data }) => {
                       fm.data.project_recruitment_header_id =
                         data?.project_recruitment_header_id;
                       fm.data.project_number =
                         data?.project_recruitment_header?.document_number;
                       fm.data.for_organization_id = data?.for_organization_id;
+                      fm.data.for_organization = {
+                        id: data?.for_organization_id,
+                        name: data?.for_organization_name,
+                      };
                       fm.render();
                     }}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", {
+                        ...param,
+                        status: "IN PROGRESS",
+                      });
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.job_postings",
-                        path: "/api/job-postings?status=IN PROGRESS",
-                        validate: "dropdown",
-                        keys: {
-                          label: (item: any) => {
-                            return `${item.job_name} - ${item.document_number}`;
-                          },
-                        },
+                        path: `/api/job-postings${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(item: any) =>
+                      `${item.job_name} - ${item.document_number}`
+                    }
                   />
                 </div>
                 <div>
@@ -167,17 +174,21 @@ function Page() {
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
                     required={true}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    pagination={false}
+                    search="local"
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: { value: "value", label: "value" },
+                        path: `/api/recruitment-types${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
                 <div>
@@ -192,62 +203,66 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"for_organization_id"}
+                    target={"for_organization_id"}
+                    name={"for_organization"}
                     label={"Organization Name"}
                     required={true}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "portal",
                         value: "data.data.organizations",
-                        path: "/api/organizations",
-                        validate: "dropdown",
-                        keys: { label: "name" },
+                        path: `/api/organizations${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"name"}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"project_recruitment_line_id"}
+                    target={"project_recruitment_line_id"}
+                    name={"project_recruitment_line"}
                     label={"Activity"}
                     disabled={
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     required={true}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
                     onChange={({ data }) => {
                       fm.data.order = data?.order;
                       fm.render();
                     }}
-                    onLoad={async () => {
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
                       if (!fm?.data?.project_recruitment_header_id) return [];
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path:
-                          "/api/project-recruitment-lines/header/" +
-                          fm?.data?.project_recruitment_header_id,
-                        validate: "dropdown",
-                        keys: {
-                          label: (row: any) =>
-                            labelDocumentType(
-                              get(row, "template_activity_line.name")
-                            ) || "",
-                        },
+                        path: `/api/project-recruitment-lines/header/${fm?.data?.project_recruitment_header_id}${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(row: any) =>
+                      labelDocumentType(
+                        get(row, "template_activity_line.name")
+                      ) || ""
+                    }
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_setup_id"}
+                    target="document_setup_id"
+                    name={"document_setup"}
                     label={"Document Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
                     required={true}
                     onChange={({ data }) => {
                       const result = data?.header + data?.body + data?.footer;
@@ -259,16 +274,17 @@ function Page() {
                         fm?.fields?.detail_content?.reload();
                       }
                     }}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.document_setups",
-                        path: "/api/document-setup",
-                        validate: "dropdown",
-                        keys: { label: "title" },
+                        path: `/api/document-setup${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"title"}
                   />
                 </div>
                 <div>

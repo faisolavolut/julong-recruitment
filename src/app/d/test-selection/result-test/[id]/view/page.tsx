@@ -296,15 +296,15 @@ function Page() {
       onFooter={(fm: any) => {
         if (!fm?.data?.id) return <></>;
         return (
-          <div className={cx()}>
-            <div className="w-full flex flex-col">
+          <div className={cx("flex-grow flex-col flex")}>
+            <div className="w-full flex flex-row flex-grow">
               <div className="flex flex-row px-2 w-full items-center">
                 <div className="grid grid-cols-2 flex-grow border-b border-gray-300 text-sm font-bold py-1">
                   <div className="flex flex-grow items-center">Test Result</div>
                   <div className="flex flex-grow  flex-row gap-x-2 justify-end"></div>
                 </div>
               </div>
-              <div className="flex flex-grow flex-col h-[350px]">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
                   name="job-posting"
                   header={{

@@ -2,19 +2,12 @@
 
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionTriggerCustom,
-} from "@/lib/components/ui/accordion";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
-import { cloneFM } from "@/lib/utils/cloneFm";
-import { getParams } from "@/lib/utils/get-params";
+import { labelDocumentType } from "@/lib/utils/document_type";
+import { events } from "@/lib/utils/event";
 import { useLocal } from "@/lib/utils/use-local";
 import get from "lodash.get";
 import { notFound } from "next/navigation";
@@ -116,62 +109,25 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_type_id"}
+                    name={"document_type"}
+                    target={"document_type_id"}
                     label={"Document Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
-                        path: "/api/document-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: (item: any) => {
-                            switch (get(item, "name")) {
-                              case "ADMINISTRATIVE_SELECTION":
-                                return "Administrative";
-                                break;
-                              case "TEST":
-                                return "Test";
-                                break;
-                              case "INTERVIEW":
-                                return "Interview";
-                                break;
-                              case "FGD":
-                                return "FGD";
-                                break;
-                              case "SURAT_PENGANTAR_MASUK":
-                                return "Surat Pengantar Masuk";
-                                break;
-                              case "SURAT_IZIN_ORANG_TUA":
-                                return "Surat Izin Orang Tua";
-                                break;
-                              case "FINAL_INTERVIEW":
-                                return "Final Interview";
-                                break;
-
-                              case "KARYAWAN_TETAP":
-                                return "Karyawan Tetap";
-                              case "OFFERING_LETTER":
-                                return "Offering Letter";
-                                break;
-
-                              case "CONTRACT_DOCUMENT":
-                                return "Contract Document";
-                                break;
-
-                              case "DOCUMENT_CHECKING":
-                                return "Document Checking";
-                                break;
-
-                              default:
-                                return get(item, "name");
-                            }
-                          },
-                        },
+                        path: `/api/document-types${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={(item: any) =>
+                      labelDocumentType(get(item, "name"))
+                    }
                   />
                 </div>
                 <div>
@@ -179,20 +135,20 @@ function Page() {
                     fm={fm}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
 

@@ -1,5 +1,4 @@
 "use client";
-
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
@@ -9,12 +8,10 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoMdSave } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
 import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
 import { events } from "@/lib/utils/event";
-import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
+import { IoCheckmarkOutline } from "react-icons/io5";
 import { X } from "lucide-react";
 import { getValue } from "@/lib/utils/getValue";
 import { TableList } from "@/lib/components/tablelist/TableList";
@@ -108,9 +105,12 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    target={"select_test_type_id"}
                     name={"select_test_type"}
                     label={"Select Test Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
@@ -123,6 +123,7 @@ function Page() {
                       });
                       return res;
                     }}
+                    onLabel={"name"}
                   />
                 </div>
                 <div>
@@ -248,9 +249,9 @@ function Page() {
       onFooter={(fm: any) => {
         if (!fm?.data?.id) return <></>;
         return (
-          <div className={cx()}>
-            <div className="w-full flex flex-row">
-              <div className="flex flex-grow flex-col h-[350px]">
+          <div className={cx("flex-grow flex-col flex")}>
+            <div className="w-full flex flex-row flex-grow">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
                   name="job-posting"
                   feature={["checkbox"]}

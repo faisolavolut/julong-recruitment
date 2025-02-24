@@ -269,9 +269,9 @@ function Page() {
       onFooter={(fm: any) => {
         if (!fm?.data?.id) return <></>;
         return (
-          <div className={cx()}>
-            <div className="w-full flex flex-row">
-              <div className="flex flex-grow flex-col h-[350px]">
+          <div className={cx("flex-grow flex-col flex")}>
+            <div className="w-full flex flex-row flex-grow">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
                   selectionPaging={true}
                   name="job-posting"

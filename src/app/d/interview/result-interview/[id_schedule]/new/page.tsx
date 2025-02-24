@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
 import { normalDate } from "@/lib/utils/date";
+import { events } from "@/lib/utils/event";
 
 function Page() {
   const labelPage = "Job Posting";
@@ -108,21 +109,21 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"project_recruitment_header_id"}
+                    target={"project_recruitment_header_id"}
+                    name={"project_recruitment_header"}
                     label={"No. Reference Project"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.project_recruitment_headers",
-                        path: "/api/project-recruitment-headers",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
+                        path: `/api/project-recruitment-headers${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"document_number"}
                   />
                 </div>
                 <div>
@@ -147,29 +148,32 @@ function Page() {
                     fm={fm}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
 
                 <div>
                   <Field
                     fm={fm}
-                    name={"mp_request_id"}
+                    target="mp_request_id"
+                    name={"mp_request"}
                     label={"MPR Document No"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onChange={(item: any) => {
                       const data = item?.data;
                       fm.data["job_id"] = data?.job_id;
@@ -178,18 +182,17 @@ function Page() {
                         data?.for_organization_location_id;
                       fm.render();
                     }}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data.mp_request_header",
-                        path: "/api/mp-requests",
-                        validate: "dropdown",
-                        keys: {
-                          label: "document_number",
-                        },
+                        path: `/api/mp-requests${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"document_number"}
                   />
                 </div>
                 <div>
@@ -237,21 +240,21 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"for_organization_id"}
+                    target={"for_organization_id"}
+                    name={"for_organization"}
                     label={"Company"}
-                    type={"dropdown"}
-                    onLoad={async () => {
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
                       const res: any = await apix({
                         port: "portal",
                         value: "data.data.organizations",
-                        path: "/api/organizations",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
+                        path: `/api/organizations${params}`,
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"name"}
                   />
                 </div>
                 <div>

@@ -8,6 +8,7 @@ import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { cloneFM } from "@/lib/utils/cloneFm";
+import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
@@ -166,20 +167,20 @@ function Page() {
                     fm={fm}
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
-                    type={"dropdown"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/recruitment-types",
-                        validate: "dropdown",
-                        keys: {
-                          value: "value",
-                          label: "value",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
                 <div className="col-span-2">
@@ -223,11 +224,12 @@ function Page() {
                 .tbl-pagination {
                   display: none !important;
                 }
-              `
+              `,
+              "flex-grow flex-col flex"
             )}
           >
-            <div className="w-full flex flex-row">
-              <div className="flex flex-grow flex-col h-[350px]">
+            <div className="w-full flex flex-row flex-grow">
+              <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableEditBetter
                   name="line"
                   delete_name="deleted_line_ids"
@@ -294,21 +296,24 @@ function Page() {
                             <Field
                               hidden_label={true}
                               fm={cloneFM(fm, row)}
-                              name={"question_template_id"}
+                              target={"question_template_id"}
+                              name={"template_question"}
                               label={"Template"}
-                              type={"dropdown"}
-                              onLoad={async () => {
+                              type={"dropdown-async"}
+                              onLoad={async (param: any) => {
+                                const params = await events("onload-param", {
+                                  ...param,
+                                  status: "ACTIVE",
+                                });
                                 const res: any = await apix({
                                   port: "recruitment",
                                   value: "data.data.template_questions",
-                                  path: "/api/template-questions?status=ACTIVE",
-                                  validate: "dropdown",
-                                  keys: {
-                                    label: "name",
-                                  },
+                                  path: `/api/template-questions${params}`,
+                                  validate: "array",
                                 });
                                 return res;
                               }}
+                              onLabel={"name"}
                             />
                           </>
                         );

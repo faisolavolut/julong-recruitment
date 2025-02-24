@@ -38,9 +38,7 @@ function Page() {
       <div className="w-full flex-grow flex flex-row  rounded-lg overflow-hidden justify-center">
         <div className="w-full max-w-2xl flex flex-row flex-grow  relative">
           <Form
-            onSubmit={async (fm: any) => {
-              console.log(fm.data);
-            }}
+            onSubmit={async (fm: any) => {}}
             onLoad={async () => {
               const data: any = await apix({
                 port: "recruitment",

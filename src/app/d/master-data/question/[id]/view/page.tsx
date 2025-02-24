@@ -14,6 +14,7 @@ import { cloneFM } from "@/lib/utils/cloneFm";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import { getParams } from "@/lib/utils/get-params";
 import { useLocal } from "@/lib/utils/use-local";
+import get from "lodash.get";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
 
@@ -118,15 +119,25 @@ function Page() {
                     fm={fm}
                     name={"form_type"}
                     label={"Document Type"}
-                    type={"dropdown"}
-                    onLoad={async () => {
-                      return [
-                        {
-                          label: labelDocumentType(fm?.data?.form_type),
-                          value: fm?.data?.form_type,
-                        },
-                      ];
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: `/api/template-questions/form-types${params}`,
+                        validate: "array",
+                      });
+                      return res;
                     }}
+                    onLabel={(item: any) =>
+                      typeof item === "string"
+                        ? labelDocumentType(item)
+                        : labelDocumentType(get(item, "value"))
+                    }
+                    onValue={"value"}
                   />
                 </div>
 
