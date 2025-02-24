@@ -185,10 +185,11 @@ function Page() {
         });
         let lines = lineData || [];
         let del_ids: any[] = [];
-        if (Array.isArray(line) && line.length) {
+        if (Array.isArray(line) && line.length && !lines?.length) {
           const result = line.map((e, idx) => {
             return {
               template_activity_line_id: e?.id,
+              template_activity_line: e,
               name: e?.name,
               order:
                 e?.template_question?.form_type === "ADMINISTRATIVE_SELECTION"
@@ -196,6 +197,7 @@ function Page() {
                   : idx + 1,
             };
           });
+          lines = result;
         }
         if (lines?.length) {
           lines = lines.map((e: any, idx: number) => {
