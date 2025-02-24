@@ -116,10 +116,7 @@ function Page() {
                         port: "recruitment",
                         value: "data.data",
                         path: "/api/test-types",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
+                        validate: "array",
                       });
                       return res;
                     }}
