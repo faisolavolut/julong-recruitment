@@ -465,7 +465,6 @@ function Page() {
                               name={"pic"}
                               label={"PIC"}
                               type={"multi-async"}
-                              required={true}
                               onLoad={async (param: any) => {
                                 const params = await events(
                                   "onload-param",
