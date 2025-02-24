@@ -1,6 +1,7 @@
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { shortDate } from "@/lib/utils/date";
 import { getAccess } from "@/lib/utils/getAccess";
+import { getLabel } from "@/lib/utils/getLabel";
 import { getValue } from "@/lib/utils/getValue";
 import get from "lodash.get";
 import { HiOutlinePencilAlt } from "react-icons/hi";
