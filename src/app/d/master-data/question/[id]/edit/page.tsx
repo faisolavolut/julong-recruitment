@@ -332,7 +332,6 @@ function Page() {
                                     });
                                     fm.data.template_question = data;
                                     fm.render();
-                                    console.log(fm.data.template_question);
                                   }}
                                 >
                                   <svg
@@ -492,9 +491,6 @@ function Page() {
                                               fm_row.data.answer_type_name =
                                                 item?.name;
                                               fm.render();
-                                              console.log(
-                                                fm_row.data.answer_type_name
-                                              );
                                             }}
                                             onLoad={async () => {
                                               return (
