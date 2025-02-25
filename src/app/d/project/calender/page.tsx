@@ -21,164 +21,142 @@ function Page() {
       local.can_edit = getAccess("edit-document-checking", roles);
       local.data = [
         {
-          title: "Meeting",
-          start: "2025-02-25T10:00:00",
-          end: "2025-02-25T11:00:00",
+          title: "Jalan-Jalan Ke Jakarta",
+          start: "2025-02-25T09:00:00",
+          end: "2025-03-18T10:30:00",
           allDay: true,
-          color: "#2196f3",
-          extendedProps: {
-            id: 1,
-          },
+          color: "#2E4057",
+          extendedProps: { id: 1 },
+        },
+        {
+          title: "Testing Dulu Biar Lancar",
+          start: "2025-02-25T09:00:00",
+          end: "2025-02-27T09:30:00",
+          allDay: true,
+          color: "#DA4167",
+          extendedProps: { id: 1 },
+        },
+        {
+          title: "Project Kickoff",
+          start: "2025-02-25T09:00:00",
+          end: "2025-02-25T10:30:00",
+          allDay: true,
+          color: "#4caf50",
+          extendedProps: { id: 1 },
         },
         {
           title: "Lunch Break",
           start: "2025-02-26T12:00:00",
           allDay: true,
           color: "#ff5722",
-          extendedProps: {
-            id: 2,
-          },
+          extendedProps: { id: 2 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-24T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Client Meeting",
+          start: "2025-02-24T14:00:00",
+          end: "2025-02-24T15:30:00",
           allDay: true,
-          extendedProps: {
-            id: 3,
-          },
+          color: "#3f51b5",
+          extendedProps: { id: 3 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Marketing Strategy",
+          start: "2025-02-27T10:00:00",
+          end: "2025-02-27T11:30:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#009688",
+          extendedProps: { id: 4 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
+          title: "Workshop: Leadership Skills",
+          start: "2025-02-28T09:00:00",
           end: "2025-02-28T12:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#ff9800",
+          extendedProps: { id: 5 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Team Building Event",
+          start: "2025-03-01T13:00:00",
+          end: "2025-03-01T17:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#e91e63",
+          extendedProps: { id: 6 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Quarterly Review",
+          start: "2025-03-02T10:00:00",
+          end: "2025-03-02T12:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#795548",
+          extendedProps: { id: 7 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Tech Training Session",
+          start: "2025-03-03T14:00:00",
+          end: "2025-03-03T16:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#673ab7",
+          extendedProps: { id: 8 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Product Launch Meeting",
+          start: "2025-03-04T09:30:00",
+          end: "2025-03-04T11:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#ffeb3b",
+          extendedProps: { id: 9 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Networking Event",
+          start: "2025-03-05T18:00:00",
+          end: "2025-03-05T21:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#9c27b0",
+          extendedProps: { id: 10 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "HR Policy Review",
+          start: "2025-03-06T15:00:00",
+          end: "2025-03-06T16:30:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#607d8b",
+          extendedProps: { id: 11 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Budget Planning Session",
+          start: "2025-03-07T10:00:00",
+          end: "2025-03-07T12:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#f44336",
+          extendedProps: { id: 12 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Weekly Sync-Up",
+          start: "2025-03-08T09:00:00",
+          end: "2025-03-08T10:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#8bc34a",
+          extendedProps: { id: 13 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Customer Feedback Analysis",
+          start: "2025-03-09T14:30:00",
+          end: "2025-03-09T16:30:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#03a9f4",
+          extendedProps: { id: 14 },
         },
         {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
+          title: "Board Meeting",
+          start: "2025-03-10T10:00:00",
+          end: "2025-03-10T12:00:00",
           allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
+          color: "#cddc39",
+          extendedProps: { id: 15 },
         },
-        {
-          title: "Lunch Break",
-          start: "2025-02-22T12:00:00",
-          end: "2025-02-28T12:00:00",
-          allDay: true,
-          color: "#ff5722",
-          extendedProps: {
-            id: 3,
-          },
-        },
-      ]
+      ];
+
       local.render();
     };
     run();
@@ -238,7 +216,7 @@ function Page() {
               `
             )}
           >
-            <CalenderGoogle events={local.data}/>
+            <CalenderGoogle events={local.data} />
             {/* <CalenderFull
               disabled={false}
               onMark={(day, date, data) => {
