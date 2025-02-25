@@ -318,11 +318,12 @@ function Page() {
                                     event.stopPropagation();
                                     const data =
                                       fm?.data?.template_question || [];
+                                    console.log(fm.data?.list_answer_type);
                                     const findShortAnswer = fm.data
                                       ?.list_answer_type?.length
                                       ? fm.data?.list_answer_type.find(
                                           (e: any) =>
-                                            e.label.toLowerCase() === "text"
+                                            e.name.toLowerCase() === "text"
                                         )
                                       : null;
                                     data.push({
@@ -331,6 +332,7 @@ function Page() {
                                     });
                                     fm.data.template_question = data;
                                     fm.render();
+                                    console.log(fm.data.template_question);
                                   }}
                                 >
                                   <svg
@@ -488,16 +490,19 @@ function Page() {
                                             search={"local"}
                                             onChange={(item: any) => {
                                               fm_row.data.answer_type_name =
-                                                item?.label;
+                                                item?.name;
                                               fm.render();
+                                              console.log(
+                                                fm_row.data.answer_type_name
+                                              );
                                             }}
                                             onLoad={async () => {
                                               return (
                                                 fm.data?.list_answer_type || []
                                               );
                                             }}
-                                            onLabel={"label"}
-                                            onValue={"value"}
+                                            onLabel={"name"}
+                                            onValue={"id"}
                                           />
                                         </div>
                                         <div className="">
