@@ -9,9 +9,9 @@ function Page() {
     can_add: false,
     can_edit: false,
     access: true,
-    data: null as any,
     open: false,
     limitEvent: 1,
+    data: [] as any[],
   });
 
   useEffect(() => {
@@ -19,6 +19,166 @@ function Page() {
       const roles = await userRoleMe();
       local.can_add = getAccess("create-document-checking", roles);
       local.can_edit = getAccess("edit-document-checking", roles);
+      local.data = [
+        {
+          title: "Meeting",
+          start: "2025-02-25T10:00:00",
+          end: "2025-02-25T11:00:00",
+          allDay: true,
+          color: "#2196f3",
+          extendedProps: {
+            id: 1,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-26T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 2,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-24T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+        {
+          title: "Lunch Break",
+          start: "2025-02-22T12:00:00",
+          end: "2025-02-28T12:00:00",
+          allDay: true,
+          color: "#ff5722",
+          extendedProps: {
+            id: 3,
+          },
+        },
+      ]
       local.render();
     };
     run();
@@ -78,7 +238,7 @@ function Page() {
               `
             )}
           >
-            <CalenderGoogle />
+            <CalenderGoogle events={local.data}/>
             {/* <CalenderFull
               disabled={false}
               onMark={(day, date, data) => {
