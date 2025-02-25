@@ -168,14 +168,34 @@ function Page() {
         const job_posting_id = fm?.data?.job_posting_id;
         const user_profile_id = fm?.data?.applicant?.user_profile_id;
         const result: any[] = [];
-        question.map((e: any) => {
-          const answers: any[] = [];
-          if (Array.isArray(e?.answer) && e?.answer?.length) {
-            e?.answer.map((e: any) => {
+        if (question?.length)
+          question.map((e: any) => {
+            const answers: any[] = [];
+            if (Array.isArray(e?.answer) && e?.answer?.length) {
+              e?.answer.map((e: any) => {
+                const answer =
+                  typeof e === "string"
+                    ? {
+                        answer: e,
+                        job_posting_id: job_posting_id,
+                        user_profile_id: user_profile_id,
+                        interview_assessor_id: id_assessor,
+                      }
+                    : e?.answer
+                    ? {
+                        ...e,
+                        job_posting_id: job_posting_id,
+                        user_profile_id: user_profile_id,
+                        interview_assessor_id: id_assessor,
+                      }
+                    : null;
+                if (answer) answers.push(answer);
+              });
+            } else {
               const answer =
-                typeof e === "string"
+                typeof e?.answer === "string"
                   ? {
-                      answer: e,
+                      answer: e?.answer,
                       job_posting_id: job_posting_id,
                       user_profile_id: user_profile_id,
                       interview_assessor_id: id_assessor,
@@ -189,31 +209,12 @@ function Page() {
                     }
                   : null;
               if (answer) answers.push(answer);
+            }
+            result.push({
+              id: e?.id,
+              answers,
             });
-          } else {
-            const answer =
-              typeof e?.answer === "string"
-                ? {
-                    answer: e?.answer,
-                    job_posting_id: job_posting_id,
-                    user_profile_id: user_profile_id,
-                    interview_assessor_id: id_assessor,
-                  }
-                : e?.answer
-                ? {
-                    ...e,
-                    job_posting_id: job_posting_id,
-                    user_profile_id: user_profile_id,
-                    interview_assessor_id: id_assessor,
-                  }
-                : null;
-            if (answer) answers.push(answer);
-          }
-          result.push({
-            id: e?.id,
-            answers,
           });
-        });
         const res = await apix({
           port: "recruitment",
           value: "data.data",
@@ -259,20 +260,22 @@ function Page() {
           job_name: data?.job_posting?.job_name,
           applicant,
           interviewer_name: assessor?.employee_name,
-          question: list_question.map((e: any) => {
-            const typeAnswer = e?.answer_types?.name.toLowerCase();
-            const answer = e?.question_responses || [];
-            return {
-              ...e,
-              id_answer: answer?.[0]?.id,
-              answer:
-                typeAnswer === "checkbox"
-                  ? answer.map((e: any) => e?.answer)
-                  : typeAnswer === "attachment"
-                  ? answer?.[0]?.answer_file
-                  : answer?.[0]?.answer,
-            };
-          }),
+          question: list_question?.length
+            ? list_question.map((e: any) => {
+                const typeAnswer = e?.answer_types?.name.toLowerCase();
+                const answer = e?.question_responses || [];
+                return {
+                  ...e,
+                  id_answer: answer?.[0]?.id,
+                  answer:
+                    typeAnswer === "checkbox"
+                      ? answer.map((e: any) => e?.answer)
+                      : typeAnswer === "attachment"
+                      ? answer?.[0]?.answer_file
+                      : answer?.[0]?.answer,
+                };
+              })
+            : [],
         };
       }}
       showResize={false}
