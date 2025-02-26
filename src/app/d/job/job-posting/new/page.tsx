@@ -356,6 +356,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"poster"}
                     label={"Poster Recruitment"}
                     type={"upload"}
@@ -364,6 +365,7 @@ function Page() {
                 <div className="col-span-2">
                   <Field
                     fm={fm}
+                    required={true}
                     name={"content_description"}
                     label={"Description Post a Job"}
                     type={"richtext"}

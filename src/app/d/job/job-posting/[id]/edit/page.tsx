@@ -427,6 +427,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"organization_logo"}
                     label={"Logo Company"}
                     type={"upload"}
@@ -435,6 +436,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    required={true}
                     name={"poster"}
                     label={"Poster Recruitment"}
                     type={"upload"}
