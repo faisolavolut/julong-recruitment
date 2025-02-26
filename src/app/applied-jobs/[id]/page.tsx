@@ -27,6 +27,7 @@ import { scheduleFase } from "./schedule";
 import { cloneFM } from "@/lib/utils/cloneFm";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { ButtonLink } from "@/lib/components/ui/button-link";
+import ImageBetter from "@/lib/components/ui/Image";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -79,7 +80,6 @@ function Page() {
         local.profile = null;
       }
       local.render();
-      console.log({ res });
       let steps = res.map((e: any) => {
         return {
           id: e?.order,
@@ -137,10 +137,11 @@ function Page() {
                 >
                   <div className="flex flex-col px-10 gap-x-4">
                     <div className="w-16 h-16">
-                      <img
-                        src={siteurl("/dog.jpg")}
-                        alt="John Cena"
+                      <ImageBetter
+                        src={siteurl(get(local, "data.organization_logo"))}
+                        alt="Logo Company"
                         className="rounded-full w-full h-full object-cover border-2 border-white"
+                        defaultSrc={siteurl("/404-img.jpg")}
                       />
                     </div>
                     <div className="text-black">

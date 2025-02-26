@@ -14,6 +14,7 @@ import get from "lodash.get";
 import { formatMoney } from "@/lib/components/form/field/TypeInput";
 import { getNumber } from "@/lib/utils/getNumber";
 import { actionToast } from "@/lib/utils/action";
+import ImageBetter from "@/lib/components/ui/Image";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -72,10 +73,11 @@ function Page() {
               >
                 <div className="flex flex-col px-10 gap-x-4">
                   <div className="w-16 h-16">
-                    <img
-                      src={siteurl("/dog.jpg")}
-                      alt="John Cena"
+                    <ImageBetter
+                      src={siteurl(get(local, "data.organization_logo"))}
+                      alt="Logo Company"
                       className="rounded-full w-full h-full object-cover border-2 border-white"
+                      defaultSrc={siteurl("/404-img.jpg")}
                     />
                   </div>
                   <div className="text-black">
