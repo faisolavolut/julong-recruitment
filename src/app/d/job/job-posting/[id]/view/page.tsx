@@ -292,7 +292,7 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
-                    name={"minimum_experience"}
+                    name={"minimum_work_experience"}
                     label={"Minimum Experience"}
                     type={"money"}
                     suffix={() => {

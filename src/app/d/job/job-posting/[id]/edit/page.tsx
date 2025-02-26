@@ -163,6 +163,14 @@ function Page() {
           validate: "object",
         });
         if (data.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
+        console.log({
+          ...data,
+          for_organization_id: data?.for_organization_id,
+          for_organization: {
+            id: data?.for_organization_id,
+            name: data?.for_organization_name,
+          },
+        });
         return {
           ...data,
           for_organization_id: data?.for_organization_id,
@@ -387,7 +395,7 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
-                    name={"minimum_experience"}
+                    name={"minimum_work_experience"}
                     label={"Minimum Experience"}
                     type={"money"}
                     suffix={() => {
