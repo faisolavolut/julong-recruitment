@@ -465,7 +465,6 @@ function Page() {
             <div className="w-full flex flex-row flex-grow">
               <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
-                  selectionPaging={true}
                   name="job-posting"
                   feature={local.can_selection ? ["checkbox"] : []}
                   header={{
