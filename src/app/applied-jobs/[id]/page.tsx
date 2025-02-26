@@ -400,13 +400,13 @@ function Page() {
                                     "detail.end_time"
                                   )}`}
                                 </p>
-                                {get(local, "detail.location") ? (
+                                {get(local, "detail.location_link") ? (
                                   <p className=" flex flex-row gap-x-2 items-center">
                                     <MdOutlineLocationOn />
                                     <a
                                       target="_blank"
                                       className="text-primary underline"
-                                      href={get(local, "detail.location")}
+                                      href={get(local, "detail.location_link")}
                                     >
                                       Link Location
                                     </a>
