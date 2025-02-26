@@ -92,10 +92,10 @@ function Page() {
           },
         },
         {
-          name: "start_date",
+          name: "total_applicant",
           header: () => <span>Total Applicant</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{0}</>;
+            return <>{getNumber(getValue(row, name))}</>;
           },
         },
         {
@@ -126,7 +126,17 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", param);
+        const params = await events(
+          "onload-param",
+          local?.tab === "on_going"
+            ? {
+                ...param,
+              }
+            : {
+                ...param,
+                status: "COMPLETED",
+              }
+        );
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
@@ -135,11 +145,13 @@ function Page() {
         });
         return result;
       }}
-      onCount={async () => {
+      onCount={async (params: any) => {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/job-postings?page=1&page_size=1`,
+          path: `/api/job-postings${params}${
+            local.tab === "COMPLETED" ? "&status=COMPLETED" : ""
+          }`,
           validate: "object",
         });
         return getNumber(result);

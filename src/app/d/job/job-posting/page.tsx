@@ -104,10 +104,10 @@ function Page() {
           },
         },
         {
-          name: "start_date",
+          name: "total_applicant",
           header: () => <span>Total Applicant</span>,
           renderCell: ({ row, name }: any) => {
-            return <>{dayDate(getValue(row, name))}</>;
+            return <>{getNumber(getValue(row, name))}</>;
           },
         },
         {
@@ -161,7 +161,9 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", param);
+        const params = await events("onload-param", {
+          ...param,
+        });
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
