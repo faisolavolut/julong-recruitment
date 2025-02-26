@@ -122,7 +122,7 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
-        const data = fm.data;
+        const data = { ...fm.data };
 
         data["deleted_organization_logo"] = "false";
         data["deleted_poster"] = "false";
@@ -138,6 +138,9 @@ function Page() {
         if (typeof data?.poster === "string") {
           delete data["poster"];
         }
+        delete data["project_recruitment_header"];
+        delete data["mp_request"];
+        delete data["for_organization"];
         const res = await apix({
           port: "recruitment",
           value: "data.data",
