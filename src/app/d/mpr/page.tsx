@@ -207,7 +207,7 @@ function Page() {
                           recruitment_type: data?.recruitment_type,
                           salary_min: 0,
                           salary_max: 0,
-                          minimum_experience: data?.minimum_experience,
+                          minimum_work_experience: data?.minimum_experience,
                           project_recruitment_header_id: header?.[0]?.value,
                         };
                         const res = await apix({
