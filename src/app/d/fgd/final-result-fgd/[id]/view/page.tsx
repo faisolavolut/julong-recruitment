@@ -272,7 +272,6 @@ function Page() {
             <div className="w-full flex flex-row flex-grow">
               <div className="flex flex-grow flex-col min-h-[350px]">
                 <TableList
-                  selectionPaging={true}
                   name="job-posting"
                   header={{
                     sideLeft: (data: any) => {
@@ -413,65 +412,6 @@ function Page() {
                         );
                       },
                     },
-
-                    // {
-                    //   name: "action",
-                    //   
-                    header: "Action",
-                    filter: false,
-                    //   sortable: false,
-                    //   renderCell: ({ row }: any) => {
-                    //     const already_result = false;
-                    //     return (
-                    //       <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                    //         {already_result ? (
-                    //           <ButtonLink
-                    //             href={`${urlPage}/${id}/${row?.id}/view`}
-                    //           >
-                    //             <div className="flex items-center gap-x-2">
-                    //               <IoEye className="text-lg" />
-                    //             </div>
-                    //           </ButtonLink>
-                    //         ) : (
-                    //           <ButtonBetterTooltip
-                    //             tooltip={"Create Result FGD"}
-                    //             className="bg-primary"
-                    //             onClick={async () => {
-                    //               await actionToast({
-                    //                 task: async () => {
-                    //                   if (false) {
-                    //                     const res = await apix({
-                    //                       port: "recruitment",
-                    //                       value: "data.data",
-                    //                       path: "/api/job-postings",
-                    //                       method: "post",
-                    //                       type: "form",
-                    //                       data: {},
-                    //                     });
-                    //                     if (res?.id)
-                    //                       navigate(
-                    //                         `${urlPage}/${id}/${res?.id}/view`
-                    //                       );
-                    //                   } else {
-                    //                     navigate(`${urlPage}/${id}/1/view`);
-                    //                   }
-                    //                 },
-                    //                 after: () => {},
-                    //                 msg_load: "Create MPR Job Posting ",
-                    //                 msg_error: "Create MPR Job Posting failed ",
-                    //                 msg_succes: "MPR Job Posting success ",
-                    //               });
-                    //             }}
-                    //           >
-                    //             <div className="flex items-center gap-x-2">
-                    //               <RiAiGenerate className="text-lg" />
-                    //             </div>
-                    //           </ButtonBetterTooltip>
-                    //         )}
-                    //       </div>
-                    //     );
-                    //   },
-                    // },
                   ]}
                   onLoad={async (param: any) => {
                     return [{}, {}];
