@@ -15,8 +15,8 @@ import { actionToast } from "@/lib/utils/action";
 import { normalDate } from "@/lib/utils/date";
 import { getLine } from "@/app/lib/job-posting";
 import { labelDocumentType } from "@/lib/utils/document_type";
-import { TableList } from "@/lib/components/tablelist/TableList";
 import { events } from "@/lib/utils/event";
+import { TableEditBetter } from "@/lib/components/tablelist/TableBetter";
 
 function Page() {
   const id = getParams("id");
@@ -125,18 +125,6 @@ function Page() {
       }}
       onSubmit={async (fm: any) => {
         const lines = fm?.data?.line;
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/project-recruitment-headers/update",
-          method: "put",
-          data: {
-            ...fm.data,
-            start_date: normalDate(fm.data?.start_date),
-            end_date: normalDate(fm.data?.end_date),
-            document_date: normalDate(fm?.data?.document_date),
-          },
-        });
         if (lines?.length) {
           const prm = {
             deleted_project_recruitment_line_ids: fm.data?.del_ids || [],
@@ -166,6 +154,18 @@ function Page() {
             },
           });
         }
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/project-recruitment-headers/update",
+          method: "put",
+          data: {
+            ...fm.data,
+            start_date: normalDate(fm.data?.start_date),
+            end_date: normalDate(fm.data?.end_date),
+            document_date: normalDate(fm?.data?.document_date),
+          },
+        });
         fm.reload();
       }}
       onLoad={async () => {
@@ -196,10 +196,10 @@ function Page() {
                   ? 1
                   : idx + 1,
             };
+            ``;
           });
           lines = result;
-        }
-        if (lines?.length) {
+        } else if (lines?.length) {
           lines = lines.map((e: any, idx: number) => {
             return {
               ...e,
@@ -219,8 +219,6 @@ function Page() {
             };
           });
         }
-        console.log(lines);
-        console.log({ ...data, line: lines, del_ids });
         return { ...data, line: lines, del_ids, ready: true };
       }}
       showResize={false}
@@ -368,24 +366,20 @@ function Page() {
           >
             <div className="w-full flex flex-row flex-grow">
               <div className="flex flex-grow flex-col min-h-[350px]">
-                <TableList
+                <TableEditBetter
                   name="line"
                   delete_name="deleted_line_ids"
-                  style="common"
-                  align="top"
-                  mode="form"
                   fm={fm}
                   disabledHoverRow={true}
                   disabledPagination={true}
                   header={{
                     sideLeft: (tbl: any) => {
-                      if (true) return <></>;
                       return <></>;
                     },
                     sideRight: (tbl: any) => {
                       return (
                         <>
-                          <div className="flex flex-row gap-x-2 items-center">
+                          <div className="flex flex-row gap-x-2 items-center px-2">
                             <div className="flex flex-row flex-grow space-x-2">
                               <ButtonBetter
                                 onClick={async (event) => {
@@ -452,13 +446,7 @@ function Page() {
                       header: () => <span>PIC</span>,
                       renderCell: ({ fm_row }: any) => {
                         return (
-                          <div
-                            className={cx(
-                              css`
-                                max-width: 250px;
-                              `
-                            )}
-                          >
+                          <>
                             <Field
                               fm={fm_row}
                               hidden_label={true}
@@ -481,7 +469,7 @@ function Page() {
                               onValue={"id"}
                               onLabel={"name"}
                             />
-                          </div>
+                          </>
                         );
                       },
                     },
@@ -496,6 +484,7 @@ function Page() {
                               fm={fm_row}
                               hidden_label={true}
                               name={name}
+                              required={true}
                               label={""}
                               type={"date"}
                             />
@@ -513,6 +502,7 @@ function Page() {
                             <Field
                               fm={fm_row}
                               hidden_label={true}
+                              required={true}
                               name={name}
                               label={""}
                               type={"date"}
@@ -522,7 +512,6 @@ function Page() {
                       },
                     },
                   ]}
-                  onInit={async (list: any) => {}}
                 />
               </div>
             </div>

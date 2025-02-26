@@ -9,6 +9,9 @@ declare global {
   var router: useRouter;
   var headerTitle: string;
   var breadcrumbTitle: any;
-  var events: (mode: string, data: any) => Promise<any> | any;
+  var events: (
+    mode: "before-onload" | "onload-param",
+    data: any
+  ) => Promise<any> | any;
 }
 declare var siteurl: (path: string) => string;
