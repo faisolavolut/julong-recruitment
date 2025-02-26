@@ -164,7 +164,7 @@ function Page() {
               <div className="flex flex-grow flex-row relative">
                 {fm?.data?.path ? (
                   <>
-                    <div className="absolute top-0 left-0 w-full h-full">
+                    <div className="absolute top-0 left-0 w-full h-full min-h-[200px]">
                       <PDFViewer url={siteurl(fm?.data?.path)} />
                     </div>
                   </>
