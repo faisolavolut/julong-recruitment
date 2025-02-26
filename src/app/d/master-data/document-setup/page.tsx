@@ -53,21 +53,23 @@ function Page() {
       column={[
         {
           name: "title",
-          header: () => <span>Tittle Document</span>,
+          header: "Tittle Document",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "document_type.name",
-          header: () => <span>Document Type</span>,
+          header: "Document Type",
           renderCell: ({ row, name }: any) => {
             return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (

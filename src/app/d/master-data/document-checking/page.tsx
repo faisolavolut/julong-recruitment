@@ -52,28 +52,30 @@ function Page() {
       column={[
         {
           name: "name",
-          header: () => <span>Name</span>,
+          header: "Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "format",
-          header: () => <span>Format</span>,
+          header: "Format",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "template_question.name",
-          header: () => <span>Template</span>,
+          header: "Template",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (

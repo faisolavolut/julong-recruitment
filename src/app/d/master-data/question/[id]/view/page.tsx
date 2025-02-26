@@ -390,7 +390,7 @@ function Page() {
       //                 column={[
       //                   {
       //                     name: "name",
-      //                     header: () => <span>Document Name</span>,
+      //                     header: "Document Name",
       //                     renderCell: ({ row, name, cell, tbl }: any) => {
       //                       const fm_row = cloneFM(fm, row);
       //                       return (
@@ -408,7 +408,7 @@ function Page() {
       //                   },
       //                   {
       //                     name: "format",
-      //                     header: () => <span>Format</span>,
+      //                     header: "Format",
       //                     width: 150,
       //                     renderCell: ({ row, name, cell }: any) => {
       //                       const fm_row = cloneFM(fm, row);
@@ -434,7 +434,9 @@ function Page() {
       //                   },
       //                   {
       //                     name: "action",
-      //                     header: () => <span>Action</span>,
+      //                     
+                    header: "Action",
+                    filter: false,
       //                     sortable: false,
       //                     renderCell: ({ row, name, cell, tbl }: any) => {
       //                       if (false) return <></>;
@@ -493,21 +495,23 @@ function Page() {
       //                 column={[
       //                   {
       //                     name: "title",
-      //                     header: () => <span>Tittle Document</span>,
+      //                     header: "Tittle Document",
       //                     renderCell: ({ row, name, cell }: any) => {
       //                       return <>{getValue(row, name)}</>;
       //                     },
       //                   },
       //                   {
       //                     name: "document_type.name",
-      //                     header: () => <span>Document Type</span>,
+      //                     header: "Document Type",
       //                     renderCell: ({ row, name, cell }: any) => {
       //                       return labelDocumentType(getValue(row, name));
       //                     },
       //                   },
       //                   {
       //                     name: "action",
-      //                     header: () => <span>Action</span>,
+      //                     
+                    header: "Action",
+                    filter: false,
       //                     sortable: false,
       //                     renderCell: ({ row, name, cell }: any) => {
       //                       return (

@@ -382,14 +382,14 @@ function Page() {
                   column={[
                     {
                       name: "user_profile.name",
-                      header: () => <span>Applicant Name</span>,
+                      header: "Applicant Name",
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
                       name: "gpa",
-                      header: () => <span>GPA</span>,
+                      header: "GPA",
                       renderCell: ({ row, name }: any) => {
                         return (
                           <>
@@ -405,7 +405,7 @@ function Page() {
                     },
                     {
                       name: "major",
-                      header: () => <span>Major</span>,
+                      header: "Major",
                       renderCell: ({ row, name }: any) => {
                         const major = sortEducationLevels(
                           getValue(row, "user_profile.educations"),
@@ -416,7 +416,7 @@ function Page() {
                     },
                     {
                       name: "job_name",
-                      header: () => <span>Job Name</span>,
+                      header: "Job Name",
                       renderCell: ({ row, name }: any) => {
                         return (
                           <>
@@ -429,7 +429,7 @@ function Page() {
                     },
                     {
                       name: "job_experience",
-                      header: () => <span>Job Experience</span>,
+                      header: "Job Experience",
                       renderCell: ({ row, name }: any) => {
                         return (
                           <>
@@ -444,14 +444,14 @@ function Page() {
                     },
                     {
                       name: "user_profile.work_experiences",
-                      header: () => <span>Work Experience (Year)</span>,
+                      header: "Work Experience (Year)",
                       renderCell: ({ row, name }: any) => {
                         return <>{getTotalExperience(getValue(row, name))}</>;
                       },
                     },
                     {
                       name: "user_profile.curriculum_vitae",
-                      header: () => <span>CV</span>,
+                      header: "CV",
                       renderCell: ({ row, name }: any) => {
                         return (
                           <FilePreview
@@ -465,7 +465,7 @@ function Page() {
                     {
                       name: "status",
                       sortable: false,
-                      header: () => <span>Status Selection</span>,
+                      header: "Status Selection",
                       renderCell: ({ row, render }: any) => {
                         if (row.status === "ACCEPTED") {
                           return (
@@ -583,7 +583,9 @@ function Page() {
                     },
                     {
                       name: "action",
-                      header: () => <span>Action</span>,
+
+                      header: "Action",
+                      filter: false,
                       sortable: false,
                       renderCell: ({ row }: any) => {
                         return (

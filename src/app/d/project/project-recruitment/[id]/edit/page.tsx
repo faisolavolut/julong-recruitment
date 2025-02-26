@@ -434,7 +434,7 @@ function Page() {
                     {
                       name: "name",
                       sortable: false,
-                      header: () => <span>Name</span>,
+                      header: "Name",
                       renderCell: ({ fm_row }: any) => {
                         return <>{labelDocumentType(fm_row?.data?.name)}</>;
                       },
@@ -443,7 +443,7 @@ function Page() {
                       name: "pic",
                       width: 200,
                       sortable: false,
-                      header: () => <span>PIC</span>,
+                      header: "PIC",
                       renderCell: ({ fm_row }: any) => {
                         return (
                           <>
@@ -476,7 +476,7 @@ function Page() {
                     {
                       name: "start_date",
                       sortable: false,
-                      header: () => <span>Start Date</span>,
+                      header: "Start Date",
                       renderCell: ({ fm_row, name }: any) => {
                         return (
                           <>
@@ -495,7 +495,7 @@ function Page() {
                     {
                       name: "end_date",
                       sortable: false,
-                      header: () => <span>End Date</span>,
+                      header: "End Date",
                       renderCell: ({ fm_row, name }: any) => {
                         return (
                           <>

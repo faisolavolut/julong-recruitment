@@ -442,9 +442,6 @@ function Page() {
                     </>
                   );
                 }}
-                onFooter={(fm: any) => {
-                  return <></>;
-                }}
                 onInit={(e: any) => {
                   local.fm = e;
                   local.render();

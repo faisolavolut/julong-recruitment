@@ -18,8 +18,6 @@ import { getValue } from "@/lib/utils/getValue";
 import { useLocal } from "@/lib/utils/use-local";
 import { FC } from "react";
 import { HiPlus } from "react-icons/hi";
-import { toast } from "sonner";
-import { AiOutlineCloudUpload } from "react-icons/ai";
 
 export const Applicant: FC<any> = ({ fm }) => {
   const local = useLocal({
@@ -83,7 +81,7 @@ export const Applicant: FC<any> = ({ fm }) => {
                   {
                     name: "id_applicant",
                     sortable: false,
-                    header: () => <span>ID Applicant</span>,
+                    header: "ID Applicant",
                     renderCell: ({ row, name }: any) => {
                       return <>{getValue(row, name)}</>;
                     },
@@ -91,7 +89,7 @@ export const Applicant: FC<any> = ({ fm }) => {
                   {
                     name: "name",
                     sortable: false,
-                    header: () => <span>Applicant Name</span>,
+                    header: "Applicant Name",
                     renderCell: ({ row, name }: any) => {
                       return <>{getValue(row, name)}</>;
                     },
@@ -99,7 +97,7 @@ export const Applicant: FC<any> = ({ fm }) => {
                   {
                     sortable: false,
                     name: "job_name",
-                    header: () => <span>Job Name</span>,
+                    header: "Job Name",
                     renderCell: ({ row, name }: any) => {
                       return <>{getValue(row, name)}</>;
                     },

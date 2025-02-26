@@ -216,7 +216,7 @@ function Page() {
                     {
                       name: "name",
                       sortable: false,
-                      header: () => <span>Document Name</span>,
+                      header: "Document Name",
                       renderCell: ({ row, name, cell, tbl }: any) => {
                         const fm_row = cloneFM(fm, row);
                         return (
@@ -235,7 +235,7 @@ function Page() {
                     {
                       name: "template",
                       sortable: false,
-                      header: () => <span>Template</span>,
+                      header: "Template",
                       width: 150,
                       renderCell: ({ row, name, cell }: any) => {
                         const fm_row = cloneFM(fm, row);
@@ -268,7 +268,7 @@ function Page() {
                       name: "colour",
                       sortable: false,
                       resize: false,
-                      header: () => <span>Colour</span>,
+                      header: "Colour",
                       width: 10,
                       renderCell: ({ row, name, cell }: any) => {
                         return (
@@ -287,7 +287,7 @@ function Page() {
                     {
                       name: "description",
                       sortable: false,
-                      header: () => <span>Description</span>,
+                      header: "Description",
                       width: 150,
                       renderCell: ({ row, name, cell }: any) => {
                         return (

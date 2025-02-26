@@ -103,56 +103,58 @@ function Page() {
       column={[
         {
           name: "document_number",
-          header: () => <span>MPR Number</span>,
+          header: "MPR Number",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "project_number",
-          header: () => <span>Project Number</span>,
+          header: "Project Number",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "organization_name",
-          header: () => <span>Organization</span>,
+          header: "Organization",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "for_organization_name",
-          header: () => <span>Company</span>,
+          header: "Company",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "recruitment_type",
-          header: () => <span>Recruitment Type</span>,
+          header: "Recruitment Type",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "mp_request_type",
-          header: () => <span>Request Type</span>,
+          header: "Request Type",
           renderCell: ({ row, name }: any) => {
             return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
           name: "status",
-          header: () => <span>Status Recruitment</span>,
+          header: "Status Recruitment",
           renderCell: ({ row, name }: any) => {
             return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (

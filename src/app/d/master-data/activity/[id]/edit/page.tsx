@@ -271,7 +271,7 @@ function Page() {
                     {
                       name: "name",
                       sortable: false,
-                      header: () => <span>Document Name</span>,
+                      header: "Document Name",
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
@@ -289,7 +289,7 @@ function Page() {
                     {
                       name: "template",
                       sortable: false,
-                      header: () => <span>Template</span>,
+                      header: "Template",
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
@@ -323,7 +323,7 @@ function Page() {
                       name: "colour",
                       sortable: false,
                       resize: false,
-                      header: () => <span>Colour</span>,
+                      header: "Colour",
                       width: 50,
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
@@ -342,7 +342,7 @@ function Page() {
                     {
                       name: "description",
                       sortable: false,
-                      header: () => <span>Description</span>,
+                      header: "Description",
                       width: 150,
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
@@ -362,7 +362,7 @@ function Page() {
                       name: "status",
                       sortable: false,
                       resize: false,
-                      header: () => <span>Active</span>,
+                      header: "Active",
                       width: 50,
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
@@ -388,7 +388,9 @@ function Page() {
                     },
                     {
                       name: "action",
-                      header: () => <span>Action</span>,
+
+                      header: "Action",
+                      filter: false,
                       sortable: false,
                       renderCell: ({ row, tbl }: any) => {
                         if (false) return <></>;

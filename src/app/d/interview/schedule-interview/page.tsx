@@ -79,56 +79,58 @@ function Page() {
       column={[
         {
           name: "project_recruitment_line.template_activity_line.name",
-          header: () => <span>Activity Name</span>,
+          header: "Activity Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "name",
-          header: () => <span>Schedule Name</span>,
+          header: "Schedule Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "schedule_date",
-          header: () => <span>Schedule Date</span>,
+          header: "Schedule Date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "start_time",
-          header: () => <span>Start Time</span>,
+          header: "Start Time",
           renderCell: ({ row, name }: any) => {
             return <>{formatTime(getValue(row, name))}</>;
           },
         },
         {
           name: "end_time",
-          header: () => <span>End Time</span>,
+          header: "End Time",
           renderCell: ({ row, name }: any) => {
             return <>{formatTime(getValue(row, name))}</>;
           },
         },
         {
           name: "total_candidate",
-          header: () => <span>Total Candidates</span>,
+          header: "Total Candidates",
           renderCell: ({ row, name }: any) => {
             return <>{formatMoney(getValue(row, name))}</>;
           },
         },
         {
           name: "status",
-          header: () => <span>Status</span>,
+          header: "Status",
           renderCell: ({ row, name }: any) => {
             return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (

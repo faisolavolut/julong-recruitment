@@ -298,49 +298,49 @@ function Page() {
                   column={[
                     {
                       name: "id_applicant",
-                      header: () => <span>ID Applicant</span>,
+                      header: "ID Applicant",
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
                       name: "name",
-                      header: () => <span>Applicant Name</span>,
+                      header: "Applicant Name",
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
                       name: "age",
-                      header: () => <span>Age</span>,
+                      header: "Age",
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
                       name: "job_name",
-                      header: () => <span>Job Name</span>,
+                      header: "Job Name",
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
                       name: "work_experience",
-                      header: () => <span>Work Experience (month)</span>,
+                      header: "Work Experience (month)",
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
                       name: "cv",
-                      header: () => <span>CV</span>,
+                      header: "CV",
                       renderCell: ({ row, name }: any) => {
                         return <>{getValue(row, name)}</>;
                       },
                     },
                     {
                       name: "status_selection",
-                      header: () => <span>Status Selection</span>,
+                      header: "Status Selection",
                       renderCell: ({ row }: any) => {
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap">

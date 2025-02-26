@@ -52,21 +52,23 @@ function Page() {
       column={[
         {
           name: "name",
-          header: () => <span>Name</span>,
+          header: "Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "status",
-          header: () => <span>Status</span>,
+          header: "Status",
           renderCell: ({ row, name }: any) => {
             return getValue(row, name) === "ACTIVE" ? "Active" : "Inactive";
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (

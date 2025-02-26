@@ -105,21 +105,21 @@ function Page() {
           ? [
               {
                 name: "user_profile.name",
-                header: () => <span>Applicant Name</span>,
+                header: "Applicant Name",
                 renderCell: ({ row, name }: any) => {
                   return <>{getValue(row, name)}</>;
                 },
               },
               {
                 name: "job_posting.job_name",
-                header: () => <span>Job Name</span>,
+                header: "Job Name",
                 renderCell: ({ row, name }: any) => {
                   return <>{getValue(row, name)}</>;
                 },
               },
               {
                 name: "user_profile.work_experiencess[0].name",
-                header: () => <span>Job Experience</span>,
+                header: "Job Experience",
                 renderCell: ({ row, name }: any) => {
                   return (
                     <>
@@ -132,14 +132,14 @@ function Page() {
               },
               {
                 name: "created_at",
-                header: () => <span>Applied Date</span>,
+                header: "Applied Date",
                 renderCell: ({ row, name }: any) => {
                   return <>{dayDate(getValue(row, name))}</>;
                 },
               },
               {
                 name: "status",
-                header: () => <span>Status</span>,
+                header: "Status",
                 renderCell: ({ row, name }: any) => {
                   return (
                     <>
@@ -152,7 +152,9 @@ function Page() {
               },
               {
                 name: "action",
-                header: () => <span>Action</span>,
+
+                header: "Action",
+                filter: false,
                 sortable: false,
                 renderCell: ({ row }: any) => {
                   return (
@@ -174,21 +176,21 @@ function Page() {
           : [
               {
                 name: "user_profile.name",
-                header: () => <span>Applicant Name</span>,
+                header: "Applicant Name",
                 renderCell: ({ row, name }: any) => {
                   return <>{getValue(row, name)}</>;
                 },
               },
               {
                 name: "job_posting.job_name",
-                header: () => <span>Job Name</span>,
+                header: "Job Name",
                 renderCell: ({ row, name }: any) => {
                   return <>{getValue(row, name)}</>;
                 },
               },
               {
                 name: "user_profile.work_experiencess[0].name",
-                header: () => <span>Job Experience</span>,
+                header: "Job Experience",
                 renderCell: ({ row, name }: any) => {
                   return (
                     <>
@@ -201,21 +203,23 @@ function Page() {
               },
               {
                 name: "created_at",
-                header: () => <span>Applied Date</span>,
+                header: "Applied Date",
                 renderCell: ({ row, name }: any) => {
                   return <>{dayDate(getValue(row, name))}</>;
                 },
               },
               {
                 name: "status",
-                header: () => <span>Status</span>,
+                header: "Status",
                 renderCell: ({ row, name }: any) => {
                   return <>{getLabel(getValue(row, name))}</>;
                 },
               },
               {
                 name: "action",
-                header: () => <span>Action</span>,
+
+                header: "Action",
+                filter: false,
                 sortable: false,
                 renderCell: ({ row }: any) => {
                   return (

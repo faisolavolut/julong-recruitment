@@ -55,14 +55,14 @@ function Page() {
       column={[
         {
           name: "name",
-          header: () => <span>Template</span>,
+          header: "Template",
           renderCell: ({ row, name, cell }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "document_type.name",
-          header: () => <span>Document Type</span>,
+          header: "Document Type",
           renderCell: ({ row, name, cell }: any) => {
             return labelDocumentType(getValue(row, name));
             switch (getValue(row, name)) {
@@ -104,7 +104,7 @@ function Page() {
         },
         {
           name: "status",
-          header: () => <span>Status</span>,
+          header: "Status",
           renderCell: ({ row, name, cell }: any) => {
             switch (getValue(row, name)) {
               case "ACTIVE":
@@ -117,7 +117,9 @@ function Page() {
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row, name, cell }: any) => {
             return (

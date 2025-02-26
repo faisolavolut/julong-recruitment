@@ -54,42 +54,44 @@ function Page() {
       column={[
         {
           name: "document_number",
-          header: () => <span>Document No.</span>,
+          header: "Document No.",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "name",
-          header: () => <span>Project Name</span>,
+          header: "Project Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "start_date",
-          header: () => <span>Start Date</span>,
+          header: "Start Date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "end_date",
-          header: () => <span>End Date</span>,
+          header: "End Date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "status",
-          header: () => <span>Status</span>,
+          header: "Status",
           renderCell: ({ row, name }: any) => {
             return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (

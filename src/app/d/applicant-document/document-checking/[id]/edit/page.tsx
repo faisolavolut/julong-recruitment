@@ -390,7 +390,7 @@ function Page() {
                     {
                       name: "name",
                       sortable: false,
-                      header: () => <span>Document Name</span>,
+                      header: "Document Name",
                       renderCell: ({ row, name, cell, idx, fm_row }: any) => {
                         return (
                           <>
@@ -419,7 +419,7 @@ function Page() {
                     {
                       name: "path",
                       sortable: false,
-                      header: () => <span>File</span>,
+                      header: "File",
                       renderCell: ({ row, name }: any) => {
                         return (
                           <FilePreview
@@ -432,7 +432,9 @@ function Page() {
                     },
                     {
                       name: "action",
-                      header: () => <span>Action</span>,
+
+                      header: "Action",
+                      filter: false,
                       sortable: false,
                       renderCell: ({ row, tbl }: any) => {
                         if (false) return <></>;

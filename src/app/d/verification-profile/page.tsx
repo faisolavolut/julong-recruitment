@@ -79,21 +79,23 @@ function Page() {
       column={[
         {
           name: "name",
-          header: () => <span>Applicant Name</span>,
+          header: "Applicant Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "created_at",
-          header: () => <span>Register Date</span>,
+          header: "Register Date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (
@@ -194,21 +196,23 @@ function Page() {
           column={[
             {
               name: "name",
-              header: () => <span>Applicant Name</span>,
+              header: "Applicant Name",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "created_at",
-              header: () => <span>Register Date</span>,
+              header: "Register Date",
               renderCell: ({ row, name }: any) => {
                 return <>{dayDate(getValue(row, name))}</>;
               },
             },
             {
               name: "action",
-              header: () => <span>Action</span>,
+
+              header: "Action",
+              filter: false,
               sortable: false,
               renderCell: ({ row }: any) => {
                 return (

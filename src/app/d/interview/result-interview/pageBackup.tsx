@@ -41,56 +41,56 @@ function Page() {
       column={[
         {
           name: "applicant_name",
-          header: () => <span>Applicant Name</span>,
+          header: "Applicant Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "age",
-          header: () => <span>Age</span>,
+          header: "Age",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "job_name",
-          header: () => <span>Job Name</span>,
+          header: "Job Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "schedule_date",
-          header: () => <span>Schedule Date</span>,
+          header: "Schedule Date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "start_time",
-          header: () => <span>Start Time</span>,
+          header: "Start Time",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "end_time",
-          header: () => <span>End Time</span>,
+          header: "End Time",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "interviewer",
-          header: () => <span>Interviewer</span>,
+          header: "Interviewer",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "result",
-          header: () => <span>Result</span>,
+          header: "Result",
           renderCell: ({ row, render }: any) => {
             if (row.status === "APPROVED") {
               return (
@@ -114,7 +114,9 @@ function Page() {
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (
@@ -185,63 +187,65 @@ function Page() {
           column={[
             {
               name: "applicant_name",
-              header: () => <span>Applicant Name</span>,
+              header: "Applicant Name",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "age",
-              header: () => <span>Age</span>,
+              header: "Age",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "job_name",
-              header: () => <span>Job Name</span>,
+              header: "Job Name",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "schedule_date",
-              header: () => <span>Schedule Date</span>,
+              header: "Schedule Date",
               renderCell: ({ row, name }: any) => {
                 return <>{dayDate(getValue(row, name))}</>;
               },
             },
             {
               name: "start_time",
-              header: () => <span>Start Time</span>,
+              header: "Start Time",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "end_time",
-              header: () => <span>End Time</span>,
+              header: "End Time",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "interviewer",
-              header: () => <span>Interviewer</span>,
+              header: "Interviewer",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "result",
-              header: () => <span>Result</span>,
+              header: "Result",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "action",
-              header: () => <span>Action</span>,
+
+              header: "Action",
+              filter: false,
               sortable: false,
               renderCell: ({ row }: any) => {
                 return (

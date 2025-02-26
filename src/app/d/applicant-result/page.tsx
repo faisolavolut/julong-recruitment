@@ -59,49 +59,51 @@ function Page() {
           column={[
             {
               name: "applicant_name",
-              header: () => <span>Applicant Name</span>,
+              header: "Applicant Name",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "age",
-              header: () => <span>Age</span>,
+              header: "Age",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "marital_status",
-              header: () => <span>Marital Status</span>,
+              header: "Marital Status",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "work_experience",
-              header: () => <span>Work Experience (month)</span>,
+              header: "Work Experience (month)",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "cv",
-              header: () => <span>CV</span>,
+              header: "CV",
               renderCell: ({ row, name }: any) => {
                 return <>{getValue(row, name)}</>;
               },
             },
             {
               name: "status",
-              header: () => <span>Status</span>,
+              header: "Status",
               renderCell: ({ row, name }: any) => {
                 return <>{getLabel(getValue(row, name))}</>;
               },
             },
             {
               name: "action",
-              header: () => <span>Action</span>,
+
+              header: "Action",
+              filter: false,
               sortable: false,
               renderCell: ({ row }: any) => {
                 return (

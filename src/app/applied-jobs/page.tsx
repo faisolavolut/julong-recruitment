@@ -195,7 +195,7 @@ function HomePage() {
                     name: "name",
                     sortable: false,
                     resize: false,
-                    header: () => <span>Jobs</span>,
+                    header: "Jobs",
                     renderCell: ({ row, name, cell }: any) => {
                       return (
                         <div className="flex items-center py-4 space-x-4">
@@ -241,7 +241,7 @@ function HomePage() {
                     name: "applied_date",
                     sortable: false,
                     resize: false,
-                    header: () => <span>Date Applied</span>,
+                    header: "Date Applied",
                     renderCell: ({ row, name, cell }: any) => {
                       return dayDate(getValue(row, name));
                     },
@@ -250,7 +250,7 @@ function HomePage() {
                     name: "apply_process_status",
                     sortable: false,
                     resize: false,
-                    header: () => <span>Status</span>,
+                    header: "Status",
                     renderCell: ({ row, name, cell }: any) => {
                       if (row?.[name] === "IN_PROGRESS") {
                         return (
@@ -262,7 +262,8 @@ function HomePage() {
                   },
                   {
                     name: "action",
-                    header: () => <span>Action</span>,
+                    header: "Action",
+                    filter: false,
                     sortable: false,
                     renderCell: ({ row, name, cell }: any) => {
                       return (

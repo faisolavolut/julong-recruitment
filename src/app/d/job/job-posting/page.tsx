@@ -55,14 +55,14 @@ function Page() {
       column={[
         {
           name: "document_number",
-          header: () => <span>Job Posting Number</span>,
+          header: "Job Posting Number",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "link",
-          header: () => <span>Link Job Posting</span>,
+          header: "Link Job Posting",
           renderCell: ({ row, name }: any) => {
             return (
               <a
@@ -77,56 +77,58 @@ function Page() {
         },
         {
           name: "job_name",
-          header: () => <span>Job Name</span>,
+          header: "Job Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "recruitment_type",
-          header: () => <span>Recruitment Type</span>,
+          header: "Recruitment Type",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "for_organization_name",
-          header: () => <span>Company</span>,
+          header: "Company",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "amount_job",
-          header: () => <span>Amount Job</span>,
+          header: "Amount Job",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
           name: "total_applicant",
-          header: () => <span>Total Applicant</span>,
+          header: "Total Applicant",
           renderCell: ({ row, name }: any) => {
             return <>{getNumber(getValue(row, name))}</>;
           },
         },
         {
           name: "end_date",
-          header: () => <span>Activity Status</span>,
+          header: "Activity Status",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "status",
-          header: () => <span>Status</span>,
+          header: "Status",
           renderCell: ({ row, name }: any) => {
             return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
           name: "action",
-          header: () => <span>Action</span>,
+
+          header: "Action",
+          filter: false,
           sortable: false,
           renderCell: ({ row }: any) => {
             return (

@@ -53,42 +53,44 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "organization_location_name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "status",
-            header: () => <span>Status</span>,
+            header: "Status",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               if (!get(row, "id")) return <></>;
@@ -125,42 +127,44 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "mp_planning_header.document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "mp_planning_header.document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "mp_planning_header.status",
-            header: () => <span>Status</span>,
+            header: "Status",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               if (!get(row, "mp_planning_header.id")) return <></>;
@@ -203,35 +207,37 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "mp_planning_header.document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "mp_planning_header.document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               if (!get(row, "mp_planning_header.id")) return <></>;
@@ -277,49 +283,51 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "mp_planning_header.document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "mp_planning_header.document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "mp_planning_header.requestor_name",
-            header: () => <span>Requestor</span>,
+            header: "Requestor",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "mp_planning_header.status",
-            header: () => <span>Status</span>,
+            header: "Status",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               if (!get(row, "mp_planning_header.id")) return <></>;
@@ -365,42 +373,44 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "organization_location_name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "status",
-            header: () => <span>Status</span>,
+            header: "Status",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               return (
@@ -435,42 +445,44 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "organization_location_name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "status",
-            header: () => <span>Status</span>,
+            header: "Status",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               return (
@@ -505,35 +517,37 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "organization_location_name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               return (
@@ -570,49 +584,51 @@ export const columnMpp = (data: any) => {
         return [
           {
             name: "document_number",
-            header: () => <span>Document Number</span>,
+            header: "Document Number",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "document_date",
-            header: () => <span>Document Date</span>,
+            header: "Document Date",
             renderCell: ({ row, name, cell }: any) => {
               return <>{shortDate(new Date(getValue(row, name)))}</>;
             },
           },
           {
             name: "organization_name",
-            header: () => <span>Organization</span>,
+            header: "Organization",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "organization_location_name",
-            header: () => <span>Location</span>,
+            header: "Location",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "requestor_name",
-            header: () => <span>Requestor</span>,
+            header: "Requestor",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getValue(row, name)}</>;
             },
           },
           {
             name: "status",
-            header: () => <span>Status</span>,
+            header: "Status",
             renderCell: ({ row, name, cell }: any) => {
               return <>{getLabel(getValue(row, name))}</>;
             },
           },
           {
             name: "action",
-            header: () => <span>Action</span>,
+
+            header: "Action",
+            filter: false,
             sortable: false,
             renderCell: ({ row, name, cell }: any) => {
               return (
