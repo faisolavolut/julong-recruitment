@@ -9,6 +9,10 @@ import { useEffect } from "react";
 import { getParams } from "@/lib/utils/get-params";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import { GrNotes } from "react-icons/gr";
+import { Alert } from "@/lib/components/ui/alert";
+import { ButtonContainer } from "@/lib/components/ui/button";
+import { IoMdSave } from "react-icons/io";
+import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id");
@@ -64,11 +68,63 @@ function Page() {
                   Preview Job Posting
                 </div>
               </ButtonLink>
+              {fm?.data?.status === "PENDING" ? (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to save this record?"}
+                    onClick={() => {
+                      fm.data.status = "COMPLETED";
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Completed
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {}}
+      onSubmit={async (fm: any) => {
+        const data = { ...fm.data };
+
+        data["deleted_organization_logo"] = "false";
+        data["deleted_poster"] = "false";
+        if (!data?.organization_logo) {
+          data["deleted_organization_logo"] = "true";
+        }
+        if (!data?.poster) {
+          data["deleted_poster"] = "true";
+        }
+        if (typeof data?.organization_logo === "string") {
+          delete data["organization_logo"];
+        }
+        if (typeof data?.poster === "string") {
+          delete data["poster"];
+        }
+        delete data["project_recruitment_header"];
+        delete data["mp_request"];
+        delete data["for_organization"];
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/job-postings/update",
+          method: "put",
+          type: "form",
+          data: {
+            ...data,
+            document_date: normalDate(fm?.data?.document_date),
+            start_date: normalDate(fm?.data?.start_date),
+            end_date: normalDate(fm?.data?.end_date),
+          },
+        });
+      }}
       onLoad={async () => {
         const data: any = await apix({
           port: "recruitment",
