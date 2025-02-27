@@ -15,7 +15,7 @@ function Page() {
   const local = useLocal({
     can_add: false,
     can_edit: false,
-    tab: "on_going",
+    tab: "IN PROGRESS",
     list: [
       { id: "IN PROGRESS", name: "On Going", count: 0 },
       { id: "COMPLETED", name: "Completed", count: 0 },
@@ -130,7 +130,7 @@ function Page() {
       onLoad={async (param: any) => {
         const params = await events(
           "onload-param",
-          local?.tab === "on_going"
+          local?.tab === "IN PROGRESS"
             ? {
                 ...param,
               }
@@ -148,12 +148,19 @@ function Page() {
         return result;
       }}
       onCount={async (params: any) => {
+        const param = await events(
+          "onload-param",
+          local?.tab === "IN PROGRESS"
+            ? {}
+            : {
+                status: "COMPLETED",
+              },
+          params
+        );
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/job-postings${params}${
-            local.tab === "COMPLETED" ? "&status=COMPLETED" : ""
-          }`,
+          path: `/api/job-postings${param}`,
           validate: "object",
         });
         return getNumber(result);

@@ -88,7 +88,7 @@ function Page() {
                 >
                   <ButtonContainer className={"bg-primary"}>
                     <IoMdSave className="text-xl" />
-                    Submit
+                    Complete
                   </ButtonContainer>
                 </Alert>
               )}
@@ -561,7 +561,7 @@ function Page() {
                     });
                     return result;
                   }}
-                  onCount={async () => {
+                  onCount={async (params: any) => {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",

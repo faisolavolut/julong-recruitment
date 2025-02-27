@@ -138,9 +138,9 @@ function Page() {
           path: `/api/interviews/${id}`,
           validate: "object",
         });
-        const assessors = data?.interview_assessors?.map(
-          (e: any) => e?.employee_name
-        );
+        const assessors = data?.interview_assessors?.length
+          ? data?.interview_assessors?.map((e: any) => e?.employee_name)
+          : [];
         return {
           ...data,
           type_name: data?.test_type?.name,

@@ -112,7 +112,7 @@ function Page() {
                     msg: "Are you sure you want to completed this record?",
                     alert: true,
                     onClick: async () => {
-                      fm.data.status = "APPROVED";
+                      fm.data.status = "COMPLETED";
                       fm.submit();
                     },
                   },

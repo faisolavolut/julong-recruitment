@@ -126,10 +126,17 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", {
-          ...param,
-          status: local.tab,
-        });
+        const params = await events(
+          "onload-param",
+          local?.tab === "IN PROGRESS"
+            ? {
+                ...param,
+              }
+            : {
+                ...param,
+                status: "COMPLETED",
+              }
+        );
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.fgd_schedules",
@@ -138,16 +145,20 @@ function Page() {
         });
         return result;
       }}
-      onCount={async () => {
-        const params = await events("onload-param", {
-          status: local.tab,
-          paging: 1,
-          take: 1,
-        });
+      onCount={async (params: any) => {
+        const param = await events(
+          "onload-param",
+          local?.tab === "IN PROGRESS"
+            ? {}
+            : {
+                status: "COMPLETED",
+              },
+          params
+        );
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/fgd-schedules${params}`,
+          path: `/api/fgd-schedules${param}`,
           validate: "object",
         });
         return getNumber(result);

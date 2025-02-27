@@ -84,11 +84,13 @@ function Page() {
             start_date: normalDate(fm?.data?.start_date),
             end_date: normalDate(fm?.data?.end_date),
             schedule_date: normalDate(fm?.data?.schedule_date),
-            start_time: normalDate(fm?.data?.start_date)
-              ? `${normalDate(fm?.data?.start_date)} ${fm.data.start_time}:00`
+            start_time: normalDate(fm?.data?.schedule_date)
+              ? `${normalDate(fm?.data?.schedule_date)} ${
+                  fm.data.start_time
+                }:00`
               : null,
-            end_time: normalDate(fm?.data?.end_date)
-              ? `${normalDate(fm?.data?.end_date)} ${fm.data.end_time}:00`
+            end_time: normalDate(fm?.data?.schedule_date)
+              ? `${normalDate(fm?.data?.schedule_date)} ${fm.data.end_time}:00`
               : null,
           },
         });

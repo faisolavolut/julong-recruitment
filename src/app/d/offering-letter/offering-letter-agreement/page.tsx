@@ -145,7 +145,7 @@ function Page() {
         });
         return result;
       }}
-      onCount={async () => {
+      onCount={async (param: any) => {
         const res: any = await apix({
           port: "recruitment",
           value: "data.data",
@@ -155,11 +155,15 @@ function Page() {
         const findDocument = res.find(
           (item: any) => item.name === "OFFERING_LETTER"
         );
-        const params = await events("onload-param", {
-          document_type_id: findDocument?.id,
-          paging: 1,
-          take: 1,
-        });
+        const params = await events(
+          "onload-param",
+          {
+            document_type_id: findDocument?.id,
+            paging: 1,
+            take: 1,
+          },
+          param
+        );
 
         const result: any = await apix({
           port: "recruitment",

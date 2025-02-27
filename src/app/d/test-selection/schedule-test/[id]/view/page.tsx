@@ -27,6 +27,9 @@ import {
 import { sortEducationLevels } from "@/app/lib/education-level";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
+import { normalDate } from "@/lib/utils/date";
+import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
+import { IoMdSave } from "react-icons/io";
 
 function Page() {
   const id = getParams("id");
@@ -73,11 +76,55 @@ function Page() {
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center"></div>
+            <div className="flex flex-row space-x-2 items-center">
+              {fm?.data?.status !== "COMPLETED" ? (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to complete this record?"}
+                    onClick={() => {
+                      fm.data.status = "COMPLETED";
+                      fm.render();
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Complete
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {}}
+      onSubmit={async (fm: any) => {
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/test-schedule-headers/update",
+          method: "put",
+          data: {
+            ...fm.data,
+            start_date: normalDate(fm?.data?.start_date),
+            end_date: normalDate(fm?.data?.end_date),
+            schedule_date: normalDate(fm?.data?.schedule_date),
+            start_time: normalDate(fm?.data?.schedule_date)
+              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+                  fm.data.start_time
+                )}:00`
+              : null,
+            end_time: normalDate(fm?.data?.schedule_date)
+              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+                  fm.data.end_time
+                )}:00`
+              : null,
+          },
+        });
+      }}
       onLoad={async () => {
         // sekedar testing
         const data: any = await apix({
@@ -85,14 +132,6 @@ function Page() {
           value: "data.data",
           path: `/api/test-schedule-headers/${id}`,
           validate: "object",
-        });
-        console.log({
-          ...data,
-          project_recruitment_header_id: data?.project_recruitment_header?.id,
-          template_activity_line_id: data?.template_activity_line_id,
-          job_posting_id: data?.job_posting?.id,
-          activity: "Administration Selection",
-          project_number: data?.job_posting?.document_number,
         });
         return {
           ...data,
@@ -604,7 +643,7 @@ function Page() {
                     });
                     return result;
                   }}
-                  onCount={async () => {
+                  onCount={async (params: any) => {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",

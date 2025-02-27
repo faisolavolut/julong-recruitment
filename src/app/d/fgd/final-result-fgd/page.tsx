@@ -135,7 +135,17 @@ function Page() {
         },
       ]}
       onLoad={async (param: any) => {
-        const params = await events("onload-param", param);
+        const params = await events(
+          "onload-param",
+          local?.tab === "IN PROGRESS"
+            ? {
+                ...param,
+              }
+            : {
+                ...param,
+                status: "COMPLETED",
+              }
+        );
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.interviews",
@@ -144,11 +154,20 @@ function Page() {
         });
         return result;
       }}
-      onCount={async () => {
+      onCount={async (params: any) => {
+        const param = await events(
+          "onload-param",
+          local?.tab === "IN PROGRESS"
+            ? {}
+            : {
+                status: "COMPLETED",
+              },
+          params
+        );
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/interviews?page=1&page_size=1`,
+          path: `/api/interviews?${param}`,
           validate: "object",
         });
         return getNumber(result);

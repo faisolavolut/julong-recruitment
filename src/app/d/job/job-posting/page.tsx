@@ -174,7 +174,7 @@ function Page() {
         });
         return result;
       }}
-      onCount={async () => {
+      onCount={async (params: any) => {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",

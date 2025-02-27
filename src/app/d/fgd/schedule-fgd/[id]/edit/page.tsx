@@ -172,6 +172,7 @@ function Page() {
           path: `/api/fgd-schedules/${id}`,
           validate: "object",
         });
+
         if (data?.status !== "DRAFT") navigate(`${urlPage}/${id}/view`);
         return {
           ...data,
@@ -572,7 +573,7 @@ function Page() {
                     });
                     return result;
                   }}
-                  onCount={async () => {
+                  onCount={async (params: any) => {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",

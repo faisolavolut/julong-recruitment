@@ -19,6 +19,11 @@ import {
 import { getValue } from "@/lib/utils/getValue";
 import { sortEducationLevels } from "@/app/lib/education-level";
 import { TableList } from "@/lib/components/tablelist/TableList";
+import { ButtonContainer } from "@/lib/components/ui/button";
+import { IoMdSave } from "react-icons/io";
+import { Alert } from "@/lib/components/ui/alert";
+import { normalDate } from "@/lib/utils/date";
+import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -61,11 +66,61 @@ function Page() {
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center"></div>
+            <div className="flex flex-row space-x-2 items-center">
+              {fm?.data?.status !== "COMPLETED" ? (
+                <>
+                  <Alert
+                    type={"save"}
+                    msg={"Are you sure you want to complete this record?"}
+                    onClick={() => {
+                      fm.data.status = "COMPLETED";
+                      fm.render();
+                      fm.submit();
+                    }}
+                  >
+                    <ButtonContainer className={"bg-primary"}>
+                      <IoMdSave className="text-xl" />
+                      Complete
+                    </ButtonContainer>
+                  </Alert>
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
         );
       }}
-      onSubmit={async (fm: any) => {}}
+      onSubmit={async (fm: any) => {
+        const fgd_schedule_assessors = fm.data.fgd_schedule_assessors;
+        const res = await apix({
+          port: "recruitment",
+          value: "data.data",
+          path: "/api/fgd-schedules/update",
+          method: "put",
+          data: {
+            ...fm.data,
+            start_date: normalDate(fm?.data?.start_date),
+            end_date: normalDate(fm?.data?.end_date),
+            schedule_date: normalDate(fm?.data?.schedule_date),
+            start_time: normalDate(fm?.data?.schedule_date)
+              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+                  fm.data.start_time
+                )}:00`
+              : null,
+            end_time: normalDate(fm?.data?.schedule_date)
+              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+                  fm.data.end_time
+                )}:00`
+              : null,
+            fgd_schedule_assessors: Array.isArray(fgd_schedule_assessors)
+              ? fgd_schedule_assessors.map((e) => {
+                  return typeof e === "string" ? { employee_id: e } : e;
+                })
+              : [],
+          },
+        });
+      }}
       mode="view"
       onLoad={async () => {
         const data: any = await apix({
@@ -74,8 +129,8 @@ function Page() {
           path: `/api/fgd-schedules/${id}`,
           validate: "object",
         });
-        const assessors = data?.interview_assessors?.length
-          ? data?.interview_assessors?.map((e: any) => e?.employee_name)
+        const assessors = data?.fgd_assessors?.length
+          ? data?.fgd_assessors?.map((e: any) => e?.employee_name)
           : [];
         return {
           ...data,
@@ -92,7 +147,12 @@ function Page() {
             "project_recruitment_line.template_activity_line.name"
           ),
           job_name: get(data, "job_posting.job_name"),
-          interview_assessors: assessors?.length ? assessors.join(", ") : "",
+          fgd_schedule_assessors_name: assessors?.length
+            ? assessors.join(", ")
+            : "",
+          fgd_schedule_assessors: data?.fgd_assessors?.length
+            ? data?.fgd_assessors.map((e: any) => e?.employee_id)
+            : [],
         };
       }}
       showResize={false}
@@ -213,7 +273,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"fgd_schedule_assessors"}
+                    name={"fgd_schedule_assessors_name"}
                     label={"User Assessment"}
                     type={"text"}
                     required={true}
@@ -388,7 +448,7 @@ function Page() {
                     });
                     return result;
                   }}
-                  onCount={async () => {
+                  onCount={async (params: any) => {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",

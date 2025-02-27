@@ -43,7 +43,7 @@ function Page() {
       const completed: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/mp-requests?page=1&page_size=1`,
+        path: `/api/mp-requests?page=1&page_size=1&status=COMPLETED`,
         validate: "object",
       });
       local.list = [
@@ -249,10 +249,9 @@ function Page() {
           path: `/api/mp-requests${params}`,
           validate: "array",
         });
-        // return [{}, {}, {}, {}];
         return result;
       }}
-      onCount={async () => {
+      onCount={async (params: any) => {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",

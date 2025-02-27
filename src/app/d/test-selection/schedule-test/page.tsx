@@ -161,11 +161,20 @@ function Page() {
         });
         return result;
       }}
-      onCount={async () => {
+      onCount={async (params: any) => {
+        const param = await events(
+          "onload-param",
+          local?.tab === "IN PROGRESS"
+            ? {}
+            : {
+                status: "COMPLETED",
+              },
+          params
+        );
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/test-schedule-headers?page=1&page_size=1`,
+          path: `/api/test-schedule-headers${param}`,
           validate: "object",
         });
         return getNumber(result);
