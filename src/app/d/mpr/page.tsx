@@ -109,7 +109,7 @@ function Page() {
           },
         },
         {
-          name: "project_number",
+          name: "job_posting_document_number",
           header: "Project Number",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
@@ -123,6 +123,13 @@ function Page() {
           },
         },
         {
+          name: "job_name",
+          header: "Job Position",
+          renderCell: ({ row, name }: any) => {
+            return <>{getLabel(getValue(row, name))}</>;
+          },
+        },
+        {
           name: "for_organization_name",
           header: "Company",
           renderCell: ({ row, name }: any) => {
@@ -130,29 +137,14 @@ function Page() {
           },
         },
         {
-          name: "recruitment_type",
-          header: "Recruitment Type",
-          renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
-          },
-        },
-        {
-          name: "mp_request_type",
-          header: "Request Type",
-          renderCell: ({ row, name }: any) => {
-            return <>{getLabel(getValue(row, name))}</>;
-          },
-        },
-        {
           name: "status",
-          header: "Status Recruitment",
+          header: "Status",
           renderCell: ({ row, name }: any) => {
             return <>{getLabel(getValue(row, name))}</>;
           },
         },
         {
           name: "action",
-
           header: "Action",
           filter: false,
           sortable: false,
@@ -164,78 +156,98 @@ function Page() {
                     <IoEye className="text-lg" />
                   </div>
                 </ButtonLink>
-                <ButtonBetterTooltip
-                  tooltip={"Generate MPR Job Posting"}
-                  className="bg-primary"
-                  onClick={async () => {
-                    await actionToast({
-                      task: async () => {
-                        const data: any = await apix({
-                          port: "mpp",
-                          value: "data.data",
-                          path: "/api/mp-requests/" + row?.mpr_clone_id,
-                          validate: "object",
-                        });
-                        const document_number = await apix({
-                          port: "recruitment",
-                          value: "data.data",
-                          path: "/api/job-postings/document-number",
-                        });
-                        const content_description =
-                          templateContentJobPosting(data);
+                {row?.job_posting_id ? (
+                  <>
+                    <ButtonBetterTooltip
+                      tooltip={"View Job Posting"}
+                      className="bg-primary"
+                      href={
+                        "/d/job/job-posting" + row?.job_posting_id + "/edit"
+                      }
+                    >
+                      <div className="flex items-center gap-x-2">
+                        <RiAiGenerate className="text-lg" />
+                      </div>
+                    </ButtonBetterTooltip>
+                  </>
+                ) : (
+                  <>
+                    <ButtonBetterTooltip
+                      tooltip={"Generate MPR Job Posting"}
+                      className="bg-primary"
+                      onClick={async () => {
+                        await actionToast({
+                          task: async () => {
+                            const data: any = await apix({
+                              port: "mpp",
+                              value: "data.data",
+                              path: "/api/mp-requests/" + row?.mpr_clone_id,
+                              validate: "object",
+                            });
+                            const document_number = await apix({
+                              port: "recruitment",
+                              value: "data.data",
+                              path: "/api/job-postings/document-number",
+                            });
+                            const content_description =
+                              templateContentJobPosting(data);
 
-                        const header: any = await apix({
-                          port: "recruitment",
-                          value: "data.data.project_recruitment_headers",
-                          path: "/api/project-recruitment-headers?page=1&page_size=1&status=IN PROGRESS",
-                          validate: "dropdown",
-                          keys: {
-                            label: "document_number",
+                            const header: any = await apix({
+                              port: "recruitment",
+                              value: "data.data.project_recruitment_headers",
+                              path: "/api/project-recruitment-headers?page=1&page_size=1&status=IN PROGRESS",
+                              validate: "dropdown",
+                              keys: {
+                                label: "document_number",
+                              },
+                            });
+                            const result = {
+                              document_number,
+                              status: "DRAFT",
+                              mp_request_id: row.id,
+                              job_name: data?.job_name,
+                              job_id: data?.job_id,
+                              for_organization_id: data?.for_organization_id,
+                              for_organization_location_id:
+                                data?.for_organization_location_id,
+                              content_description,
+                              document_date: normalDate(data?.document_date),
+                              start_date: normalDate(
+                                data?.mpp_period?.start_date
+                              ),
+                              end_date: normalDate(data?.mpp_period?.end_date),
+                              recruitment_type: data?.recruitment_type,
+                              salary_min: 0,
+                              salary_max: 0,
+                              minimum_work_experience: data?.minimum_experience,
+                              project_recruitment_header_id: header?.[0]?.value,
+                            };
+                            const res = await apix({
+                              port: "recruitment",
+                              value: "data.data",
+                              path: "/api/job-postings",
+                              method: "post",
+                              type: "form",
+                              data: {
+                                ...result,
+                              },
+                            });
+                            if (res?.id)
+                              navigate(`/d/job/job-posting/${res?.id}/edit`);
                           },
+                          after: () => {},
+                          msg_load: "Create MPR Job Posting ",
+                          msg_error: "Create MPR Job Posting failed ",
+                          msg_succes: "MPR Job Posting success ",
                         });
-                        const result = {
-                          document_number,
-                          status: "DRAFT",
-                          mp_request_id: row.id,
-                          job_name: data?.job_name,
-                          job_id: data?.job_id,
-                          for_organization_id: data?.for_organization_id,
-                          for_organization_location_id:
-                            data?.for_organization_location_id,
-                          content_description,
-                          document_date: normalDate(data?.document_date),
-                          start_date: normalDate(data?.mpp_period?.start_date),
-                          end_date: normalDate(data?.mpp_period?.end_date),
-                          recruitment_type: data?.recruitment_type,
-                          salary_min: 0,
-                          salary_max: 0,
-                          minimum_work_experience: data?.minimum_experience,
-                          project_recruitment_header_id: header?.[0]?.value,
-                        };
-                        const res = await apix({
-                          port: "recruitment",
-                          value: "data.data",
-                          path: "/api/job-postings",
-                          method: "post",
-                          type: "form",
-                          data: {
-                            ...result,
-                          },
-                        });
-                        if (res?.id)
-                          navigate(`/d/job/job-posting/${res?.id}/edit`);
-                      },
-                      after: () => {},
-                      msg_load: "Create MPR Job Posting ",
-                      msg_error: "Create MPR Job Posting failed ",
-                      msg_succes: "MPR Job Posting success ",
-                    });
-                  }}
-                >
-                  <div className="flex items-center gap-x-2">
-                    <RiAiGenerate className="text-lg" />
-                  </div>
-                </ButtonBetterTooltip>
+                      }}
+                    >
+                      <div className="flex items-center gap-x-2">
+                        <RiAiGenerate className="text-lg" />
+                      </div>
+                    </ButtonBetterTooltip>
+                  </>
+                )}
               </div>
             );
           },
@@ -255,7 +267,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/mp-requests?page=1&page_size=1`,
+          path: `/api/mp-requests${params}`,
           validate: "object",
         });
         return getNumber(result);
