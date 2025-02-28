@@ -178,6 +178,7 @@ function Page() {
               };
             })
           : [];
+        console.log({ question });
         return {
           id,
           ...data,
@@ -410,6 +411,22 @@ function Page() {
                                     // let result =
                                     await actionToast({
                                       task: async () => {
+                                        console.log({
+                                          port: "recruitment",
+                                          value: "data.data",
+                                          path: "/api/questions",
+                                          method: "post",
+                                          data: {
+                                            template_question_id: id,
+                                            questions: question,
+                                            deleted_question_ids:
+                                              get(
+                                                fm,
+                                                "data.deleted_question_ids"
+                                              ) || [],
+                                          },
+                                        });
+                                        // return;
                                         let result = await apix({
                                           port: "recruitment",
                                           value: "data.data",
