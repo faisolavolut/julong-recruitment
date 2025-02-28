@@ -447,7 +447,6 @@ function Page() {
                                       msg_error: "Saving failed ",
                                       msg_succes: "Saving success ",
                                     });
-                                    console.log(question);
                                   }}
                                 >
                                   <svg
@@ -490,8 +489,6 @@ function Page() {
                                       fm.fields?.["template_question"]
                                         ?.fields?.[idx]?.fields,
                                     render: () => {
-                                      fm.data["template_question"][idx] =
-                                        fm_row.data;
                                       fm.render();
                                     },
                                   };
