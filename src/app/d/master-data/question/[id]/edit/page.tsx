@@ -17,7 +17,6 @@ import {
 } from "@/lib/components/ui/button";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
-import { cloneFM } from "@/lib/utils/cloneFm";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import { events } from "@/lib/utils/event";
 import { getParams } from "@/lib/utils/get-params";
@@ -426,7 +425,6 @@ function Page() {
                                               ) || [],
                                           },
                                         });
-                                        // return;
                                         let result = await apix({
                                           port: "recruitment",
                                           value: "data.data",
@@ -480,7 +478,23 @@ function Page() {
                             {fm.data?.template_question?.length >= 1 &&
                               fm.data.template_question.map(
                                 (e: any, idx: number) => {
-                                  const fm_row = cloneFM(fm, e);
+                                  const fm_row = {
+                                    ...fm,
+                                    name: "template_question",
+                                    type: "table",
+                                    data: e,
+                                    error:
+                                      fm.fields?.["template_question"]
+                                        ?.fields?.[idx]?.error,
+                                    fields:
+                                      fm.fields?.["template_question"]
+                                        ?.fields?.[idx]?.fields,
+                                    render: () => {
+                                      fm.data["template_question"][idx] =
+                                        fm_row.data;
+                                      fm.render();
+                                    },
+                                  };
                                   return (
                                     <div
                                       className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8"

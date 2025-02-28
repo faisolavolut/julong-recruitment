@@ -144,7 +144,7 @@ function Page() {
                   return (
                     <>
                       {getLabel(getValue(row, name)) === "Applied"
-                        ? "Accepted"
+                        ? "Applied"
                         : getLabel(getValue(row, name))}
                     </>
                   );
