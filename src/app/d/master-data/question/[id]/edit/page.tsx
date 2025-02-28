@@ -177,7 +177,6 @@ function Page() {
               };
             })
           : [];
-        console.log({ question });
         return {
           id,
           ...data,
@@ -318,7 +317,6 @@ function Page() {
                                     event.stopPropagation();
                                     const data =
                                       fm?.data?.template_question || [];
-                                    console.log(fm.data?.list_answer_type);
                                     const findShortAnswer = fm.data
                                       ?.list_answer_type?.length
                                       ? fm.data?.list_answer_type.find(
@@ -326,10 +324,6 @@ function Page() {
                                             e.name.toLowerCase() === "text"
                                         )
                                       : null;
-                                    data.push({
-                                      answer_type_id: findShortAnswer?.value,
-                                      answer_type_name: findShortAnswer?.label,
-                                    });
                                     fm.data.template_question = data;
                                     fm.render();
                                   }}
@@ -408,6 +402,14 @@ function Page() {
                                       };
                                     });
                                     // let result =
+                                    // console.log({
+                                    //   template_question_id: id,
+                                    //   questions: question,
+                                    //   deleted_question_ids:
+                                    //     get(fm, "data.deleted_question_ids") ||
+                                    //     [],
+                                    // });
+                                    // return;
                                     await actionToast({
                                       task: async () => {
                                         console.log({
@@ -477,21 +479,14 @@ function Page() {
                             {fm.data?.template_question?.length >= 1 &&
                               fm.data.template_question.map(
                                 (e: any, idx: number) => {
-                                  const fm_row = {
+                                  let fm_row = {
                                     ...fm,
-                                    name: "template_question",
-                                    type: "table",
                                     data: e,
-                                    error:
-                                      fm.fields?.["template_question"]
-                                        ?.fields?.[idx]?.error,
-                                    fields:
-                                      fm.fields?.["template_question"]
-                                        ?.fields?.[idx]?.fields,
-                                    render: () => {
-                                      fm.render();
-                                    },
                                   };
+                                  console.log(
+                                    idx,
+                                    fm_row.data.question_options
+                                  );
                                   return (
                                     <div
                                       className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8"
