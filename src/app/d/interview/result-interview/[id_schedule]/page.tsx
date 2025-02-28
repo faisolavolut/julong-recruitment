@@ -195,14 +195,14 @@ function Page() {
           },
         },
         {
-          name: "status",
+          name: "assessment_status",
           sortable: false,
           header: "Status Selection",
           renderCell: ({ row, render }: any) => {
-            if (row.status === "APPROVED") {
+            if (row.status === "ACCEPTED") {
               return (
                 <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
-                  Approved
+                  Accepted
                 </div>
               );
             } else if (row.status === "REJECTED") {
@@ -280,7 +280,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.interview_applicants",
-          path: `/api/interview-applicants/interview/${id_schedule}${params}`,
+          path: `/api/interview-applicants/interview-assessor/${id_schedule}${params}`,
           validate: "array",
         });
         return result;
@@ -289,7 +289,7 @@ function Page() {
         const result: any = await apix({
           port: "recruitment",
           value: "data.data.total",
-          path: `/api/interview-applicants/interview/${id_schedule}?page=1&page_size=1`,
+          path: `/api/interview-applicants/interview-assessor/${id_schedule}${params}`,
           validate: "object",
         });
         return getNumber(result);
