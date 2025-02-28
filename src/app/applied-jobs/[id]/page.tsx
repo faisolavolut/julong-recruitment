@@ -89,8 +89,11 @@ function Page() {
         };
       });
       steps = steps?.sort((a: any, b: any) => a?.id - b?.id);
-      console.log({ now, steps });
-      const stepNow = steps.find((e: any) => e?.id === now);
+      const stepNumber = steps?.length ? steps?.map((e: any) => e?.id) : [];
+      const max = Math.max(...stepNumber);
+      const stepNow = steps.find((e: any) =>
+        now >= max ? e?.id === max : e?.id === now
+      );
       const stepName = stepNow?.name;
       const test = await scheduleFase({
         step: stepName,
@@ -545,7 +548,7 @@ function Page() {
                                                 <Field
                                                   fm={fm}
                                                   classField={""}
-                                                  name={"employee_contract"}
+                                                  name={"path"}
                                                   label={
                                                     "Upload the signed offer letter in PDF format."
                                                   }
@@ -664,17 +667,23 @@ function Page() {
                                           <div className="flex-grow grid gap-4 grid-cols-1">
                                             <div>
                                               <div className="flex">
-                                                <Field
-                                                  fm={fm}
-                                                  classField={""}
-                                                  name={"employee_contract"}
-                                                  label={
-                                                    "Upload the signed offer letter in PDF format."
-                                                  }
-                                                  disabled={true}
-                                                  type={"upload"}
-                                                  required={true}
-                                                />
+                                                {fm.data?.path ? (
+                                                  <>
+                                                    <Field
+                                                      fm={fm}
+                                                      classField={""}
+                                                      name={"path"}
+                                                      label={
+                                                        "Cover Letter New Employee"
+                                                      }
+                                                      disabled={true}
+                                                      type={"upload"}
+                                                      required={true}
+                                                    />
+                                                  </>
+                                                ) : (
+                                                  <></>
+                                                )}
                                               </div>
                                             </div>
                                             <div>
@@ -922,6 +931,7 @@ function Page() {
                                   onSubmit={async (fm: any) => {}}
                                   onLoad={async () => {
                                     return {
+                                      ...local.detail,
                                       employee_contract:
                                         "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
                                     };
@@ -941,17 +951,23 @@ function Page() {
                                           <div className="flex-grow grid gap-4 grid-cols-1">
                                             <div>
                                               <div className="flex">
-                                                <Field
-                                                  fm={fm}
-                                                  classField={""}
-                                                  name={"employee_contract"}
-                                                  label={
-                                                    "Cover Letter New Employee"
-                                                  }
-                                                  disabled={true}
-                                                  type={"upload"}
-                                                  required={true}
-                                                />
+                                                {fm.data?.path ? (
+                                                  <>
+                                                    <Field
+                                                      fm={fm}
+                                                      classField={""}
+                                                      name={"path"}
+                                                      label={
+                                                        "Cover Letter New Employee"
+                                                      }
+                                                      disabled={true}
+                                                      type={"upload"}
+                                                      required={true}
+                                                    />
+                                                  </>
+                                                ) : (
+                                                  <></>
+                                                )}
                                               </div>
                                             </div>
                                           </div>

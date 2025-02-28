@@ -131,7 +131,6 @@ export const scheduleFase = async ({
           path: `/api/document-sending/applicant?applicant_id=${data?.applicant?.id}&document_type_id=${findDocument?.id}`,
           validate: "object",
         });
-        console.log({ test });
         if (test) {
           answerOfferingLetter = await apix({
             port: "recruitment",
@@ -147,7 +146,6 @@ export const scheduleFase = async ({
             };
           }
         }
-        console.log(answerOfferingLetter);
         if (test?.status === "DRAFT") test = null;
       } catch (ex) {}
       if (test) {
