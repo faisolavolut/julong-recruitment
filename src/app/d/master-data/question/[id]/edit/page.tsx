@@ -324,6 +324,10 @@ function Page() {
                                             e.name.toLowerCase() === "text"
                                         )
                                       : null;
+                                    data.push({
+                                      answer_type_id: findShortAnswer?.value,
+                                      answer_type_name: findShortAnswer?.label,
+                                    });
                                     fm.data.template_question = data;
                                     fm.render();
                                   }}
