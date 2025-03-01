@@ -277,6 +277,7 @@ function Page() {
                     name={"project_recruitment_line"}
                     label={"Activity"}
                     type={"dropdown-async"}
+                    autoRefresh={true}
                     disabled={
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
@@ -318,6 +319,7 @@ function Page() {
                     name={"job_posting"}
                     label={"Job Name"}
                     type={"dropdown-async"}
+                    autoRefresh={true}
                     required={true}
                     pagination={false}
                     search={"local"}

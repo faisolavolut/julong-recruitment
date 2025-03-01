@@ -174,6 +174,7 @@ function Page() {
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     required={true}
+                    autoRefresh={true}
                     type={"dropdown-async"}
                     onChange={({ data }) => {
                       fm.data.order = data?.order;
@@ -217,6 +218,7 @@ function Page() {
                     fm={fm}
                     target={"applicant_id"}
                     name={"applicant"}
+                    autoRefresh={true}
                     label={"Recipient's Name"}
                     disabled={
                       fm?.data?.project_recruitment_line_id &&

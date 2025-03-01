@@ -229,6 +229,7 @@ function Page() {
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     required={true}
+                    autoRefresh={true}
                     type={"dropdown-async"}
                     onChange={({ data }) => {
                       fm.data.order = data?.order;
@@ -320,6 +321,7 @@ function Page() {
                                   ? false
                                   : true
                               }
+                              autoRefresh={true}
                               type={"dropdown-async"}
                               onChange={({ data }) => {
                                 fm.data.email = data?.user_profile?.user?.email;
@@ -372,6 +374,7 @@ function Page() {
                               disabled={
                                 fm?.data?.for_organization_id ? false : true
                               }
+                              autoRefresh={true}
                               type={"dropdown-async"}
                               pagination={false}
                               search={"local"}

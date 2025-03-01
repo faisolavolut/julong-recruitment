@@ -327,6 +327,10 @@ function Page() {
                                     data.push({
                                       answer_type_id: findShortAnswer?.value,
                                       answer_type_name: findShortAnswer?.label,
+                                      answer_types: {
+                                        id: findShortAnswer?.value,
+                                        name: findShortAnswer?.label,
+                                      },
                                     });
                                     fm.data.template_question = data;
                                     fm.render();

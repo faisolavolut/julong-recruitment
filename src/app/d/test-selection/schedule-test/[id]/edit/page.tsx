@@ -285,6 +285,7 @@ function Page() {
                     name={"project_recruitment_line"}
                     label={"Activity"}
                     type={"dropdown-async"}
+                    autoRefresh={true}
                     disabled={
                       fm?.data?.project_recruitment_header_id ? false : true
                     }

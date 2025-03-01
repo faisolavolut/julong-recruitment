@@ -242,6 +242,7 @@ function Page() {
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     required={true}
+                    autoRefresh={true}
                     type={"dropdown-async"}
                     onChange={({ data }) => {
                       fm.data.order = data?.order;
@@ -293,6 +294,7 @@ function Page() {
                         : true
                     }
                     type={"dropdown-async"}
+                    autoRefresh={true}
                     onChange={({ data }) => {
                       fm.data.email = data?.user_profile?.user?.email;
                     }}

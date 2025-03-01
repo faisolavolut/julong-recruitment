@@ -346,6 +346,7 @@ function Page() {
                     }
                     required={true}
                     type={"dropdown-async"}
+                    autoRefresh={true}
                     onChange={({ data }) => {
                       fm.data.order = data?.order;
                       fm.render();
@@ -437,6 +438,7 @@ function Page() {
                                   : true
                               }
                               type={"dropdown-async"}
+                              autoRefresh={true}
                               onChange={({ data }) => {
                                 fm.data.email = data?.user_profile?.user?.email;
                               }}
@@ -489,6 +491,7 @@ function Page() {
                                 fm?.data?.for_organization_id ? false : true
                               }
                               type={"dropdown-async"}
+                              autoRefresh={true}
                               pagination={false}
                               search={"local"}
                               onLoad={async (param: any) => {
@@ -562,6 +565,7 @@ function Page() {
                               }
                               label={"Location"}
                               type={"dropdown-async"}
+                              autoRefresh={true}
                               pagination={false}
                               search={"local"}
                               onLoad={async (param: any) => {

@@ -319,6 +319,7 @@ function Page() {
                     }
                     required={true}
                     type={"dropdown-async"}
+                    autoRefresh={true}
                     onChange={({ data }) => {
                       fm.data.order = data?.order;
                       fm.render();
@@ -410,6 +411,7 @@ function Page() {
                                   : true
                               }
                               type={"dropdown-async"}
+                              autoRefresh={true}
                               onChange={({ data }) => {
                                 fm.data.email = data?.user_profile?.user?.email;
                               }}
