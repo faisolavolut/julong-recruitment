@@ -9,7 +9,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       serialize("token", token, {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
-        maxAge: 3600 * 48, // Expired dalam 1 jam
+        maxAge: 3600 * 48,
         path: "/",
       })
     );
