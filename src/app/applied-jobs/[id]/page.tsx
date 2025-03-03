@@ -28,6 +28,7 @@ import { cloneFM } from "@/lib/utils/cloneFm";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 import ImageBetter from "@/lib/components/ui/Image";
+import { getValue } from "@/lib/utils/getValue";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -496,7 +497,9 @@ function Page() {
                               <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
                                 We are thrilled to inform you that you have
                                 successfully completed the recruitment process,
-                                and your offer letter has been prepared.
+                                and your{" "}
+                                {getValue(local.detail, "document_setup.title")}{" "}
+                                has been prepared.
                               </div>
                               <div className="flex flex-col flex-grow py-4 pt-0 px-8">
                                 <Form
@@ -602,10 +605,11 @@ function Page() {
                               <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
                                 We are pleased to inform you that you have
                                 successfully completed the recruitment process.
-                                Your offer letter is currently being processed.
-                                Please check your email or our website regularly
-                                for updates. We will notify you as soon as it is
-                                ready.
+                                Your{" "}
+                                {getValue(local.detail, "document_setup.title")}{" "}
+                                is currently being processed. Please check your
+                                email or our website regularly for updates. We
+                                will notify you as soon as it is ready.
                               </div>
                             </>
                           )}
