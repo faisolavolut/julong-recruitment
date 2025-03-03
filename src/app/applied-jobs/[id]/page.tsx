@@ -205,7 +205,7 @@ function Page() {
                     </div>
                     {local.applied ? (
                       <ButtonLink
-                        className="bg-second text-black hover:bg-second cursor-pointer	"
+                        className="w-full bg-second text-black hover:bg-second cursor-pointer	"
                         href={`/job-posting/${id}`}
                       >
                         <svg
@@ -223,7 +223,7 @@ function Page() {
                       </ButtonLink>
                     ) : (
                       <ButtonBetter
-                        className="text-primary bg-gradient-to-r from-blue-100 to-blue-50"
+                        className="w-full  text-primary bg-gradient-to-r from-blue-100 to-blue-50"
                         onClick={async () => {
                           await actionToast({
                             task: async () => {

@@ -166,7 +166,6 @@ function Page() {
             path: "/api/test-schedule-headers/" + id_testschedule,
             validate: "object",
           });
-          console.log({ schedule });
           const result = {
             ...schedule,
             start_date: new Date(
@@ -232,7 +231,6 @@ function Page() {
   }, []);
   useEffect(() => {
     if (!isStarted || !examEndTime) return;
-
     const left = Math.max(0, examEndTime - Date.now());
     setTimeLeft(left);
     const timer = setInterval(() => {

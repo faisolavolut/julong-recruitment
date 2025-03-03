@@ -53,13 +53,14 @@ const DefaultHeaderNavigation: FC = function () {
           method: "get",
         });
       } catch (ex) {}
-      local.user = {
-        ...local?.user,
-        avatar: profile?.avatar,
-      };
+      local.user = local?.user
+        ? {
+            ...local?.user,
+            avatar: profile?.avatar,
+          }
+        : null;
       local.profile = profile;
       local.render();
-      console.log({ local });
     };
     run();
   }, []);
