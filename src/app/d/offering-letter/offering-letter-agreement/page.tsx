@@ -60,6 +60,13 @@ function Page() {
           },
         },
         {
+          name: "document_sending.document_setup.title",
+          header: "Document Type",
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
           name: "created_at",
           header: "Send Date",
           renderCell: ({ row, name }: any) => {
