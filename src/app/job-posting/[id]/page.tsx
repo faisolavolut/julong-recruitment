@@ -96,7 +96,7 @@ function Page() {
 
                   <div className="flex flex-row">
                     <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
-                      <div>
+                      <div className="hidden">
                         <h3 className="text-sm font-medium text-gray-500">
                           Salary (Rupiah)
                         </h3>
