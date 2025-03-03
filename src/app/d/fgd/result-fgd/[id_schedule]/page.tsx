@@ -265,17 +265,17 @@ function Page() {
           },
         },
         {
-          name: "final_result",
+          name: "fgd_result_assessor.status",
           sortable: false,
           header: "Status Selection",
-          renderCell: ({ row, render }: any) => {
-            if (row.final_result === "ACCEPTED") {
+          renderCell: ({ row, render, name }: any) => {
+            if (getValue(row, name) === "ACCEPTED") {
               return (
                 <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
-                  Approved
+                  Accepted
                 </div>
               );
-            } else if (row.final_result === "REJECTED") {
+            } else if (getValue(row, name) === "REJECTED") {
               return (
                 <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
                   Rejected

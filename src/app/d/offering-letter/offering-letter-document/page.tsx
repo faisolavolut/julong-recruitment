@@ -70,6 +70,13 @@ function Page() {
           },
         },
         {
+          name: "document_setup.title",
+          header: "Document Type",
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
           name: "document_date",
           header: "Send Date",
           renderCell: ({ row, name }: any) => {
@@ -104,6 +111,7 @@ function Page() {
             return <>{getValue(row, name)}</>;
           },
         },
+        // document_setup
         {
           name: "status",
           header: "Status",
