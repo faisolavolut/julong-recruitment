@@ -96,9 +96,9 @@ function Page() {
                       </div>
                     </div>
                     <div className="flex-grow"></div>
-                    <div className="flex flex-col px-10 gap-x-4 gap-y-2">
-                      <div className="flex flex-row">
-                        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
+                    <div className="flex flex-col px-10 gap-x-4 gap-y-2  min-w-[350px] ">
+                      <div className="flex flex-row w-full">
+                        <div className="w-full flex items-center justify-center p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
                           <div className="hidden">
                             <h3 className="text-sm font-medium text-gray-500">
                               Salary (Rupiah)
@@ -117,7 +117,7 @@ function Page() {
                               Monthly salary
                             </p>
                           </div>
-                          <div className="border-l border-gray-300 h-full mx-4"></div>
+                          <div className="border-l border-gray-300 h-full mx-4 hidden"></div>
                           <div className="text-center">
                             <div className="flex items-center justify-center">
                               <svg

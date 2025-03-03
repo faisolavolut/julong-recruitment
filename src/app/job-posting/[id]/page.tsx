@@ -91,11 +91,11 @@ function Page() {
                   </div>
                 </div>
                 <div className="flex-grow"></div>
-                <div className="flex flex-col px-10 gap-x-4 gap-y-2">
+                <div className="flex flex-col gap-x-4 gap-y-2 min-w-[350px]  ">
                   <div className=""></div>
 
-                  <div className="flex flex-row">
-                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
+                  <div className="flex flex-row w-full">
+                    <div className="w-full flex items-center justify-center p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
                       <div className="hidden">
                         <h3 className="text-sm font-medium text-gray-500">
                           Salary (Rupiah)
@@ -112,7 +112,7 @@ function Page() {
                         </p>
                         <p className="text-xs text-gray-400">Monthly salary</p>
                       </div>
-                      <div className="border-l border-gray-300 h-full mx-4"></div>
+                      <div className="border-l border-gray-300 h-full mx-4 hidden"></div>
                       <div className="text-center">
                         <div className="flex items-center justify-center">
                           <svg
@@ -137,7 +137,7 @@ function Page() {
                     </div>
                   </div>
                   {local.applied ? (
-                    <ButtonBetter className="bg-gray-300 text-black hover:bg-gray-300 cursor-default		">
+                    <ButtonBetter className=" w-full bg-gray-300 text-black hover:bg-gray-300 cursor-default		">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width={20}
@@ -154,7 +154,7 @@ function Page() {
                   ) : !local.user?.verif ? (
                     <ButtonBetter
                       className={
-                        "text-primary bg-gradient-to-r from-blue-100 to-blue-50"
+                        "w-full text-primary bg-gradient-to-r from-blue-100 to-blue-50"
                       }
                       onClick={async (e: any) => {
                         e.stopPropagation();
@@ -172,18 +172,20 @@ function Page() {
                         });
                       }}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width={20}
-                        height={20}
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M19 6.5h-3v-1a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3m-9-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.05h3v1.05a1 1 0 0 0 2 0v-1.05h6v1.05a1 1 0 0 0 2 0v-1.05h3Zm0-7H4v-2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
-                        ></path>
-                      </svg>
-                      Apply for this position
+                      <div className="flex flex-grow flex-row items-center gap-x-2 text-primary">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width={20}
+                          height={20}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M19 6.5h-3v-1a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3m-9-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.05h3v1.05a1 1 0 0 0 2 0v-1.05h6v1.05a1 1 0 0 0 2 0v-1.05h3Zm0-7H4v-2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
+                          ></path>
+                        </svg>
+                        Apply for this position
+                      </div>
                     </ButtonBetter>
                   ) : (
                     <Alert
@@ -212,21 +214,23 @@ function Page() {
                     >
                       <ButtonContainer
                         className={
-                          "text-primary bg-gradient-to-r from-blue-100 to-blue-50"
+                          "w-full  text-primary bg-gradient-to-r from-blue-100 to-blue-50"
                         }
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width={20}
-                          height={20}
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M19 6.5h-3v-1a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3m-9-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.05h3v1.05a1 1 0 0 0 2 0v-1.05h6v1.05a1 1 0 0 0 2 0v-1.05h3Zm0-7H4v-2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
-                          ></path>
-                        </svg>
-                        Apply for this position
+                        <div className="flex flex-grow flex-row items-center gap-x-2 text-primary">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width={20}
+                            height={20}
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M19 6.5h-3v-1a3 3 0 0 0-3-3h-2a3 3 0 0 0-3 3v1H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-9a3 3 0 0 0-3-3m-9-1a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v1h-4Zm10 13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-5.05h3v1.05a1 1 0 0 0 2 0v-1.05h6v1.05a1 1 0 0 0 2 0v-1.05h3Zm0-7H4v-2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1Z"
+                            ></path>
+                          </svg>
+                          Apply for this position
+                        </div>
                       </ButtonContainer>
                     </Alert>
                   )}
