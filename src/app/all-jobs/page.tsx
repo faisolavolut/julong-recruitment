@@ -352,7 +352,7 @@ function HomePage() {
                               </AccordionItem>
                             </Accordion>
                           </div>
-                          <div className="col-span-2">
+                          <div className="col-span-2 hidden">
                             <Accordion
                               type="single"
                               collapsible
