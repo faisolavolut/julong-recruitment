@@ -96,7 +96,6 @@ function Page() {
           path: `/api/applicants/me/${id_posting}`,
           validate: "object",
         });
-        console.log({ profile });
         // const jobposting = await apix({
         //   port: "recruitment",
         //   value: "data.data",
@@ -110,7 +109,6 @@ function Page() {
           method: "get",
         });
         id_line = res?.[0]?.id;
-        console.log({ res });
       } catch (ex) {}
       let id_testschedule = null as any;
       try {
@@ -120,7 +118,6 @@ function Page() {
           path: `/api/test-schedule-headers/my-schedule?job_posting_id=${id_posting}&project_recruitment_line_id=${id_line}`,
           method: "get",
         });
-        console.log({ res });
         id_testschedule = res?.test_applicants?.test_schedule_header_id;
         local.header = res;
         local.id_applicant = res?.test_applicants?.id;
@@ -130,7 +127,6 @@ function Page() {
             res,
             "project_recruitment_line.template_activity_line.template_question.questions"
           ) || [];
-        console.log({ listQuestion });
         listQuestion = Array.isArray(listQuestion)
           ? listQuestion.map((e: any) => {
               const typeAnswer = e?.answer_types?.name.toLowerCase();
@@ -151,7 +147,6 @@ function Page() {
               };
             })
           : [];
-        console.log({ listQuestion });
         if (res?.test_applicants?.assessment_status === "COMPLETED")
           setIsDone(true);
       } catch (ex) {
@@ -203,7 +198,6 @@ function Page() {
             setExamEndTime(startFormTime + data?.duration * 60000);
             setIsStarted(true);
           }
-          console.log({ data });
           local.maxPage = data?.questions?.length;
           local.data = {
             ...data,
@@ -321,7 +315,7 @@ function Page() {
               timeLeft <= 300000 ? "text-red-500" : "text-primary"
             )}
           >
-            {timeLeft <= 3000 ? "Time's up!" : formatTimeLeft()}
+            {formatTimeLeft()}
           </div>
         ) : (
           <></>
@@ -563,7 +557,6 @@ function Page() {
                     <div className="w-full flex flex-col py-2 ">
                       <Form
                         onSubmit={async (fm: any) => {
-                          console.log(fm.data.update);
                           if (fm.data?.update) {
                             const typeField =
                               fm?.data?.answer_type_name.toLowerCase();
@@ -648,9 +641,6 @@ function Page() {
                           }
                         }}
                         onLoad={async () => {
-                          console.log(
-                            get(local, `data.questions[${local.tab}]`)
-                          );
                           return get(local, `data.questions[${local.tab}]`);
                         }}
                         showResize={false}
@@ -713,7 +703,6 @@ function Page() {
                                                 onChange={() => {
                                                   fm.data.update = true;
                                                   fm.render();
-                                                  console.log(fm.data.update);
                                                 }}
                                                 placeholder="Your Answer"
                                               />
