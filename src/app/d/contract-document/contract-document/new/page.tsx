@@ -93,6 +93,7 @@ function Page() {
           data: {
             ...fm.data,
             document_date: normalDate(fm.data?.document_date),
+            sync_midsuit: fm?.data?.sync_midsuit !== "YES" ? "NO" : "YES",
             joined_date: normalDate(fm.data?.joined_date),
           },
         });
@@ -107,6 +108,7 @@ function Page() {
         return {
           status: "DRAFT",
           document_number: res,
+          sync_midsuit: "NO",
         };
       }}
       showResize={false}
@@ -303,6 +305,22 @@ function Page() {
                     label={"Status"}
                     type={"text"}
                     disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"sync_midsuit"}
+                    label={"Sync Midsuit"}
+                    type={"single-checkbox"}
+                    onLoad={() => {
+                      return [
+                        {
+                          label: "Yes",
+                          value: "YES",
+                        },
+                      ];
+                    }}
                   />
                 </div>
 

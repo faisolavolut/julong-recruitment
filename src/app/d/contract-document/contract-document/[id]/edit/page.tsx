@@ -181,6 +181,7 @@ function Page() {
             ...fm.data,
             document_date: normalDate(fm.data?.document_date),
             joined_date: normalDate(fm.data?.joined_date),
+            sync_midsuit: fm?.data?.sync_midsuit !== "YES" ? "NO" : "YES",
           },
         });
       }}
@@ -412,6 +413,22 @@ function Page() {
                   />
                 </div>
 
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"sync_midsuit"}
+                    label={"Sync Midsuit"}
+                    type={"single-checkbox"}
+                    onLoad={() => {
+                      return [
+                        {
+                          label: "Yes",
+                          value: "YES",
+                        },
+                      ];
+                    }}
+                  />
+                </div>
                 <div className="col-span-2">
                   <Accordion
                     type="single"
