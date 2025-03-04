@@ -71,10 +71,10 @@ function Page() {
           },
         },
         {
-          name: "job_name",
+          name: "name",
           header: "Job Name",
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            return <>{getValue(row, name) || getValue(row, "job_name")}</>;
           },
         },
         {

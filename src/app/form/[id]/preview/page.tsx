@@ -211,13 +211,18 @@ function Page() {
                           local.tab = idx;
                           local.done = false;
                           local.render();
-                          if (typeof local.fm?.submit === "function") {
-                            local.fm.submit();
-                          }
+                          setTimeout(() => {
+                            console.log(local.tab);
+                            local.fm.data.tab = idx;
+                            local.fm.render();
+                            if (typeof local.fm?.submit === "function") {
+                              local.fm.submit();
+                            }
 
-                          if (typeof local.fm?.reload === "function") {
-                            local.fm.reload();
-                          }
+                            if (typeof local.fm?.reload === "function") {
+                              local.fm.reload();
+                            }
+                          }, 100);
                         }}
                       >
                         <p className="flex-grow">
@@ -245,7 +250,12 @@ function Page() {
                   fm.reload();
                 }}
                 onLoad={async () => {
-                  return get(local, `data.questions[${local.tab}]`);
+                  console.log(local.data.questions, local.tab);
+                  console.log(get(local, `data.questions[${local.tab}]`));
+                  return {
+                    ...get(local, `data.questions[${local.tab}]`),
+                    tab: local.tab,
+                  };
                 }}
                 showResize={false}
                 header={(fm: any) => {
