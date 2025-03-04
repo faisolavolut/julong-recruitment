@@ -37,13 +37,13 @@ function Page() {
       const result: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/applicants/job-posting/${id_posting}?page=1&page_size=1&order=1`,
+        path: `/api/applicants/job-posting/${id_posting}?page=1&page_size=1`,
         validate: "object",
       });
       const completed: any = await apix({
         port: "recruitment",
         value: "data.data.total",
-        path: `/api/applicants/job-posting/${id_posting}?page=1&page_size=1&status=COMPLETED&order=1`,
+        path: `/api/applicants/job-posting/${id_posting}?page=1&page_size=1&status=COMPLETED`,
         validate: "object",
       });
       local.list = [
@@ -245,12 +245,10 @@ function Page() {
           local?.tab === "IN PROGRESS"
             ? {
                 ...param,
-                order: 1,
               }
             : {
                 ...param,
                 status: "COMPLETED",
-                order: 1,
               }
         );
         const result: any = await apix({
@@ -265,10 +263,9 @@ function Page() {
         const param = await events(
           "onload-param",
           local?.tab === "IN PROGRESS"
-            ? { order: 1 }
+            ? {}
             : {
                 status: "COMPLETED",
-                order: 1,
               },
           params
         );
