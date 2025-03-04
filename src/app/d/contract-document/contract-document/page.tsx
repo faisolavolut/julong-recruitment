@@ -60,6 +60,13 @@ function Page() {
           },
         },
         {
+          name: "document_setup.title",
+          header: "Document Type",
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
           name: "document_date",
           header: "Send Date",
           renderCell: ({ row, name }: any) => {
@@ -81,10 +88,20 @@ function Page() {
           },
         },
         {
-          name: "job_posting.job_name",
+          name: "job_posting.name",
           header: "Job Name",
           renderCell: ({ row, name }: any) => {
-            return <>{getValue(row, name)}</>;
+            if (
+              getValue(row, "document_setup.title") ===
+              "SK Pengangkatan Karyawan"
+            ) {
+              return <>{getValue(row, "job_posting.job_name")}</>;
+            }
+            return (
+              <>
+                {getValue(row, name) || getValue(row, "job_posting.job_name")}
+              </>
+            );
           },
         },
         {
@@ -103,7 +120,6 @@ function Page() {
         },
         {
           name: "action",
-
           header: "Action",
           filter: false,
           sortable: false,

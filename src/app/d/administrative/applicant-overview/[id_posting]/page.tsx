@@ -14,7 +14,9 @@ import { TableUI } from "@/lib/components/tablelist/TableUI";
 import { getLabel } from "@/lib/utils/getLabel";
 import { getParams } from "@/lib/utils/get-params";
 import { detectUniqueExperience } from "@/app/lib/workExperiences";
-import { ButtonBetterTooltip } from "@/lib/components/ui/button";
+import { ButtonBetter, ButtonBetterTooltip } from "@/lib/components/ui/button";
+import { actionToast } from "@/lib/utils/action";
+import { RiDownloadCloudLine } from "react-icons/ri";
 
 function Page() {
   const id_posting = getParams("id_posting");
@@ -96,6 +98,48 @@ function Page() {
                   <span className="capitalize">Add New</span>
                 </div>
               </ButtonLink>
+            </div>
+          );
+        },
+        sideRight: (data: any) => {
+          return (
+            <div className="flex flex-row flex-grow">
+              <ButtonBetter
+                className="bg-primary"
+                onClick={async () => {
+                  await actionToast({
+                    task: async () => {
+                      const res = await apix({
+                        port: "recruitment",
+                        method: "get",
+                        value: "data",
+                        options: {
+                          responseType: "blob",
+                          headers: {
+                            Accept:
+                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
+                          },
+                        },
+                        path: `/api/applicants/job-posting/${id_posting}/export`,
+                      });
+                      const url = window.URL.createObjectURL(new Blob([res]));
+                      const link = document.createElement("a");
+                      link.href = url;
+                      link.setAttribute("download", "export-applicant.xlsx");
+                      document.body.appendChild(link);
+                      link.click();
+                    },
+                    msg_load: "Download Export Applicant",
+                    msg_error: "Download Export Applicant Failed",
+                    msg_succes: "Download Export Applicant Success",
+                  });
+                }}
+              >
+                <div className="flex items-center gap-x-0.5">
+                  <RiDownloadCloudLine className="text-xl" />
+                  <span className="capitalize">Export</span>
+                </div>
+              </ButtonBetter>
             </div>
           );
         },

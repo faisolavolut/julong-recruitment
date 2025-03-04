@@ -173,9 +173,17 @@ function Page() {
                       });
                       return res;
                     }}
-                    onLabel={(item: any) =>
-                      `${item.name || item.job_name} - ${item.document_number}`
-                    }
+                    onLabel={(item: any) => {
+                      if (
+                        fm?.data?.document_setup?.title ===
+                        "SK Pengangkatan Karyawan"
+                      )
+                        return `${item.job_name} - ${item.document_number}`;
+
+                      return `${item.name || item.job_name} - ${
+                        item.document_number
+                      }`;
+                    }}
                   />
                 </div>
                 <div>
