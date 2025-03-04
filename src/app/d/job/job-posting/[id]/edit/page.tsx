@@ -248,7 +248,6 @@ function Page() {
                     onValue={"value"}
                   />
                 </div>
-
                 <div>
                   <Field
                     fm={fm}
@@ -261,6 +260,7 @@ function Page() {
                       const data = item?.data;
                       fm.data["job_id"] = data?.job_id;
                       fm.data["job_name"] = data?.job_name;
+                      fm.data["name"] = data?.job_name;
                       fm.data["minimum_experience"] = data?.minimum_experience;
                       fm.data["for_organization_location_id"] =
                         data?.for_organization_location_id;
@@ -324,12 +324,22 @@ function Page() {
                   <Field
                     fm={fm}
                     required={true}
+                    name={"name"}
+                    label={"Job Title"}
+                    type={"text"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    required={true}
                     name={"job_name"}
                     label={"Job Position"}
                     type={"text"}
                     disabled={true}
                   />
-                </div>
+                </div>{" "}
+                <div></div>
                 <div>
                   <Field
                     fm={fm}

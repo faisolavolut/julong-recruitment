@@ -100,11 +100,9 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
                 />
               )}
             </div>
-
-            {/* Label */}
             <div
               className={cx(
-                `mt-2 text-sm px-3 py-1 rounded-lg ${
+                `mt-2 text-sm px-3 py-1 rounded-lg text-center ${
                   currentStep >= step.id
                     ? "bg-primary text-white"
                     : "bg-gray-300 text-gray-500"

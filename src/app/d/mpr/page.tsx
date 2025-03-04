@@ -203,6 +203,7 @@ function Page() {
                             });
                             const result = {
                               document_number,
+                              name: data?.job_name,
                               status: "DRAFT",
                               mp_request_id: row.id,
                               job_name: data?.job_name,

@@ -124,7 +124,7 @@ function Page() {
                 <div className="col-span-2 flex flex-row items-center justify-end">
                   <ProgressChart
                     percentage={getNumber(
-                      local?.dashboard?.total_recruitment_target?.percent
+                      local?.dashboard?.total_recruitment_target?.percentage
                     )}
                     options={{
                       cutout: "70%",
@@ -156,7 +156,8 @@ function Page() {
                 <div className="col-span-2 flex flex-row items-center justify-end">
                   <ProgressChart
                     percentage={getNumber(
-                      local?.dashboard?.total_recruitment_realization?.percent
+                      local?.dashboard?.total_recruitment_realization
+                        ?.percentage
                     )}
                     color="#313678"
                     options={{
