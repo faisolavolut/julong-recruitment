@@ -219,7 +219,18 @@ function Page() {
             };
           });
         }
-        return { ...data, line: lines, del_ids, ready: true };
+        return {
+          ...data,
+          line: lines,
+          del_ids,
+          ready: true,
+          project_pic: data?.project_pic_id
+            ? {
+                id: data.project_pic_id,
+                name: data.project_pic_name,
+              }
+            : null,
+        };
       }}
       showResize={false}
       header={(fm: any) => {
@@ -232,6 +243,27 @@ function Page() {
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
                 <div>
                   <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
+                </div>{" "}
+                <div>
+                  <Field
+                    fm={fm}
+                    target={"project_pic_id"}
+                    name={"project_pic"}
+                    label={"PIC"}
+                    type={"dropdown-async"}
+                    onLoad={async (param) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "portal",
+                        value: "data.data.employees",
+                        path: "/api/employees" + params,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={"name"}
+                    required={true}
+                  />
                 </div>
                 <div>
                   <Field

@@ -110,7 +110,28 @@ function Page() {
                 <div>
                   <Field fm={fm} name={"name"} label={"Name"} type={"text"} />
                 </div>
-                <div></div>
+
+                <div>
+                  <Field
+                    fm={fm}
+                    target={"project_pic_id"}
+                    name={"project_pic"}
+                    label={"PIC"}
+                    type={"dropdown-async"}
+                    onLoad={async (param) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "portal",
+                        value: "data.data.employees",
+                        path: "/api/employees" + params,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={"name"}
+                    required={true}
+                  />
+                </div>
                 <div>
                   <Field
                     fm={fm}
