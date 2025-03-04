@@ -320,7 +320,9 @@ function Page() {
                         validate: "dropdown",
                         keys: {
                           label: (item: any) => {
-                            return `${item.job_name} - ${item.document_number}`;
+                            return `${item.name || item.job_name} - ${
+                              item.document_number
+                            }`;
                           },
                         },
                       });

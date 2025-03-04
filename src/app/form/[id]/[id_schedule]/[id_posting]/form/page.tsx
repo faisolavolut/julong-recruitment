@@ -494,6 +494,10 @@ function Page() {
                               local.tab = idx;
                               local.done = false;
                               local.render();
+                              if (typeof local.fm === "object") {
+                                local.fm.data.tab = idx;
+                                local.fm.render();
+                              }
                               if (typeof local.fm?.submit === "function") {
                                 local.fm.submit();
                               }

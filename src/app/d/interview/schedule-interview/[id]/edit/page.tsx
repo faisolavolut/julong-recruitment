@@ -338,7 +338,7 @@ function Page() {
                       return res;
                     }}
                     onLabel={(item: any) =>
-                      `${item.job_name} - ${item.document_number}`
+                      `${item.name || item.job_name} - ${item.document_number}`
                     }
                   />
                 </div>
@@ -402,7 +402,9 @@ function Page() {
                         validate: "dropdown",
                         keys: {
                           label: (item: any) => {
-                            return `${item.job_name} - ${item.document_number}`;
+                            return `${item.name || item.job_name} - ${
+                              item.document_number
+                            }`;
                           },
                         },
                       });

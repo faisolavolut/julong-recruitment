@@ -279,7 +279,7 @@ function Page() {
                       return res;
                     }}
                     onLabel={(item: any) =>
-                      `${item.job_name} - ${item.document_number}`
+                      `${item.name || item.job_name} - ${item.document_number}`
                     }
                   />
                 </div>
