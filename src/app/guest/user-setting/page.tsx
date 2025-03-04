@@ -384,6 +384,14 @@ function Page() {
                           type={"upload"}
                         />
                       </div>
+                      <div>
+                        <Field
+                          fm={fm}
+                          name={"expected_salary"}
+                          label={"Expected Salary"}
+                          type={"money"}
+                        />
+                      </div>
                     </div>
                   </div>
                 </>

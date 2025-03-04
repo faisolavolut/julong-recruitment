@@ -1,17 +1,22 @@
 "use client";
+import { Field } from "@/lib/components/form/Field";
 import { formatMoney } from "@/lib/components/form/field/TypeInput";
+import { Form } from "@/lib/components/form/Form";
+import { Popover } from "@/lib/components/Popover/Popover";
 import BarChart from "@/lib/components/ui/bar";
-import { ButtonBetter } from "@/lib/components/ui/button";
+import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import { CardBetter } from "@/lib/components/ui/card";
 import ProgressChart from "@/lib/components/ui/progress-chart";
+import { Filter } from "@/lib/svg/Filter";
 import { Refresh } from "@/lib/svg/Refresh";
 import { actionToast } from "@/lib/utils/action";
 import { apix } from "@/lib/utils/apix";
 import { getNumber } from "@/lib/utils/getNumber";
 import { useLocal } from "@/lib/utils/use-local";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function Page() {
+  const [show, setShow] = useState(false as boolean);
   const local = useLocal({
     can_approve: false,
     recruitment_target: {
@@ -95,7 +100,164 @@ function Page() {
         <h2 className="text-xl font-semibold text-gray-900 ">
           <span className="">Dashboard</span>
         </h2>
-        <div className="flex-grow flex flex-row items-center justify-end">
+        <div className="flex-grow flex flex-row items-center justify-end gap-x-2">
+          <Popover
+            classNameTrigger={""}
+            arrow={show}
+            className="rounded-md"
+            onOpenChange={(open: any) => {
+              setShow(open);
+            }}
+            open={show}
+            content={
+              <div className="flex flex-col p-4 w-80 gap-y-1">
+                {/* <div className="text-md font-semibold">Filter</div> */}
+
+                <Form
+                  toastMessage="Filter"
+                  onSubmit={async (fm: any) => {
+                    local.render();
+                    setShow(false);
+                  }}
+                  onLoad={async () => {
+                    return { ...local.filter };
+                  }}
+                  showResize={false}
+                  header={(fm: any) => {
+                    return <></>;
+                  }}
+                  children={(fm: any) => {
+                    return (
+                      <>
+                        <div
+                          className={cx("flex flex-col flex-wrap  rounded-sm")}
+                        >
+                          <div className="flex-grow grid gap-y-2">
+                            <div>
+                              <Field
+                                fm={fm}
+                                name={"recruitment_type"}
+                                label={"Recruitment Type"}
+                                required={true}
+                                type={"dropdown-async"}
+                                onLoad={async (param: any) => {
+                                  const params = await events(
+                                    "onload-param",
+                                    param
+                                  );
+                                  const res: any = await apix({
+                                    port: "recruitment",
+                                    value: "data.data",
+                                    path: `/api/recruitment-types${params}`,
+                                    validate: "array",
+                                  });
+                                  return res;
+                                }}
+                                onLabel={"value"}
+                                onValue={"value"}
+                              />
+                            </div>
+                            <div className=" grid grid-cols-2 gap-2">
+                              <Field
+                                fm={fm}
+                                name={"start_date"}
+                                label={"Periode"}
+                                type={"date"}
+                                placeholder={`From`}
+                              />
+                              <Field
+                                fm={fm}
+                                name={"end_date"}
+                                label={"Periode"}
+                                type={"date"}
+                                placeholder={`To`}
+                                visibleLabel={true}
+                              />
+                            </div>{" "}
+                            <div>
+                              <Field
+                                fm={fm}
+                                target={"project_pic_id"}
+                                name={"project_pic"}
+                                label={"PIC"}
+                                type={"dropdown-async"}
+                                onLoad={async (param) => {
+                                  const params = await events(
+                                    "onload-param",
+                                    param
+                                  );
+                                  const res: any = await apix({
+                                    port: "portal",
+                                    value: "data.data.employees",
+                                    path: "/api/employees" + params,
+                                    validate: "array",
+                                  });
+                                  return res;
+                                }}
+                                onLabel={"name"}
+                                required={true}
+                              />
+                            </div>
+                            <div>
+                              <Field
+                                fm={fm}
+                                required={true}
+                                name={"bilingual"}
+                                label={"Skill Bilingual"}
+                                type={"dropdown-async"}
+                                pagination={false}
+                                search="local"
+                                onLoad={async () => {
+                                  return [
+                                    {
+                                      value: "yes",
+                                      label: "Bilingual",
+                                    },
+                                    {
+                                      value: "no",
+                                      label: "Non Bilingual",
+                                    },
+                                  ];
+                                }}
+                                onLabel={"label"}
+                                onValue={"value"}
+                              />
+                            </div>
+                          </div>
+                          <div className="flex flex-row items-center justify-end py-2 w-full gap-x-2">
+                            <ButtonBetter
+                              className="rounded-full w-full px-6 "
+                              variant={"outline"}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fm.data = {};
+                                fm.render();
+                                fm.submit();
+                              }}
+                            >
+                              Clear
+                            </ButtonBetter>
+                            <ButtonBetter className="rounded-full w-full px-6 ">
+                              Apply
+                            </ButtonBetter>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  }}
+                />
+              </div>
+            }
+          >
+            <ButtonContainer
+              onClick={() => {
+                setShow(true);
+              }}
+            >
+              <Filter />
+            </ButtonContainer>
+          </Popover>
           <ButtonBetter
             onClick={async () => {
               local.reload();
