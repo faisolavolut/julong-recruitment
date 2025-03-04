@@ -140,7 +140,7 @@ export const JobCard: React.FC<any> = ({
         className="cursor-pointer flex flex-col"
       >
         <h2 className="mt-3 font-bold text-lg line-clamp-2">
-          {data?.job_name}
+          {data?.name || data?.job_name}
         </h2>
         <p className="text-gray-600 text-sm line-clamp-1">
           {data?.for_organization_name} &bull; {data?.for_organization_location}

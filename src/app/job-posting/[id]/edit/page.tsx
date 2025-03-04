@@ -17,7 +17,8 @@ import { Form } from "@/lib/components/form/Form";
 import { Alert } from "@/lib/components/ui/alert";
 import { IoMdSave } from "react-icons/io";
 import Link from "next/link";
-import { FaAngleLeft } from "react-icons/fa6";
+import { FaAngleLeft, FaCheck } from "react-icons/fa6";
+import { MdOutlineEdit } from "react-icons/md";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -86,9 +87,106 @@ function Page() {
                         />
                       </div>
                       <div className="text-black">
-                        <p className="flex items-center font-bold text-3xl	 flex-row gap-x-2">
-                          {get(local, "data.job_name")}
-                        </p>
+                        <Form
+                          className={" px-0 font-bold pt-2"}
+                          onSubmit={async (fm: any) => {
+                            const data = fm.data;
+
+                            data["deleted_organization_logo"] = "false";
+                            data["deleted_poster"] = "false";
+                            if (!data?.organization_logo) {
+                              data["deleted_organization_logo"] = "true";
+                            }
+                            if (!data?.poster) {
+                              data["deleted_poster"] = "true";
+                            }
+                            if (typeof data?.organization_logo === "string") {
+                              delete data["organization_logo"];
+                            }
+                            if (typeof data?.poster === "string") {
+                              delete data["poster"];
+                            }
+                            const res = await apix({
+                              port: "recruitment",
+                              value: "data.data",
+                              path: "/api/job-postings/update",
+                              method: "put",
+                              type: "form",
+                              data: {
+                                ...data,
+                              },
+                            });
+                            local.data.name = fm.data?.name;
+                            fm.mode = "view";
+                            fm.render();
+                            local.render();
+                          }}
+                          onLoad={async () => {
+                            return {
+                              ...local.data,
+                              name:
+                                get(local, "data.name") ||
+                                get(local, "data.job_name"),
+                            };
+                          }}
+                          afterLoad={(fm: any) => {}}
+                          mode="view"
+                          showResize={false}
+                          header={(fm: any) => {
+                            return (
+                              <>
+                                {fm.mode === "view" ? (
+                                  <>
+                                    <div className="flex flex-row items-center gap-x-2">
+                                      <p className="flex items-center font-bold text-3xl	 flex-row gap-x-2">
+                                        {get(fm, "data.name")}
+                                      </p>
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          e.preventDefault();
+                                          local.render();
+                                          fm.mode = "form";
+                                          fm.render();
+                                        }}
+                                        className="px-2 text-black cursor-pointer flex flex-row gap-x-1 items-center"
+                                      >
+                                        <MdOutlineEdit className="text-xl" />{" "}
+                                      </div>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className="flex flex-row items-center gap-x-2">
+                                      <Field
+                                        style="underline"
+                                        fm={fm}
+                                        name={"name"}
+                                        label={"title"}
+                                        type={"text"}
+                                        classField="px-0 text-black border-none focus-within:border-none focus-within:border-b-transparent border-b-none"
+                                        className="text-black text-bold placeholder:text-black text-3xl md:text-3xl"
+                                        hidden_label={true}
+                                        placeholder="Add title"
+                                      />
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          e.preventDefault();
+                                          fm.submit();
+                                        }}
+                                        className="px-2 text-black cursor-pointer flex flex-row gap-x-1 items-center"
+                                      >
+                                        <FaCheck className="text-xl" />{" "}
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                              </>
+                            );
+                          }}
+                          children={(fm: any) => {}}
+                        />
                         <div className="h-0.5 w-full bg-black rounded-full"></div>
                         <p className="text-sm flex items-center flex-row gap-x-2">
                           {get(local, "data.for_organization_name")}

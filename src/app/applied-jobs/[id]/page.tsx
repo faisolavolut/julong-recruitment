@@ -150,7 +150,7 @@ function Page() {
                     </div>
                     <div className="text-black">
                       <p className="flex items-center font-bold text-3xl	 flex-row gap-x-2">
-                        {get(local, "data.job_name")}
+                        {get(local, "data.name") || get(local, "data.job_name")}
                       </p>
                       <div className="h-0.5 w-full bg-black rounded-full"></div>
                       <p className="text-sm flex items-center flex-row gap-x-2">
