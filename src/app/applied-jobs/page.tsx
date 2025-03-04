@@ -214,7 +214,8 @@ function HomePage() {
                           {/* Job Details */}
                           <div className="flex-1">
                             <h3 className="text-lg font-semibold text-gray-800">
-                              {getValue(row, "job_name")}
+                              {getValue(row, "name") ||
+                                getValue(row, "job_name")}
                             </h3>
                             <div className="flex items-center space-x-2 text-sm text-gray-500">
                               <div className="flex flex-row gap-x-1 items-center">
