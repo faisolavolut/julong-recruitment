@@ -150,9 +150,6 @@ function Page() {
           fgd_schedule_assessors_name: assessors?.length
             ? assessors.join(", ")
             : "",
-          fgd_schedule_assessors: data?.fgd_assessors?.length
-            ? data?.fgd_assessors.map((e: any) => e?.employee_id)
-            : [],
         };
       }}
       showResize={false}

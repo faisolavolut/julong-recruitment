@@ -149,9 +149,6 @@ function Page() {
           ),
           job_name: get(data, "job_posting.job_name"),
           interview_assessors_name: assessors.join(", "),
-          interview_assessors: data?.interview_assessors?.length
-            ? data?.interview_assessors.map((e: any) => e?.employee_id)
-            : [],
         };
       }}
       showResize={false}
