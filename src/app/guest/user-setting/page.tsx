@@ -198,6 +198,9 @@ function Page() {
               ...fm.data,
             };
             delete data["user"];
+            if (!fm.data?.educations?.length) {
+              throw new Error("Minimum 1 educations");
+            }
             let result = flattenObject(data) as any;
             const res = await apix({
               port: "recruitment",
