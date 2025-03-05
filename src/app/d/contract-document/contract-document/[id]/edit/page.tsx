@@ -265,7 +265,7 @@ function Page() {
                     required={true}
                     type={"dropdown-async"}
                     onChange={({ data }) => {
-                      fm.data.job_title = data?.job_posting?.name;
+                      fm.data.job_title = fm.data?.job_posting?.name;
                       fm.data.project_recruitment_header_id =
                         data?.project_recruitment_header_id;
                       fm.data.organization_location_id =
@@ -407,7 +407,7 @@ function Page() {
                           "Contract Document PH",
                         ].includes(fm?.data?.document_setup?.title)
                       ) {
-                        fm.data.job_title = data?.job_posting?.name;
+                        fm.data.job_title = fm.data?.job_posting?.name;
                         fm.data.job_id = fm.data?.job_posting?.job_id;
                         fm.data.job = fm.data?.job_posting?.job_id
                           ? {
