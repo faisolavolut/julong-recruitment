@@ -30,6 +30,7 @@ function Portal() {
           path: "/api/users/me",
         });
         if (user) {
+          const verif = user?.verified_user_profile === "ACTIVE";
           let profile = null;
           try {
             const data = await apix({
@@ -46,7 +47,16 @@ function Portal() {
           } catch (ex) {}
           localStorage.setItem("user", JSON.stringify(user));
           const roles = await userRoleMe();
-          router.push("/");
+          const redirect_apply_job = localStorage.getItem("redirect_apply_job");
+          if (!verif) {
+            router.push("/guest/user-setting");
+          } else if (redirect_apply_job) {
+            const result = JSON.parse(redirect_apply_job);
+            router.push(result?.path);
+          } else {
+            router.push("/");
+          }
+
           local.ready = true;
           local.render();
         } else {

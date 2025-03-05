@@ -136,7 +136,7 @@ function Page() {
                       </div>
                     </div>
                   </div>
-                  {local.applied ? (
+                  {local.applied || false ? (
                     <ButtonBetter className=" w-full bg-gray-300 text-black hover:bg-gray-300 cursor-default		">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +151,7 @@ function Page() {
                       </svg>
                       Applied
                     </ButtonBetter>
-                  ) : !local.user?.verif ? (
+                  ) : !local.user?.verif || true ? (
                     <ButtonBetter
                       className={
                         "w-full text-primary bg-gradient-to-r from-blue-100 to-blue-50"
@@ -162,17 +162,18 @@ function Page() {
                         await actionToast({
                           task: async () => {
                             throw new Error(
-                              "Your account has not been verified by the admin"
+                              "It looks like some required information is missing. Please complete your profile to continue."
                             );
                           },
                           after: () => {},
+                          hidden_icon: true,
                           msg_load: "Apply job ",
-                          msg_error: "Apply job failed ",
+                          msg_error: "Oops! ",
                           msg_succes: "Apply job success ",
                         });
                       }}
                     >
-                      <div className="flex flex-grow flex-row items-center gap-x-2 text-primary">
+                      <div className="flex flex-grow flex-row items-center justify-center gap-x-2 text-primary">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width={20}
@@ -217,7 +218,7 @@ function Page() {
                           "w-full  text-primary bg-gradient-to-r from-blue-100 to-blue-50"
                         }
                       >
-                        <div className="flex flex-grow flex-row items-center gap-x-2 text-primary">
+                        <div className="flex flex-grow flex-row  justify-center items-center gap-x-2 text-primary">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width={20}

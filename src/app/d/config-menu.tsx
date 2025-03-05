@@ -1,6 +1,5 @@
 import { GoCommentDiscussion, GoProject } from "react-icons/go";
 import { HiCubeTransparent, HiDocumentText } from "react-icons/hi";
-import { GoVerified } from "react-icons/go";
 import { FaChartSimple, FaClipboardQuestion } from "react-icons/fa6";
 import { SlEnvolopeLetter } from "react-icons/sl";
 import { TbContract } from "react-icons/tb";
@@ -103,12 +102,12 @@ export const configMenu = [
     ],
     permision: ["read-job-posting"],
   },
-  {
-    title: "Verification Profile",
-    icon: <GoVerified />,
-    href: "/d/verification-profile",
-    permision: ["read-verification-profile"],
-  },
+  // {
+  //   title: "Verification Profile",
+  //   icon: <GoVerified />,
+  //   href: "/d/verification-profile",
+  //   permision: ["read-verification-profile"],
+  // },
   {
     title: "Administrative Selection",
     icon: <HiDocumentText />,

@@ -13,7 +13,6 @@ import { Form } from "@/lib/components/form/Form";
 import { cloneFM } from "@/lib/utils/cloneFm";
 import { actionToast } from "@/lib/utils/action";
 import { MdOutlineLocationOn } from "react-icons/md";
-import { GoVerified } from "react-icons/go";
 import { flattenObject } from "@/lib/utils/flattenObject";
 import ImageBetter from "@/lib/components/ui/Image";
 import { get_user } from "@/lib/utils/get_user";
@@ -34,6 +33,7 @@ function Page() {
     user: null as any,
     avatar: siteurl("/dog.jpg"),
     file: null as any,
+    redirect: null as any,
   });
 
   useEffect(() => {
@@ -44,6 +44,10 @@ function Page() {
         path: "/api/user-profiles/user",
         method: "get",
       });
+      const redirect_apply_job = localStorage.getItem("redirect_apply_job");
+      if (redirect_apply_job) {
+        local.redirect = JSON.parse(redirect_apply_job);
+      }
       local.user = res;
       local.verif = res?.status !== "ACTIVE" ? false : true;
       local.can_add = true;
@@ -117,15 +121,6 @@ function Page() {
           <div className="text-white">
             <div className="flex flex-row gap-x-2">
               <h1 className="text-lg font-semibold"> {local?.user?.name} </h1>
-              {local.verif ? (
-                <div className="flex flex-row gap-x-2 items-center justify-center rounded-full bg-blue-500 text-xs px-2">
-                  <GoVerified /> Verified
-                </div>
-              ) : (
-                <div className="flex flex-row gap-x-2 items-center justify-center rounded-full bg-amber-500 text-xs px-2">
-                  Unverified
-                </div>
-              )}
             </div>
             <p className="text-sm flex items-center  flex-row gap-x-2">
               <MdOutlineLocationOn />
@@ -214,6 +209,10 @@ function Page() {
                 ...result,
               },
             });
+            if (local.redirect && local.redirect?.path) {
+              navigate(local.redirect?.path);
+              localStorage.removeItem("redirect_apply_job");
+            }
           }}
           onLoad={async () => {
             const data = await apix({

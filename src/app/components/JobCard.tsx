@@ -31,8 +31,10 @@ export const JobCard: React.FC<any> = ({
         <div
           className="text-black font-bold text-xl"
           onClick={() => {
-            let _url: any = siteurl(`/job-posting/${data?.id}`);
-            window.open(_url, "_blank");
+            if (user) {
+              let _url: any = siteurl(`/job-posting/${data?.id}`);
+              window.open(_url, "_blank");
+            }
           }}
         >
           <div className="w-12 h-12">
@@ -54,6 +56,13 @@ export const JobCard: React.FC<any> = ({
               onClick={async (e: any) => {
                 e.stopPropagation();
                 e.preventDefault();
+                localStorage.setItem(
+                  "redirect_apply_job",
+                  JSON.stringify({
+                    path: `/job-posting/${data?.id}`,
+                  })
+                );
+
                 window.open(
                   process.env.NEXT_PUBLIC_API_PORTAL + "/login",
                   "_self"
@@ -80,12 +89,13 @@ export const JobCard: React.FC<any> = ({
               await actionToast({
                 task: async () => {
                   throw new Error(
-                    "Your account has not been verified by the admin"
+                    "It looks like some required information is missing. Please complete your profile to continue."
                   );
                 },
                 after: () => {},
                 msg_load: "Apply job ",
-                msg_error: "Apply job failed ",
+                hidden_icon: true,
+                msg_error: "Oops! ",
                 msg_succes: "Apply job success ",
               });
             }}
@@ -134,10 +144,12 @@ export const JobCard: React.FC<any> = ({
       </div>
       <div
         onClick={() => {
-          let _url: any = siteurl(`/job-posting/${data?.id}`);
-          window.open(_url, "_blank");
+          if (user) {
+            let _url: any = siteurl(`/job-posting/${data?.id}`);
+            window.open(_url, "_blank");
+          }
         }}
-        className="cursor-pointer flex flex-col"
+        className={cx(" flex flex-col", user ? "cursor-pointer" : "")}
       >
         <h2 className="mt-3 font-bold text-lg line-clamp-2">
           {data?.name || data?.job_name}

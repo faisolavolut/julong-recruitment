@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { navigate } from "@/lib/utils/navigate";
 import classnames from "classnames";
 import { css } from "@emotion/css";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 import dotenv from "dotenv";
@@ -31,6 +31,8 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const local = useLocal({
     ready: false,
   });
+  const pathname = usePathname();
+
   const routerInstance = useRouter();
   useEffect(() => {
     setIsClient(true);
@@ -82,6 +84,11 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
     };
     run();
   }, []);
+  useEffect(() => {
+    if (pathname !== "/portal" && pathname !== "/guest/user-setting") {
+      localStorage.removeItem("redirect_apply_job");
+    }
+  }, [pathname]);
 
   return (
     <html lang="en">
