@@ -426,20 +426,27 @@ function Page() {
                     fm={fm}
                     name={"interview_assessors"}
                     label={"Interviewer"}
-                    type={"multi-dropdown"}
-                    onLoad={async () => {
-                      const res: any = await apix({
+                    type={"multi-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const result: any = await apix({
                         port: "portal",
                         value: "data.data.employees",
-                        path: "/api/employees",
-                        validate: "dropdown",
-                        keys: {
-                          label: "name",
-                        },
+                        path: `/api/employees${params}`,
+                        validate: "array",
                       });
+                      let res = result?.length
+                        ? result.map((e: any) => {
+                            return {
+                              employee_id: e?.id,
+                              employee_name: e?.name,
+                            };
+                          })
+                        : [];
                       return res;
                     }}
-                    required={true}
+                    onValue={"employee_id"}
+                    onLabel={"employee_name"}
                   />
                 </div>
                 <div>
