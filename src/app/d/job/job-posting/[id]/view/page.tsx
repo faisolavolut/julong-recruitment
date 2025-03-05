@@ -68,6 +68,19 @@ function Page() {
                   Preview Job Posting
                 </div>
               </ButtonLink>
+
+              <Alert
+                type={"save"}
+                msg={"Are you sure you want to save this record?"}
+                onClick={() => {
+                  fm.submit();
+                }}
+              >
+                <ButtonContainer className={"bg-primary"}>
+                  <IoMdSave className="text-xl" />
+                  Save
+                </ButtonContainer>
+              </Alert>
               {fm?.data?.status === "PENDING" ? (
                 <>
                   <Alert
@@ -292,6 +305,7 @@ function Page() {
                   <Field
                     fm={fm}
                     name={"is_show"}
+                    disabled={false}
                     label={"Show"}
                     type={"single-checkbox"}
                     onLoad={() => {
