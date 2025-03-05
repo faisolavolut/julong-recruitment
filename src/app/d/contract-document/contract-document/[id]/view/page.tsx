@@ -13,6 +13,8 @@ import {
   AccordionItem,
   AccordionTriggerCustom,
 } from "@/lib/components/ui/accordion";
+import get from "lodash.get";
+import { labelDocumentType } from "@/lib/utils/document_type";
 
 function Page() {
   const id = getParams("id");
@@ -70,19 +72,32 @@ function Page() {
         });
         return {
           ...data,
+          job: data?.job_id
+            ? {
+                id: data?.job_id,
+                name: data?.job?.name,
+              }
+            : null,
           email: data?.applicant?.user_profile?.user?.email,
-          job_name: data?.job_posting?.job_name,
-          recruitment_type: data?.job_posting?.recruitment_type,
-          organization_name: data?.for_organization_name,
           project_number:
             data?.job_posting?.project_recruitment_header?.document_number,
           project_recruitment_header_id:
             data?.job_posting?.project_recruitment_header_id,
-          project_recruitment_line_name: data?.project_recruitment_line?.name,
-          document_setup_name: data?.document_setup?.name,
-          applicant_name: data?.applicant?.user_profile?.user?.name,
-          job_level_name: data?.job_level?.name,
-          location_name: data?.for_organization_location_name,
+          recruitment_type: data?.job_posting?.recruitment_type,
+
+          for_organization_id: data?.job_posting?.for_organization_id,
+          for_organization: {
+            id: data?.job_posting?.for_organization_id,
+            name: data?.job_posting?.for_organization_name,
+          },
+          organization_location_id: data?.organization_location_id,
+          organization_location: {
+            id: data?.organization_location_id,
+            name: data?.organization_location_name,
+          },
+          document_number: data?.document_number,
+          job_posting_id: data?.job_posting_id,
+          order: data?.project_recruitment_line?.order,
         };
       }}
       showResize={false}
@@ -115,19 +130,64 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"job_name"}
-                    label={"Job Name"}
+                    target="job_posting_id"
+                    name={"job_posting"}
+                    label={"Job Posting"}
                     required={true}
-                    type={"text"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    required={true}
-                    type={"text"}
+                    type={"dropdown-async"}
+                    onChange={({ data }) => {
+                      fm.data.project_recruitment_header_id =
+                        data?.project_recruitment_header_id;
+                      fm.data.organization_location_id =
+                        data?.organization_location_id;
+                      fm.data.recruitment_type = data?.recruitment_type;
+                      fm.data.project_number =
+                        data?.project_recruitment_header?.document_number;
+                      fm.data.for_organization_id = data?.for_organization_id;
+                      fm.data.for_organization = {
+                        id: data?.for_organization_id,
+                        name: data?.for_organization_name,
+                      };
+                      if (
+                        [
+                          "Dokumen Kesepakatan MT",
+                          "Contract Document PH",
+                        ].includes(fm?.data?.document_setup?.title)
+                      ) {
+                        fm.data.job_id = fm.data?.job_posting?.job_id;
+                        fm.data.job = fm.data?.job_posting?.job_id
+                          ? {
+                              id: fm.data?.job_posting?.job_id,
+                              name: fm.data?.job_posting?.job_name,
+                            }
+                          : null;
+                      }
+                      fm.render();
+                    }}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", {
+                        ...param,
+                        status: "IN PROGRESS",
+                      });
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.job_postings",
+                        path: `/api/job-postings${params}`,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={(item: any) => {
+                      if (
+                        fm?.data?.document_setup?.title ===
+                        "SK Pengangkatan Karyawan"
+                      )
+                        return `${item.job_name} - ${item.document_number}`;
+
+                      return `${item.name || item.job_name} - ${
+                        item.document_number
+                      }`;
+                    }}
                   />
                 </div>
                 <div>
@@ -142,32 +202,172 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"organization_name"}
-                    label={"Organization Name"}
-                    required={true}
-                    type={"text"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"project_recruitment_line_name"}
+                    target={"project_recruitment_line_id"}
+                    name={"project_recruitment_line"}
                     label={"Activity"}
                     disabled={
                       fm?.data?.project_recruitment_header_id ? false : true
                     }
                     required={true}
-                    type={"text"}
+                    type={"dropdown-async"}
+                    autoRefresh={true}
+                    onChange={({ data }) => {
+                      fm.data.order = data?.order;
+                      fm.render();
+                    }}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async (param: any) => {
+                      if (!fm?.data?.project_recruitment_header_id) return [];
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: `/api/project-recruitment-lines/header/${fm?.data?.project_recruitment_header_id}${params}`,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={(row: any) =>
+                      labelDocumentType(
+                        get(row, "template_activity_line.name")
+                      ) || ""
+                    }
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"document_setup_name"}
-                    label={"Document Type"}
-                    type={"text"}
+                    name={"recruitment_type"}
+                    label={"Recruitment Type"}
+                    required={true}
+                    pagination={false}
+                    disabled={true}
+                    search="local"
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: `/api/recruitment-types${params}`,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={"value"}
+                    onValue={"value"}
                   />
                 </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    target="document_setup_id"
+                    name={"document_setup"}
+                    label={"Document Type"}
+                    type={"dropdown-async"}
+                    required={true}
+                    onChange={({ data }) => {
+                      const result = data?.header + data?.body + data?.footer;
+                      fm.data.detail_content = result;
+                      fm.render();
+                      if (
+                        [
+                          "Dokumen Kesepakatan MT",
+                          "Contract Document PH",
+                        ].includes(fm?.data?.document_setup?.title)
+                      ) {
+                        fm.data.job_id = fm.data?.job_posting?.job_id;
+                        fm.data.job = fm.data?.job_posting?.job_id
+                          ? {
+                              id: fm.data?.job_posting?.job_id,
+                              name: fm.data?.job_posting?.job_name,
+                            }
+                          : null;
+                      }
+                      fm.render();
+                      if (
+                        typeof fm?.fields?.detail_content?.reload === "function"
+                      ) {
+                        fm?.fields?.detail_content?.reload();
+                      }
+                    }}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data.document_setups",
+                        path: `/api/document-setup${params}`,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={"title"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    target={"for_organization_id"}
+                    name={"for_organization"}
+                    label={"Organization Name"}
+                    required={true}
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "portal",
+                        value: "data.data.organizations",
+                        path: `/api/organizations${params}`,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={"name"}
+                  />
+                </div>
+                {[
+                  "Dokumen Kesepakatan MT",
+                  "SK Pengangkatan Karyawan",
+                  "Contract Document PH",
+                ].includes(fm?.data?.document_setup?.title) ? (
+                  <div>
+                    <Field
+                      fm={fm}
+                      target={"job_id"}
+                      name={"job"}
+                      label={"Job Position"}
+                      type={"dropdown-async"}
+                      pagination={false}
+                      search="local"
+                      onLabel={"name"}
+                      autoRefresh={true}
+                      disabled={
+                        !fm.data?.for_organization_id ||
+                        fm?.data?.document_setup?.title !==
+                          "SK Pengangkatan Karyawan"
+                      }
+                      onLoad={async (param) => {
+                        if (!fm.data?.for_organization_id) return [];
+                        const params = await events("onload-param", param);
+                        try {
+                          const result = await apix({
+                            port: "portal",
+                            value: "data.data",
+                            path: `/api/jobs/organization/${fm.data?.for_organization_id}`,
+                            validate: "array",
+                          });
+                          return result;
+                        } catch (ex) {
+                          return [];
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <></>
+                )}
+
                 <div>
                   <Field
                     fm={fm}
@@ -175,6 +375,22 @@ function Page() {
                     label={"Status"}
                     type={"text"}
                     disabled={true}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"sync_midsuit"}
+                    label={"Sync Midsuit"}
+                    type={"single-checkbox"}
+                    onLoad={() => {
+                      return [
+                        {
+                          label: "Yes",
+                          value: "YES",
+                        },
+                      ];
+                    }}
                   />
                 </div>
 
@@ -194,9 +410,39 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"applicant_name"}
+                              target="applicant_id"
+                              name={"applicant"}
                               label={"Recipient's Name"}
-                              type={"text"}
+                              disabled={
+                                fm?.data?.project_recruitment_line_id &&
+                                fm?.data?.job_posting_id
+                                  ? false
+                                  : true
+                              }
+                              type={"dropdown-async"}
+                              autoRefresh={true}
+                              onChange={({ data }) => {
+                                fm.data.email = data?.user_profile?.user?.email;
+                              }}
+                              onLoad={async (param: any) => {
+                                if (
+                                  !fm?.data?.project_recruitment_line_id ||
+                                  !fm?.data?.job_posting_id
+                                )
+                                  return [];
+                                const params = await events("onload-param", {
+                                  ...param,
+                                  order: fm?.data?.order,
+                                });
+                                const res: any = await apix({
+                                  port: "recruitment",
+                                  value: "data.data.applicants",
+                                  path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}${params}`,
+                                  validate: "array",
+                                });
+                                return res;
+                              }}
+                              onLabel={"user_profile.name"}
                             />
                           </div>
                           <div>
@@ -219,15 +465,38 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"job_level_name"}
+                              target="job_level_id"
+                              name={"job_level"}
                               label={"Job Level"}
-                              type={"text"}
+                              required={true}
+                              disabled={
+                                fm?.data?.for_organization_id ? false : true
+                              }
+                              type={"dropdown-async"}
+                              autoRefresh={true}
+                              pagination={false}
+                              search={"local"}
+                              onLoad={async (param: any) => {
+                                if (!fm?.data?.for_organization_id) return [];
+                                const params = await events(
+                                  "onload-param",
+                                  param
+                                );
+                                const res: any = await apix({
+                                  port: "portal",
+                                  value: "data.data",
+                                  path: `/api/job-levels/organization/${fm?.data?.for_organization_id}${params}`,
+                                  validate: "array",
+                                });
+                                return res;
+                              }}
+                              onLabel={"level"}
                             />
                           </div>
                           <div>
                             <Field
                               fm={fm}
-                              name={"upah_pokok"}
+                              name={"basic_wage"}
                               label={"Gaji Pokok"}
                               type={"money"}
                               prefix={
@@ -238,7 +507,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tunjangan_jabatan"}
+                              name={"positional_allowance"}
                               label={"Tunjangan Jabatan"}
                               type={"money"}
                               prefix={
@@ -249,7 +518,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tunjangan_operasional"}
+                              name={"operational_allowance"}
                               label={"Tunjangan Operasional Kerja"}
                               type={"money"}
                               prefix={
@@ -260,7 +529,7 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"tunjangan_makan"}
+                              name={"meal_allowance"}
                               label={"Tunjangan Makan"}
                               type={"money"}
                               prefix={
@@ -271,12 +540,31 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
-                              name={"location_name"}
+                              target={"organization_location_id"}
+                              name={"organization_location"}
+                              label={"Location"}
+                              type={"dropdown-async"}
+                              autoRefresh={true}
                               disabled={
                                 fm?.data?.for_organization_id ? false : true
                               }
-                              label={"Location"}
-                              type={"text"}
+                              pagination={false}
+                              search={"local"}
+                              onLoad={async (param: any) => {
+                                if (!fm?.data?.for_organization_id) return [];
+                                const params = await events(
+                                  "onload-param",
+                                  param
+                                );
+                                const res: any = await apix({
+                                  port: "portal",
+                                  value: "data.data",
+                                  path: `/api/organization-locations/organization/${fm?.data?.for_organization_id}${params}`,
+                                  validate: "array",
+                                });
+                                return res;
+                              }}
+                              onLabel={"name"}
                             />
                           </div>
                           <div>

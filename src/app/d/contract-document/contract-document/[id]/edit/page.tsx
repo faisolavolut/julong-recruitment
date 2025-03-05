@@ -194,6 +194,12 @@ function Page() {
         });
         return {
           ...data,
+          job: data?.job_id
+            ? {
+                id: data?.job_id,
+                name: data?.job?.name,
+              }
+            : null,
           email: data?.applicant?.user_profile?.user?.email,
           project_number:
             data?.job_posting?.project_recruitment_header?.document_number,
@@ -215,6 +221,12 @@ function Page() {
           job_posting_id: data?.job_posting_id,
           order: data?.project_recruitment_line?.order,
         };
+      }}
+      afterLoad={(fm: any) => {
+        if (fm.data?.status === "COMPLETED") {
+          fm.mode = "view";
+          fm.render();
+        }
       }}
       showResize={false}
       header={(fm: any) => {
@@ -248,7 +260,7 @@ function Page() {
                     fm={fm}
                     target="job_posting_id"
                     name={"job_posting"}
-                    label={"Job Name"}
+                    label={"Job Posting"}
                     required={true}
                     type={"dropdown-async"}
                     onChange={({ data }) => {
@@ -256,6 +268,7 @@ function Page() {
                         data?.project_recruitment_header_id;
                       fm.data.organization_location_id =
                         data?.organization_location_id;
+                      fm.data.recruitment_type = data?.recruitment_type;
                       fm.data.project_number =
                         data?.project_recruitment_header?.document_number;
                       fm.data.for_organization_id = data?.for_organization_id;
@@ -263,6 +276,20 @@ function Page() {
                         id: data?.for_organization_id,
                         name: data?.for_organization_name,
                       };
+                      if (
+                        [
+                          "Dokumen Kesepakatan MT",
+                          "Contract Document PH",
+                        ].includes(fm?.data?.document_setup?.title)
+                      ) {
+                        fm.data.job_id = fm.data?.job_posting?.job_id;
+                        fm.data.job = fm.data?.job_posting?.job_id
+                          ? {
+                              id: fm.data?.job_posting?.job_id,
+                              name: fm.data?.job_posting?.job_name,
+                            }
+                          : null;
+                      }
                       fm.render();
                     }}
                     onLoad={async (param: any) => {
@@ -294,54 +321,10 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"recruitment_type"}
-                    label={"Recruitment Type"}
-                    required={true}
-                    pagination={false}
-                    search="local"
-                    type={"dropdown-async"}
-                    onLoad={async (param: any) => {
-                      const params = await events("onload-param", param);
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: `/api/recruitment-types${params}`,
-                        validate: "array",
-                      });
-                      return res;
-                    }}
-                    onLabel={"value"}
-                    onValue={"value"}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
                     name={"project_number"}
                     label={"Project Number"}
                     type={"text"}
                     disabled={true}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    target={"for_organization_id"}
-                    name={"for_organization"}
-                    label={"Organization Name"}
-                    required={true}
-                    type={"dropdown-async"}
-                    onLoad={async (param: any) => {
-                      const params = await events("onload-param", param);
-                      const res: any = await apix({
-                        port: "portal",
-                        value: "data.data.organizations",
-                        path: `/api/organizations${params}`,
-                        validate: "array",
-                      });
-                      return res;
-                    }}
-                    onLabel={"name"}
                   />
                 </div>
                 <div>
@@ -383,6 +366,30 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    name={"recruitment_type"}
+                    label={"Recruitment Type"}
+                    required={true}
+                    pagination={false}
+                    disabled={true}
+                    search="local"
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "recruitment",
+                        value: "data.data",
+                        path: `/api/recruitment-types${params}`,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={"value"}
+                    onValue={"value"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
                     target="document_setup_id"
                     name={"document_setup"}
                     label={"Document Type"}
@@ -391,6 +398,21 @@ function Page() {
                     onChange={({ data }) => {
                       const result = data?.header + data?.body + data?.footer;
                       fm.data.detail_content = result;
+                      fm.render();
+                      if (
+                        [
+                          "Dokumen Kesepakatan MT",
+                          "Contract Document PH",
+                        ].includes(fm?.data?.document_setup?.title)
+                      ) {
+                        fm.data.job_id = fm.data?.job_posting?.job_id;
+                        fm.data.job = fm.data?.job_posting?.job_id
+                          ? {
+                              id: fm.data?.job_posting?.job_id,
+                              name: fm.data?.job_posting?.job_name,
+                            }
+                          : null;
+                      }
                       fm.render();
                       if (
                         typeof fm?.fields?.detail_content?.reload === "function"
@@ -414,13 +436,75 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    target={"for_organization_id"}
+                    name={"for_organization"}
+                    label={"Organization Name"}
+                    required={true}
+                    type={"dropdown-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const res: any = await apix({
+                        port: "portal",
+                        value: "data.data.organizations",
+                        path: `/api/organizations${params}`,
+                        validate: "array",
+                      });
+                      return res;
+                    }}
+                    onLabel={"name"}
+                  />
+                </div>
+                {[
+                  "Dokumen Kesepakatan MT",
+                  "SK Pengangkatan Karyawan",
+                  "Contract Document PH",
+                ].includes(fm?.data?.document_setup?.title) ? (
+                  <div>
+                    <Field
+                      fm={fm}
+                      target={"job_id"}
+                      name={"job"}
+                      label={"Job Position"}
+                      type={"dropdown-async"}
+                      pagination={false}
+                      search="local"
+                      onLabel={"name"}
+                      autoRefresh={true}
+                      disabled={
+                        !fm.data?.for_organization_id ||
+                        fm?.data?.document_setup?.title !==
+                          "SK Pengangkatan Karyawan"
+                      }
+                      onLoad={async (param) => {
+                        if (!fm.data?.for_organization_id) return [];
+                        const params = await events("onload-param", param);
+                        try {
+                          const result = await apix({
+                            port: "portal",
+                            value: "data.data",
+                            path: `/api/jobs/organization/${fm.data?.for_organization_id}`,
+                            validate: "array",
+                          });
+                          return result;
+                        } catch (ex) {
+                          return [];
+                        }
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <></>
+                )}
+
+                <div>
+                  <Field
+                    fm={fm}
                     name={"status"}
                     label={"Status"}
                     type={"text"}
                     disabled={true}
                   />
                 </div>
-
                 <div>
                   <Field
                     fm={fm}
@@ -437,6 +521,7 @@ function Page() {
                     }}
                   />
                 </div>
+
                 <div className="col-span-2">
                   <Accordion
                     type="single"
@@ -585,12 +670,12 @@ function Page() {
                               fm={fm}
                               target={"organization_location_id"}
                               name={"organization_location"}
-                              disabled={
-                                fm?.data?.for_organization_id ? false : true
-                              }
                               label={"Location"}
                               type={"dropdown-async"}
                               autoRefresh={true}
+                              disabled={
+                                fm?.data?.for_organization_id ? false : true
+                              }
                               pagination={false}
                               search={"local"}
                               onLoad={async (param: any) => {

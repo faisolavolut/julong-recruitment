@@ -119,12 +119,20 @@ const DefaultHeaderNavigation: FC = function () {
           >
             Log in
           </ButtonLink>
-          <ButtonLink
-            href={`${siteurl("/register", "portal")}`}
+          <ButtonBetter
+            onClick={() => {
+              localStorage.setItem(
+                "redirect_apply_job",
+                JSON.stringify({
+                  path: `/all-jobs`,
+                })
+              );
+              navigate(`${siteurl("/register", "portal")}`);
+            }}
             className="md:w-auto w-full"
           >
             Sign up
-          </ButtonLink>
+          </ButtonBetter>
         </>
       )}
     </>

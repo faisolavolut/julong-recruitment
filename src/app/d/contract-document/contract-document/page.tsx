@@ -126,7 +126,7 @@ function Page() {
           renderCell: ({ row }: any) => {
             return (
               <div className="flex items-center gap-x-0.5 whitespace-nowrap">
-                {local.can_edit ? (
+                {local.can_edit && row?.status !== "COMPLETED" ? (
                   <ButtonLink
                     href={`/d/contract-document/contract-document/${row.id}/edit`}
                   >
