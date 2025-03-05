@@ -346,7 +346,7 @@ function Page() {
                           type={"date"}
                         />
                       </div>
-                      <div>
+                      {/* <div>
                         <Field
                           fm={fm}
                           required={true}
@@ -354,22 +354,22 @@ function Page() {
                           label={"KTP"}
                           type={"upload"}
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <Field
                           fm={fm}
                           name={"bilingual"}
-                          label={"Skill Bilingual"}
+                          label={"Can you speak mandarin?"}
                           type={"dropdown"}
                           onLoad={() => {
                             return [
                               {
                                 value: "yes",
-                                label: "Bilingual",
+                                label: "Yes",
                               },
                               {
                                 value: "no",
-                                label: "Non Bilingual",
+                                label: "No",
                               },
                             ];
                           }}
