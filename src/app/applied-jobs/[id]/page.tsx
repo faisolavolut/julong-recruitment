@@ -420,13 +420,13 @@ function Page() {
                                 ) : (
                                   <></>
                                 )}
-                                {get(local, "detail.url") ? (
+                                {get(local, "detail.meeting_url") ? (
                                   <p className=" flex flex-row gap-x-2 items-center">
                                     <IoLinkOutline />
                                     <a
                                       target="_blank"
                                       className="text-primary underline"
-                                      href={get(local, "detail.url")}
+                                      href={get(local, "detail.meeting_url")}
                                     >
                                       Link Interview
                                     </a>

@@ -389,6 +389,14 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    name={"meeting_url"}
+                    label={"Meeting (Url)"}
+                    type={"text"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
                     name={"range_duration"}
                     label={"Duration"}
                     type={"money"}

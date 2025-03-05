@@ -179,19 +179,6 @@ export const configMenu = [
   {
     title: "FGD Test",
     icon: <MdGroups />,
-    // children: [
-    //   {
-    //     title: "FGD Schedule",
-    //     href: "/d/fgd/schedule",
-    //     permision: ["read-fgd-schedule"],
-    //   },
-    //   {
-    //     title: "FGD Result",
-    //     href: "/d/fgd/result",
-    //     permision: ["read-fgd-result"],
-    //   },
-    // ],
-
     children: [
       {
         title: "Schedule FGD",
@@ -203,17 +190,8 @@ export const configMenu = [
         href: "/d/fgd/result-fgd",
         permision: ["read-result-fgd"],
       },
-      // {
-      //   title: "Final Result FGD",
-      //   href: "/d/fgd/final-result-fgd",
-      //   permision: ["hilang-read-final-result-fgd"],
-      // },
     ],
-    permision: [
-      "read-schedule-fgd",
-      "read-result-fgd",
-      // "read-final-result-fgd",
-    ],
+    permision: ["read-schedule-fgd", "read-result-fgd"],
   },
   // {
   //   title: "Final Interview",
