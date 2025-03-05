@@ -175,6 +175,7 @@ function Page() {
                           : null;
                       }
                       fm.render();
+                      console.log(fm.data.job_title);
                     }}
                     onLoad={async (param: any) => {
                       const params = await events("onload-param", {
@@ -299,6 +300,7 @@ function Page() {
                           : null;
                       }
                       fm.render();
+                      console.log(fm.data.job_title);
                       if (
                         typeof fm?.fields?.detail_content?.reload === "function"
                       ) {
@@ -351,7 +353,6 @@ function Page() {
                     />
                   </div>
                 ) : [
-                    "",
                     "SK Pengangkatan Karyawan",
                     "Contract Document PH",
                   ].includes(fm?.data?.document_setup?.title) ? (
