@@ -62,62 +62,69 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {fm?.data?.status === "DRAFT" && local.can_edit && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoMdSave className="text-xl" />
-                    Save
-                  </ButtonContainer>
-                </Alert>
-              )}
-              {fm?.data?.status === "DRAFT" && (
-                <Alert
-                  type={"save"}
-                  msg={"Are you sure you want to save this record?"}
-                  onClick={() => {
-                    fm.data.status = "IN PROGRESS";
-                    fm.submit();
-                  }}
-                >
-                  <ButtonContainer className={"bg-primary"}>
-                    <IoMdSave className="text-xl" />
-                    Submit
-                  </ButtonContainer>
-                </Alert>
-              )}
-              {local.can_delete && (
-                <Alert
-                  type={"delete"}
-                  msg={"Are you sure you want to delete this record?"}
-                  onClick={async () => {
-                    await actionToast({
-                      task: async () => {
-                        await apix({
-                          port: "recruitment",
-                          path: `/api/project-recruitment-headers/${id}`,
-                          method: "delete",
+              {fm.btn_ready ? (
+                <>
+                  {" "}
+                  {fm?.data?.status === "DRAFT" && local.can_edit && (
+                    <Alert
+                      type={"save"}
+                      msg={"Are you sure you want to save this record?"}
+                      onClick={() => {
+                        fm.submit();
+                      }}
+                    >
+                      <ButtonContainer className={"bg-primary"}>
+                        <IoMdSave className="text-xl" />
+                        Save
+                      </ButtonContainer>
+                    </Alert>
+                  )}
+                  {fm?.data?.status === "DRAFT" && (
+                    <Alert
+                      type={"save"}
+                      msg={"Are you sure you want to save this record?"}
+                      onClick={() => {
+                        fm.data.status = "IN PROGRESS";
+                        fm.submit();
+                      }}
+                    >
+                      <ButtonContainer className={"bg-primary"}>
+                        <IoMdSave className="text-xl" />
+                        Submit
+                      </ButtonContainer>
+                    </Alert>
+                  )}
+                  {local.can_delete && (
+                    <Alert
+                      type={"delete"}
+                      msg={"Are you sure you want to delete this record?"}
+                      onClick={async () => {
+                        await actionToast({
+                          task: async () => {
+                            await apix({
+                              port: "recruitment",
+                              path: `/api/project-recruitment-headers/${id}`,
+                              method: "delete",
+                            });
+                          },
+                          after: () => {
+                            navigate("/d/project/project-recruitment");
+                          },
+                          msg_load: "Delete ",
+                          msg_error: "Delete ",
+                          msg_succes: "Delete successfully! ",
                         });
-                      },
-                      after: () => {
-                        navigate("/d/project/project-recruitment");
-                      },
-                      msg_load: "Delete ",
-                      msg_error: "Delete ",
-                      msg_succes: "Delete successfully! ",
-                    });
-                  }}
-                >
-                  <ButtonContainer variant={"destructive"}>
-                    <MdDelete className="text-xl" />
-                    Delete
-                  </ButtonContainer>
-                </Alert>
+                      }}
+                    >
+                      <ButtonContainer variant={"destructive"}>
+                        <MdDelete className="text-xl" />
+                        Delete
+                      </ButtonContainer>
+                    </Alert>
+                  )}
+                </>
+              ) : (
+                <></>
               )}
             </div>
           </div>
