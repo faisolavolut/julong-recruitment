@@ -389,6 +389,7 @@ function Page() {
                       <div>
                         <Field
                           fm={fm}
+                          required={true}
                           name={"expected_salary"}
                           label={"Expected Salary"}
                           type={"money"}
