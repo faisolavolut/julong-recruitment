@@ -53,6 +53,7 @@ function Page() {
           verif: res?.verified_user_profile !== "ACTIVE" ? false : true,
         };
       } catch (ex) {}
+      local.ready = true;
       local.render();
     };
     run();
