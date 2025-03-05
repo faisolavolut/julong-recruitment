@@ -74,21 +74,30 @@ function Page() {
           validate: "object",
         });
         applicant = profile;
-        local.step = profile?.order;
+        local.step = profile?.order <= 1 ? 1 : profile?.order;
         local.profile = profile;
         now = profile?.order;
       } catch (ex) {
         local.profile = null;
       }
       local.render();
+      console.log(applicant?.order);
       let steps = res.map((e: any) => {
+        const order = applicant?.order <= 1 ? 1 : applicant?.order;
         return {
           id: e?.order,
           label: labelDocumentType(e?.template_activity_line?.name),
           name: e?.template_activity_line?.template_question?.form_type,
           id_line: e?.id,
+          result:
+            order === e?.order
+              ? applicant?.status === "REJECTED"
+                ? "failed"
+                : null
+              : null,
         };
       });
+      console.log(steps);
       steps = steps?.sort((a: any, b: any) => a?.id - b?.id);
       const stepNumber = steps?.length ? steps?.map((e: any) => e?.id) : [];
       const max = Math.max(...stepNumber);
@@ -113,7 +122,7 @@ function Page() {
         local.readyTest = true;
         local.detail = test;
       }
-      local.stepName = stepName;
+      local.stepName = applicant?.status === "REJECTED" ? "REJECTED" : stepName;
       local.steps = steps;
       local.data = data;
       local.applied = data?.is_applied;
@@ -316,6 +325,15 @@ function Page() {
                             Thank you for submitting your application. We are
                             pleased to inform you that your CV is currently
                             under review by our HR team.
+                          </div>
+                        </div>
+                      ) : local.stepName === "REJECTED" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            Thank you for your time and effort throughout the
+                            recruitment process. We sincerely appreciate your
+                            interest in our company and wish you all the best in
+                            your career journey.
                           </div>
                         </div>
                       ) : local.stepName === "TEST" ? (

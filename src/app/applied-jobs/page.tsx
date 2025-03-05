@@ -253,6 +253,9 @@ function HomePage() {
                     resize: false,
                     header: "Status",
                     renderCell: ({ row, name, cell }: any) => {
+                      if (row?.[name] === "REJECTED") {
+                        return <div className="text-red-500">Rejected</div>;
+                      }
                       if (row?.[name] === "IN_PROGRESS") {
                         return (
                           <div className="text-green-500">In Progress</div>

@@ -70,7 +70,7 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
                       ? "bg-primary"
                       : currentStep - 1 === index
                       ? currentStep - 1 === index && step?.result === "failed"
-                        ? "border-4 border-red-500 text-red-500 bg-white"
+                        ? "border-4 border-red-900 text-red-900 bg-white"
                         : "border-4 border-primary text-primary bg-white"
                       : "bg-gray-300"
                   }`,
@@ -81,7 +81,7 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
               >
                 {currentStep - 1 === index && step?.result === "failed" ? (
                   <>
-                    <IoClose className="text-red-500" />
+                    <IoClose className="text-red-900" />
                   </>
                 ) : (
                   <>{currentStep - 1 > index ? <FaCheck /> : index + 1}</>
@@ -109,7 +109,7 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
                 }`,
 
                 currentStep - 1 === index && step?.result === "failed"
-                  ? "bg-red-500 text-white "
+                  ? "bg-red-900 text-white "
                   : ""
               )}
             >
