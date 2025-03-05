@@ -389,7 +389,7 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"meeting_url"}
+                    name={"meeting_link"}
                     label={"Meeting (Url)"}
                     type={"text"}
                   />
