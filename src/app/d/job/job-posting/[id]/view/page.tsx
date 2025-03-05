@@ -291,6 +291,22 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
+                    name={"is_show"}
+                    label={"Show"}
+                    type={"single-checkbox"}
+                    onLoad={() => {
+                      return [
+                        {
+                          label: "Yes",
+                          value: "YES",
+                        },
+                      ];
+                    }}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
                     required={true}
                     name={"start_date"}
                     label={"Start Date"}

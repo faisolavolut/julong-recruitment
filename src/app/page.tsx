@@ -34,7 +34,7 @@ function HomePage() {
           value: "data.data.job_postings",
           path: `/api${
             get_user("id") ? `/` : `/no-auth/`
-          }job-postings?page=1&page_size=8&status=IN PROGRESS`,
+          }job-postings/show-only?page=1&page_size=8&status=IN PROGRESS`,
           method: "get",
         });
         local.jobs = res;

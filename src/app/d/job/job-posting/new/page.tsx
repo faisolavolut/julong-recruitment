@@ -102,6 +102,7 @@ function Page() {
         return {
           status: "DRAFT",
           document_number: res,
+          is_show: "YES",
         };
       }}
       showResize={false}
@@ -269,7 +270,22 @@ function Page() {
                     disabled={true}
                   />
                 </div>
-                <div></div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"is_show"}
+                    label={"Show"}
+                    type={"single-checkbox"}
+                    onLoad={() => {
+                      return [
+                        {
+                          label: "Yes",
+                          value: "YES",
+                        },
+                      ];
+                    }}
+                  />
+                </div>
                 <div>
                   <Field
                     fm={fm}

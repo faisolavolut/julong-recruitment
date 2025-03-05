@@ -200,6 +200,7 @@ function Page() {
                 name: data?.job?.name,
               }
             : null,
+          job_title: data?.job_posting?.name,
           email: data?.applicant?.user_profile?.user?.email,
           project_number:
             data?.job_posting?.project_recruitment_header?.document_number,
@@ -264,6 +265,7 @@ function Page() {
                     required={true}
                     type={"dropdown-async"}
                     onChange={({ data }) => {
+                      fm.data.job_title = data?.job_posting?.name;
                       fm.data.project_recruitment_header_id =
                         data?.project_recruitment_header_id;
                       fm.data.organization_location_id =
@@ -405,6 +407,7 @@ function Page() {
                           "Contract Document PH",
                         ].includes(fm?.data?.document_setup?.title)
                       ) {
+                        fm.data.job_title = data?.job_posting?.name;
                         fm.data.job_id = fm.data?.job_posting?.job_id;
                         fm.data.job = fm.data?.job_posting?.job_id
                           ? {
@@ -454,11 +457,22 @@ function Page() {
                     onLabel={"name"}
                   />
                 </div>
-                {[
-                  "Dokumen Kesepakatan MT",
-                  "SK Pengangkatan Karyawan",
-                  "Contract Document PH",
-                ].includes(fm?.data?.document_setup?.title) ? (
+                {fm?.data?.document_setup?.title ===
+                "Dokumen Kesepakatan MT" ? (
+                  <div>
+                    <Field
+                      fm={fm}
+                      name={"job_title"}
+                      label={"Job Position"}
+                      type={"text"}
+                      disabled={true}
+                    />
+                  </div>
+                ) : [
+                    "",
+                    "SK Pengangkatan Karyawan",
+                    "Contract Document PH",
+                  ].includes(fm?.data?.document_setup?.title) ? (
                   <div>
                     <Field
                       fm={fm}

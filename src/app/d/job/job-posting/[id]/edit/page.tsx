@@ -152,6 +152,7 @@ function Page() {
             document_date: normalDate(fm?.data?.document_date),
             start_date: normalDate(fm?.data?.start_date),
             end_date: normalDate(fm?.data?.end_date),
+            is_show: fm?.data?.is_show !== "YES" ? "NO" : "YES",
           },
         });
         if (res) {
@@ -339,7 +340,22 @@ function Page() {
                     disabled={true}
                   />
                 </div>{" "}
-                <div></div>
+                <div>
+                  <Field
+                    fm={fm}
+                    name={"is_show"}
+                    label={"Show"}
+                    type={"single-checkbox"}
+                    onLoad={() => {
+                      return [
+                        {
+                          label: "Yes",
+                          value: "YES",
+                        },
+                      ];
+                    }}
+                  />
+                </div>
                 <div>
                   <Field
                     fm={fm}
