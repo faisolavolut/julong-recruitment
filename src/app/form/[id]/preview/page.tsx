@@ -181,7 +181,7 @@ function Page() {
       </div>
 
       <div className="w-full flex-grow flex flex-row">
-        <div className="flex flex-col py-1 w-2/6 bg-white border-r border-gray-200">
+        <div className="flex flex-col py-1 min-w-[350px] max-w-[350px] bg-white border-r border-gray-200">
           <div className="grid grid-cols-1 bg-white">
             <div className="grid  gap-2 grid-cols-1 p-4 border-b border-gray-200">
               <div className="font-bold text-2xl">
@@ -211,18 +211,21 @@ function Page() {
                           local.tab = idx;
                           local.done = false;
                           local.render();
-                          setTimeout(() => {
-                            console.log(local.tab);
-                            local.fm.data.tab = idx;
-                            local.fm.render();
-                            if (typeof local.fm?.submit === "function") {
-                              local.fm.submit();
-                            }
-
-                            if (typeof local.fm?.reload === "function") {
-                              local.fm.reload();
-                            }
-                          }, 100);
+                          local.fm.data.tab = idx;
+                          local.fm.data = {
+                            ...local.fm.data,
+                            ...local.data.questions[idx],
+                          };
+                          local.fm.render();
+                          if (
+                            typeof local.fm.fields?.answer?.reload ===
+                            "function"
+                          ) {
+                            local.fm.fields.answer.reload();
+                          }
+                          if (typeof local.fm?.reload === "function") {
+                            local.fm.reload();
+                          }
                         }}
                       >
                         <p className="flex-grow">
@@ -250,8 +253,6 @@ function Page() {
                   fm.reload();
                 }}
                 onLoad={async () => {
-                  console.log(local.data.questions, local.tab);
-                  console.log(get(local, `data.questions[${local.tab}]`));
                   return {
                     ...get(local, `data.questions[${local.tab}]`),
                     tab: local.tab,

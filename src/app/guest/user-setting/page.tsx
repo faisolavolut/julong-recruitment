@@ -392,6 +392,14 @@ function Page() {
                           type={"money"}
                         />
                       </div>
+                      <div>
+                        <Field
+                          fm={fm}
+                          name={"current_salary"}
+                          label={"Current Salary"}
+                          type={"money"}
+                        />
+                      </div>
                     </div>
                   </div>
                 </>

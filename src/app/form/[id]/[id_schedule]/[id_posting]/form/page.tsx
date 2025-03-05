@@ -464,7 +464,7 @@ function Page() {
           </>
         ) : (
           <>
-            <div className="flex flex-col py-1 w-2/6 bg-white border-r border-gray-200">
+            <div className="flex flex-col py-1 min-w-[350px] max-w-[350px] bg-white border-r border-gray-200">
               <div className="grid grid-cols-1 bg-white">
                 <div className="grid  gap-2 grid-cols-1 p-4 border-b border-gray-200">
                   <div className="font-bold text-2xl">
@@ -496,7 +496,18 @@ function Page() {
                               local.render();
                               if (typeof local.fm === "object") {
                                 local.fm.data.tab = idx;
+                                local.fm.data = {
+                                  ...local.fm.data,
+                                  ...local.data.questions[idx],
+                                };
                                 local.fm.render();
+                              }
+
+                              if (
+                                typeof local.fm.fields?.answer?.reload ===
+                                "function"
+                              ) {
+                                local.fm.fields.answer.reload();
                               }
                               if (typeof local.fm?.submit === "function") {
                                 local.fm.submit();
