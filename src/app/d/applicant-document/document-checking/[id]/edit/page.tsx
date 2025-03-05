@@ -434,12 +434,10 @@ function Page() {
                     },
                     {
                       name: "action",
-
                       header: "Action",
                       filter: false,
                       sortable: false,
                       renderCell: ({ row, tbl }: any) => {
-                        if (false) return <></>;
                         return (
                           <div className="flex items-center gap-x-0.5 whitespace-nowrap">
                             <ButtonBetter
