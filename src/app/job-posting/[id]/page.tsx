@@ -136,7 +136,7 @@ function Page() {
                       </div>
                     </div>
                   </div>
-                  {local.applied || false ? (
+                  {local.applied ? (
                     <ButtonBetter className=" w-full bg-gray-300 text-black hover:bg-gray-300 cursor-default		">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -151,7 +151,7 @@ function Page() {
                       </svg>
                       Applied
                     </ButtonBetter>
-                  ) : !local.user?.verif || true ? (
+                  ) : !local.user?.verif ? (
                     <ButtonBetter
                       className={
                         "w-full text-primary bg-gradient-to-r from-blue-100 to-blue-50"
