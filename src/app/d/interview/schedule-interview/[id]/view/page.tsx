@@ -280,10 +280,29 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"interview_assessors_name"}
+                    name={"interview_assessors"}
                     label={"Interviewer"}
-                    type={"text"}
-                    required={true}
+                    type={"multi-async"}
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", param);
+                      const result: any = await apix({
+                        port: "portal",
+                        value: "data.data.employees",
+                        path: `/api/employees${params}`,
+                        validate: "array",
+                      });
+                      let res = result?.length
+                        ? result.map((e: any) => {
+                            return {
+                              employee_id: e?.id,
+                              employee_name: e?.name,
+                            };
+                          })
+                        : [];
+                      return res;
+                    }}
+                    onValue={"employee_id"}
+                    onLabel={"employee_name"}
                   />
                 </div>
                 <div>
