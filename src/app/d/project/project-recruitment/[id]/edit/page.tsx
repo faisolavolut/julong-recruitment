@@ -62,7 +62,7 @@ function Page() {
               />
             </div>
             <div className="flex flex-row space-x-2 items-center">
-              {fm.btn_ready ? (
+              {fm?.btn_ready ? (
                 <>
                   {" "}
                   {fm?.data?.status === "DRAFT" && local.can_edit && (
