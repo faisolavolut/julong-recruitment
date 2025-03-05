@@ -342,6 +342,12 @@ function Page() {
               <div className="flex flex-grow text-2xl items-center font-bold">
                 {formatMoney(
                   getNumber(local?.dashboard?.total_bilingual?.total_bilingual)
+                )}{" "}
+                /{" "}
+                {formatMoney(
+                  getNumber(
+                    local?.dashboard?.total_bilingual?.total_non_bilingual
+                  )
                 )}
               </div>
             </div>
