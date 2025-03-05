@@ -568,7 +568,7 @@ function Page() {
                             >
                               <ButtonBetterTooltip
                                 typeButton="container"
-                                tooltip={"Approve applicant"}
+                                tooltip={"Reject applicant"}
                                 variant={"destructive"}
                               >
                                 <div className="flex items-center gap-x-2">
