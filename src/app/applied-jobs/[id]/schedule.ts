@@ -72,6 +72,7 @@ export const scheduleFase = async ({
                   `,
           validate: "object",
         });
+        console.log({ test });
         if (test?.status === "DRAFT") test = null;
       } catch (ex) {}
       if (test) {
@@ -86,6 +87,7 @@ export const scheduleFase = async ({
         };
         result = detail;
       }
+      console.log({ result });
       break;
 
     case "FGD":

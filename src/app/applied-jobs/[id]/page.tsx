@@ -81,7 +81,6 @@ function Page() {
         local.profile = null;
       }
       local.render();
-      console.log(applicant?.order);
       let steps = res.map((e: any) => {
         const order = applicant?.order <= 1 ? 1 : applicant?.order;
         return {
@@ -113,6 +112,7 @@ function Page() {
           applicant,
         },
       });
+      console.log({ test });
       if (stepName === "FINAL_RESULT") {
         local.step = stepNow?.id + 1;
       }
@@ -398,6 +398,67 @@ function Page() {
                           )}
                         </div>
                       ) : local.stepName === "INTERVIEW" ? (
+                        <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
+                          <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
+                            Congratulations{" "}
+                            <LuPartyPopper className="text-pink-500" />
+                          </div>
+                          <div className=" flex flex-row items-center text-md gap-x-2 px-4 mx-4 py-2">
+                            You've Passed to the Next Stage! Please stay tuned
+                            and check your email regularly for updates.
+                          </div>
+                          {local.readyTest ? (
+                            <>
+                              <div className="flex flex-col flex-grow py-4 pt-0 px-8">
+                                <p className="font-bold">Schedule Interview:</p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <RiCalendarScheduleLine />
+                                  {`${dayDate(
+                                    get(local, "detail.schedule_date")
+                                  )}`}
+                                </p>
+                                <p className=" flex flex-row gap-x-2 items-center">
+                                  <GoClock />
+                                  {`${get(local, "detail.start_time")} - ${get(
+                                    local,
+                                    "detail.end_time"
+                                  )}`}
+                                </p>
+                                {get(local, "detail.location_link") ? (
+                                  <p className=" flex flex-row gap-x-2 items-center">
+                                    <MdOutlineLocationOn />
+                                    <a
+                                      target="_blank"
+                                      className="text-primary underline"
+                                      href={get(local, "detail.location_link")}
+                                    >
+                                      Link Location
+                                    </a>
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
+                                {get(local, "detail.meeting_link") ? (
+                                  <p className=" flex flex-row gap-x-2 items-center">
+                                    <IoLinkOutline />
+                                    <a
+                                      target="_blank"
+                                      className="text-primary underline"
+                                      href={get(local, "detail.meeting_link")}
+                                    >
+                                      Link Interview
+                                    </a>
+                                  </p>
+                                ) : (
+                                  <></>
+                                )}
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      ) : local.stepName === "FINAL_INTERVIEW" ? (
                         <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
                           <div className="font-bold flex flex-row items-center text-lg gap-x-2 border-b border-gray-200 px-4 mx-4 py-2">
                             Congratulations{" "}
