@@ -5,10 +5,6 @@ WORKDIR /app
 # Salin file yang diperlukan untuk instalasi dependencies
 RUN apt-get update && apt-get install git && apt-get clean
 
-RUN which chromium
-
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 RUN git clone https://github.com/faisolavolut/julong-lib.git src/lib
 
