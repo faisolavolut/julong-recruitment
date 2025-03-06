@@ -116,13 +116,13 @@ FROM node:22-slim AS runner
 WORKDIR /app
 
 # Salin Chromium dan dependensi sistem dari stage builder
-COPY --from=builder /usr/bin/chromium /usr/bin/chromium
-COPY --from=builder /usr/lib/chromium /usr/lib/chromium
-COPY --from=builder /usr/share/chromium /usr/share/chromium
+COPY --from=deps /usr/bin/chromium /usr/bin/chromium
+COPY --from=deps /usr/lib/chromium /usr/lib/chromium
+COPY --from=deps /usr/share/chromium /usr/share/chromium
 
 # Salin library sistem yang diperlukan
-COPY --from=builder /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
-COPY --from=builder /lib/x86_64-linux-gnu /lib/x86_64-linux-gnu
+COPY --from=deps /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
+COPY --from=deps /lib/x86_64-linux-gnu /lib/x86_64-linux-gnu
 
 # Salin aplikasi yang sudah di-build
 COPY --from=builder /app ./
