@@ -4,7 +4,8 @@ WORKDIR /app
 
 # Install dependensi sistem untuk Puppeteer
 RUN apt-get update && apt-get install -y \
-    git \chromium \
+    git \
+    chromium \
     fonts-liberation \
     libappindicator3-1 \
     libasound2 \
