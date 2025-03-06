@@ -9,31 +9,21 @@ export default async function handler(
     const { htmlContent } = req.body;
 
     try {
-      // Launch browser
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+      });
       const page = await browser.newPage();
-
-      // Set HTML content
-      await page.setContent(htmlContent, {
-        waitUntil: "networkidle0", // Tunggu hingga semua resource selesai dimuat
-      });
-
-      // Generate PDF
-      const pdf = await page.pdf({
-        format: "A4", // Ukuran halaman
-        margin: { top: "20mm", right: "20mm", bottom: "20mm", left: "20mm" }, // Margin
-        printBackground: true, // Sertakan background
-      });
-
-      // Tutup browser
+      await page.setContent(htmlContent, { waitUntil: "networkidle0" });
+      const pdf = await page.pdf({ format: "A4" });
       await browser.close();
-
-      // Kirim PDF sebagai respons
       res.setHeader("Content-Type", "application/pdf");
       res.send(pdf);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating PDF:", error);
-      res.status(500).json({ error: "Failed to generate PDF" });
+      res
+        .status(500)
+        .json({ error: "Failed to generate PDF", details: error.message });
     }
   } else {
     res.status(405).json({ error: "Method not allowed" });
