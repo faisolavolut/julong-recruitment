@@ -119,7 +119,7 @@ WORKDIR /app
 COPY --from=deps /usr/bin/chromium /usr/bin/chromium
 COPY --from=deps /usr/lib/chromium /usr/lib/chromium
 COPY --from=deps /usr/share/chromium /usr/share/chromium
-
+COPY --from=deps /etc/chromium.d /etc/chromium.d
 # Salin library sistem yang diperlukan
 COPY --from=deps /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
 COPY --from=deps /lib/x86_64-linux-gnu /lib/x86_64-linux-gnu
