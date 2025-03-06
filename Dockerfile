@@ -5,6 +5,7 @@ WORKDIR /app
 # Install dependensi sistem untuk Puppeteer
 RUN apt-get update && apt-get install -y \
     git \
+    chromium \
     libasound2 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
@@ -31,7 +32,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # Install Chromium
-RUN apt-get update && apt-get install -y chromium && apt-get clean
+RUN which chromium
 
 # Set environment variable untuk Puppeteer
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
