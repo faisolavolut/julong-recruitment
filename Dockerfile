@@ -127,8 +127,6 @@ COPY --from=deps /lib/x86_64-linux-gnu /lib/x86_64-linux-gnu
 # Salin aplikasi yang sudah di-build
 COPY --from=builder /app ./
 
-# Verifikasi instalasi Chromium
-RUN which chromium && chromium --version
 
 # Set environment variable untuk Puppeteer
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
