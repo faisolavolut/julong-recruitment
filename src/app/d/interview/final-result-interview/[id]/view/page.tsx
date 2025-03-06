@@ -23,10 +23,15 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { ModalImportResult } from "@/app/d/test-selection/result-test/[id]/ModalImportResult";
 import { actionToast } from "@/lib/utils/action";
 import { Alert } from "@/lib/components/ui/alert";
-import { ButtonContainer } from "@/lib/components/ui/button";
+import {
+  ButtonBetterTooltip,
+  ButtonContainer,
+} from "@/lib/components/ui/button";
 import { IoMdSave } from "react-icons/io";
 import { normalDate } from "@/lib/utils/date";
 import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
+import { IoCheckmarkOutline } from "react-icons/io5";
+import { X } from "lucide-react";
 
 function Page() {
   const id = getParams("id");
@@ -44,6 +49,7 @@ function Page() {
     const run = async () => {
       local.can_edit = true;
       local.ready = true;
+      // local.can_approve = access("approval-applicant-final-interview");
       local.render();
     };
     run();
@@ -530,6 +536,102 @@ function Page() {
                       sortable: false,
                       header: "Status Selection",
                       renderCell: ({ row, render }: any) => {
+                        if (row.final_result === "ACCEPTED") {
+                          return (
+                            <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Accepted
+                            </div>
+                          );
+                        } else if (row.final_result === "REJECTED") {
+                          return (
+                            <div className="bg-red-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Rejected
+                            </div>
+                          );
+                        } else if (!local.can_approve) {
+                          return (
+                            <div className="bg-gray-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">
+                              Pending
+                            </div>
+                          );
+                        }
+                        return (
+                          <div className="flex items-center gap-x-0.5 whitespace-nowrap">
+                            <Alert
+                              type={"save"}
+                              msg={`Are you sure you want to approve this applicant?`}
+                              onClick={async () => {
+                                await actionToast({
+                                  task: async () => {
+                                    await apix({
+                                      port: "recruitment",
+                                      value: "data.data",
+                                      path: "/api/interview-applicants/update-final-result",
+                                      method: "post",
+                                      data: {
+                                        id: row.id,
+                                        final_result: "ACCEPTED",
+                                      },
+                                    });
+                                    row.final_result = "ACCEPTED";
+                                    render();
+                                  },
+                                  after: () => {},
+                                  msg_load: "Saving result selection ",
+                                  msg_error: "Failed to save result selection ",
+                                  msg_succes:
+                                    "Your result selection has been saved successfully! ",
+                                });
+                              }}
+                            >
+                              <ButtonBetterTooltip
+                                typeButton="container"
+                                tooltip={"Approve applicant"}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <IoCheckmarkOutline className="text-lg" />
+                                </div>
+                              </ButtonBetterTooltip>
+                            </Alert>
+                            <Alert
+                              type={"save"}
+                              msg={`Are you sure you want to reject this applicant?`}
+                              onClick={async () => {
+                                await actionToast({
+                                  task: async () => {
+                                    await apix({
+                                      port: "recruitment",
+                                      value: "data.data",
+                                      path: "/api/interview-applicants/update-final-result",
+                                      method: "post",
+                                      data: {
+                                        id: row.id,
+                                        final_result: "REJECTED",
+                                      },
+                                    });
+                                    row.final_result = "REJECTED";
+                                    render();
+                                  },
+                                  after: () => {},
+                                  msg_load: "Saving result selection ",
+                                  msg_error: "Failed to save result selection ",
+                                  msg_succes:
+                                    "Your result selection has been saved successfully! ",
+                                });
+                              }}
+                            >
+                              <ButtonBetterTooltip
+                                typeButton="container"
+                                tooltip={"Reject applicant"}
+                                variant={"destructive"}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <X className="text-lg" />
+                                </div>
+                              </ButtonBetterTooltip>
+                            </Alert>
+                          </div>
+                        );
                         if (row.final_result === "ACCEPTED") {
                           return (
                             <div className="bg-green-500 text-center py-1 text-xs rounded-full font-bold text-white flex flex-row items-center justify-center w-24">

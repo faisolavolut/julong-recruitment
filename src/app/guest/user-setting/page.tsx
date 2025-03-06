@@ -284,6 +284,14 @@ function Page() {
                       </div>
                       <div>
                         <Field
+                          fm={fm}
+                          name={"religion"}
+                          label={"Religion"}
+                          type={"text"}
+                        />
+                      </div>
+                      <div>
+                        <Field
                           required={true}
                           fm={fm}
                           name={"age"}
