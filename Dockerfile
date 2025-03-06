@@ -5,6 +5,7 @@ WORKDIR /app
 # Salin file yang diperlukan untuk instalasi dependencies
 RUN apt-get update && apt-get install -y \
     git \
+    chromium \
     libasound2 \
     libatk-bridge2.0-0 \
     libatk1.0-0 \
@@ -28,7 +29,6 @@ RUN apt-get update && apt-get install -y \
     libxfixes3 \
     libxrandr2 \
     libxrender1 \
-    chromium \
     && apt-get clean
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
