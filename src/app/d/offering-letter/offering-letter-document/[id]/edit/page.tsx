@@ -22,7 +22,7 @@ import {
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
 import { DropdownHamburgerBetter } from "@/lib/components/ui/dropdown-menu";
-import { IoCheckmarkOutline } from "react-icons/io5";
+import { IoCheckmarkOutline, IoEye } from "react-icons/io5";
 import { TbEyeEdit } from "react-icons/tb";
 import { X } from "lucide-react";
 import { RiDownloadCloudLine } from "react-icons/ri";
@@ -87,16 +87,13 @@ function Page() {
                 className=""
                 classNameList="w-48"
                 list={[
-                  // {
-                  //   label: "Submit",
-                  //   icon: <IoMdSave className="text-xl" />,
-                  //   onClick: async () => {
-                  //     fm.data.status = "PENDING";
-                  //     fm.submit();
-                  //   },
-                  //   msg: "Are you sure you want to submit this record?",
-                  //   alert: true,
-                  // },
+                  {
+                    label: "View PDF",
+                    icon: <IoEye className="text-xl" />,
+                    onClick: async () => {
+                      navigate(`${urlPage}/${id}/doc`);
+                    },
+                  },
                   {
                     label: "Send",
                     icon: <IoIosSend className="text-xl" />,

@@ -4,7 +4,7 @@ import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { Alert } from "@/lib/components/ui/alert";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
@@ -20,6 +20,7 @@ import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
 import { normalDate } from "@/lib/utils/date";
 import { events } from "@/lib/utils/event";
+import { IoEye } from "react-icons/io5";
 
 function Page() {
   const id = getParams("id");
@@ -63,6 +64,16 @@ function Page() {
               />
             </div>
             <div className="flex flex-row gap-x-2 items-center">
+              <ButtonBetter
+                className={"bg-primary"}
+                onClick={() => {
+                  navigate(`${urlPage}/${id}/doc`);
+                }}
+              >
+                <IoEye className="text-xl" />
+                View PDF
+              </ButtonBetter>
+
               {fm?.data?.status === "DRAFT" ? (
                 <>
                   <Alert
@@ -129,6 +140,12 @@ function Page() {
             joined_date: normalDate(fm.data?.joined_date),
           },
         });
+      }}
+      afterLoad={async (fm: any) => {
+        if (fm?.data?.status === "SENT" || fm?.data?.status !== "COMPLETED") {
+          fm.mode = "view";
+          fm.render();
+        }
       }}
       onLoad={async () => {
         const data: any = await apix({

@@ -305,7 +305,7 @@ function Page() {
                   <Field
                     fm={fm}
                     name={"is_show"}
-                    disabled={false}
+                    forceDisabled={false}
                     label={"Show"}
                     type={"single-checkbox"}
                     onLoad={() => {

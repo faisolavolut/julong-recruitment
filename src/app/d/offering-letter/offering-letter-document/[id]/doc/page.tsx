@@ -9,8 +9,8 @@ import { PDFViewer } from "@/lib/components/export";
 
 function Home() {
   const id = getParams("id");
-  const labelPage = "Contract Document";
-  const urlPage = "/d/contract-document/contract-document";
+  const labelPage = "Offering Letter Document";
+  const urlPage = "/d/offering-letter/offering-letter-document";
   const local = useLocal({
     can_edit: false,
     ready: false as boolean,
@@ -61,17 +61,18 @@ function Home() {
     <div className="flex flex-col flex-grow">
       <div className="flex flex-col py-4 pt-0">
         <h2 className="text-xl font-semibold text-gray-900 ">
-          <span className="">Contract Document</span>
+          <span className="">Offering Letter Document</span>
         </h2>
         <BreadcrumbBetterLink
           data={[
             {
-              title: "List Contract Document",
-              url: "/d/contract-document/contract-document",
+              title: "List Offering Letter Document",
+              url: "/d/offering-letter/offering-letter-document",
             },
             {
               title: "Detail",
-              url: "/d/contract-document/contract-document/" + id + "/edit",
+              url:
+                "/d/offering-letter/offering-letter-document/" + id + "/edit",
             },
             {
               title: "PDF",

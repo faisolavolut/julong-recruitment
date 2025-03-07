@@ -345,7 +345,7 @@ function Page() {
                     fm={fm}
                     name={"is_show"}
                     label={"Show"}
-                    disabled={false}
+                    forceDisabled={false}
                     type={"single-checkbox"}
                     onLoad={() => {
                       return [

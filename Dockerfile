@@ -3,40 +3,8 @@ FROM node:22-slim AS deps
 WORKDIR /app
 
 # Install dependensi sistem untuk Puppeteer
-RUN apt-get update && apt-get install -y \
-    git \
-    chromium \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libc6 \
-    libcairo2 \
-    libcups2 \
-    libdbus-1-3 \
-    libexpat1 \
-    libfontconfig1 \
-    libgbm1 \
-    libglib2.0-0 \
-    libnspr4 \
-    libnss3 \
-    libpango-1.0-0 \
-    libx11-6 \
-    libx11-xcb1 \
-    libxcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxext6 \
-    libxfixes3 \
-    libxrandr2 \
-    libxrender1 \
-    && apt-get clean
+RUN apt-get update && apt-get install -y git && apt-get clean
 
-# Install Chromium
-RUN which chromium
-
-# Set environment variable untuk Puppeteer
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Salin file yang diperlukan untuk instalasi dependencies
 RUN git clone https://github.com/faisolavolut/julong-lib.git src/lib
@@ -115,22 +83,8 @@ RUN npm run build
 FROM node:22-slim AS runner
 WORKDIR /app
 
-# Salin Chromium dan dependensi sistem dari stage builder
-COPY --from=deps /usr/bin/chromium /usr/bin/chromium
-COPY --from=deps /usr/lib/chromium /usr/lib/chromium
-COPY --from=deps /usr/share/chromium /usr/share/chromium
-COPY --from=deps /etc/chromium.d /etc/chromium.d
-# Salin library sistem yang diperlukan
-COPY --from=deps /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu
-COPY --from=deps /lib/x86_64-linux-gnu /lib/x86_64-linux-gnu
-
 # Salin aplikasi yang sudah di-build
 COPY --from=builder /app ./
-
-
-# Set environment variable untuk Puppeteer
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 EXPOSE 3000
 

@@ -52,7 +52,6 @@
     "lodash.uniqby": "^4.7.0",
     "lucide-react": "^0.462.0",
     "next": "15.0.3",
-    "puppeteer": "^24.4.0",
     "react-icons": "^5.5.0",
     "react-resizable-panels": "^2.1.7",
     "react-slick": "^0.30.2",
