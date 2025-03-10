@@ -39,7 +39,14 @@ function HomePage() {
           path: "/api/job-postings/saved?page=1&page_size=8&status=IN PROGRESS",
           method: "get",
         });
-        local.data = res;
+        local.data = res?.length
+          ? res.map((e: any) => {
+              return {
+                ...e,
+                is_saved: true,
+              };
+            })
+          : [];
         local.count = count;
         local.maxPage = Math.ceil(getNumber(count) / 15);
         local.render();
