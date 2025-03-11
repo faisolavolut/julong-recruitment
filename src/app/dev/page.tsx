@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useLocal } from "@/lib/utils/use-local";
+import { DocumentBiodata } from "@/lib/components/ui/DocumentBiodata";
 function Portal() {
   const local = useLocal({
     ready: false,
@@ -11,7 +12,14 @@ function Portal() {
   });
   const router = useRouter();
   const [url, setUrl] = useState(null as any);
-  return <></>;
+  return (
+    <div
+      className="flex flex-grow flex-col h-screen
+     w-screen  relative"
+    >
+      <DocumentBiodata />
+    </div>
+  );
 }
 
 export default Portal;
