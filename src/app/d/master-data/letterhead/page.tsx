@@ -11,6 +11,7 @@ import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
 import { FilePreview } from "@/lib/components/form/field/FilePreview";
+import { siteurl } from "@/lib/utils/siteurl";
 
 function Page() {
   const local = useLocal({
@@ -66,7 +67,7 @@ function Page() {
           renderCell: ({ row, name }: any) => {
             return (
               <FilePreview
-                url={getValue(row, name)}
+                url={siteurl(getValue(row, name), "portal")}
                 disabled={true}
                 limit_name={5}
               />
