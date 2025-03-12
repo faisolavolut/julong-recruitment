@@ -15,7 +15,7 @@ function Portal() {
   return (
     <div
       className="flex flex-grow flex-col h-screen
-     w-screen relative"
+     w-screen  relative"
     >
       <DocumentBiodata />
     </div>

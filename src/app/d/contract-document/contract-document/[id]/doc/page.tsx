@@ -27,9 +27,6 @@ function Home() {
         path: `/api/document-sending/${id}`,
         validate: "object",
       });
-
-      const detail = `
-`;
       const res = await apix({
         port: "recruitment",
         method: "post",
