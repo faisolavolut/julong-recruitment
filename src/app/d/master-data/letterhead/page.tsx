@@ -35,40 +35,38 @@ function Page() {
       filter={false}
       header={{
         sideLeft: (data: any) => {
-          if (!local.can_add) return <></>;
-          return (
-            <div className="flex flex-row flex-grow">
-              <ButtonLink
-                className="bg-primary"
-                href={"/d/master-data/letterhead/new"}
-              >
-                <div className="flex items-center gap-x-0.5">
-                  <HiPlus className="text-xl" />
-                  <span className="capitalize">Add New</span>
-                </div>
-              </ButtonLink>
-            </div>
-          );
+          return <></>;
+          if (!local.can_add)
+            return (
+              <div className="flex flex-row flex-grow">
+                <ButtonLink
+                  className="bg-primary"
+                  href={"/d/master-data/letterhead/new"}
+                >
+                  <div className="flex items-center gap-x-0.5">
+                    <HiPlus className="text-xl" />
+                    <span className="capitalize">Add New</span>
+                  </div>
+                </ButtonLink>
+              </div>
+            );
         },
       }}
       column={[
         {
-          name: "organization_name",
+          name: "name",
           header: "Organization",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },
         },
         {
-          name: "path",
+          name: "logo",
           header: "File",
           renderCell: ({ row, name }: any) => {
             return (
               <FilePreview
-                url={
-                  getValue(row, name) ||
-                  "https://julong-recruitment.avolut.com/kop-surat.png"
-                }
+                url={getValue(row, name)}
                 disabled={true}
                 limit_name={5}
               />
@@ -107,18 +105,18 @@ function Page() {
       onLoad={async (param: any) => {
         const params = await events("onload-param", param);
         const result: any = await apix({
-          port: "recruitment",
-          value: "data.data.project_recruitment_headers",
-          path: `/api/project-recruitment-headers${params}`,
+          port: "portal",
+          value: "data.data.organizations",
+          path: `/api/organizations${params}`,
           validate: "array",
         });
         return result;
       }}
       onCount={async (params: any) => {
         const result: any = await apix({
-          port: "recruitment",
+          port: "portal",
           value: "data.data.total",
-          path: `/api/project-recruitment-headers?page=1&page_size=1`,
+          path: `/api/organizations${params}`,
           validate: "object",
         });
         return getNumber(result);

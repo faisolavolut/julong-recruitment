@@ -8,7 +8,6 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
-import { normalDate } from "@/lib/utils/date";
 
 function Page() {
   const labelPage = "Letterhead";
@@ -65,17 +64,17 @@ function Page() {
         );
       }}
       onSubmit={async (fm: any) => {
-        const res = await apix({
-          port: "recruitment",
-          value: "data.data",
-          path: "/api/document-sending",
-          method: "post",
-          data: {
-            ...fm.data,
-            document_date: normalDate(fm.data?.document_date),
-          },
-        });
-        if (res) navigate(`${urlPage}/${res?.id}/edit`);
+        // const res = await apix({
+        //   port: "portal",
+        //   value: "data.data",
+        //   path: `/api/organizations/${id}/upload-logo`,
+        //   method: "post",
+        //   data: {
+        //     ...fm.data,
+        //     document_date: normalDate(fm.data?.document_date),
+        //   },
+        // });
+        // if (res) navigate(`${urlPage}/${res?.id}/edit`);
       }}
       onLoad={async () => {
         return {};

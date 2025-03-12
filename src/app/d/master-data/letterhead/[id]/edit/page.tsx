@@ -10,11 +10,7 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { useEffect } from "react";
 import { IoMdSave } from "react-icons/io";
-import { MdDelete } from "react-icons/md";
-import { actionToast } from "@/lib/utils/action";
 import { IoEye } from "react-icons/io5";
-import { normalDate } from "@/lib/utils/date";
-import { events } from "@/lib/utils/event";
 import { ButtonLink } from "@/lib/components/ui/button-link";
 
 function Page() {
@@ -72,56 +68,30 @@ function Page() {
                   Save
                 </ButtonContainer>
               </Alert>
-              <Alert
-                type={"delete"}
-                msg={"Are you sure you want to delete this record?"}
-                onClick={async () => {
-                  await actionToast({
-                    task: async () => {
-                      await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: "/api/document-setup/" + id,
-                        method: "delete",
-                      });
-                    },
-                    after: () => {
-                      navigate(urlPage);
-                    },
-                    msg_load: "Delete ",
-                    msg_error: "Delete failed ",
-                    msg_succes: "Delete success ",
-                  });
-                }}
-              >
-                <ButtonContainer variant={"destructive"}>
-                  <MdDelete className="text-xl" />
-                  Delete
-                </ButtonContainer>
-              </Alert>
             </div>
           </div>
         );
       }}
       onSubmit={async (fm: any) => {
         await apix({
-          port: "recruitment",
+          port: "portal",
           value: "data.data",
-          path: "/api/document-sending/update",
+          path: `/api/organizations/${id}/upload-logo`,
           method: "put",
+          type: "form",
           data: {
             ...fm.data,
-            document_date: normalDate(fm.data?.document_date),
           },
         });
       }}
       onLoad={async () => {
         const data: any = await apix({
-          port: "recruitment",
+          port: "portal",
           value: "data.data",
-          path: `/api/project-recruitment-headers/${id}`,
+          path: `/api/organizations/${id}`,
           validate: "object",
         });
+        return data;
         const lineData = data?.project_recruitment_lines || [];
         const ids = lineData.map((e: any) => e?.id);
         const line: any = await apix({
@@ -157,28 +127,17 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    target={"for_organization_id"}
-                    name={"for_organization"}
+                    name={"name"}
                     label={"Organization Name"}
                     required={true}
-                    type={"dropdown-async"}
-                    onLoad={async (param: any) => {
-                      const params = await events("onload-param", param);
-                      const res: any = await apix({
-                        port: "portal",
-                        value: "data.data.organizations",
-                        path: `/api/organizations${params}`,
-                        validate: "array",
-                      });
-                      return res;
-                    }}
-                    onLabel={"name"}
+                    type={"text"}
+                    disabled={true}
                   />
                 </div>
                 <div>
                   <Field
                     fm={fm}
-                    name={"path"}
+                    name={"logo"}
                     required={true}
                     label={"Letterhead"}
                     type={"upload"}

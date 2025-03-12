@@ -20,10 +20,16 @@ function Home() {
 
   useEffect(() => {
     const run = async () => {
+      const data: any = await apix({
+        port: "portal",
+        value: "data.data",
+        path: `/api/organizations/${id}`,
+        validate: "object",
+      });
       const content = `
       <div style="display: flex; flex-direction: column;background: red">
       <div style="text-align: center;">
-        <img src="https://julong-recruitment.avolut.com/kop-surat.png" alt="Kop Surat" style="width: 1000px; height: 200px;">
+        <img src="${data?.logo}" alt="Kop Surat" style="width: 1000px; height: 200px;">
       </div>
       <div style="width: 100%; border-bottom: 3px solid black; "></div>
       </div>
