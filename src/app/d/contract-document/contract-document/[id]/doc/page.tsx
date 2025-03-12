@@ -34,7 +34,6 @@ function Home() {
       </div>
       <div style="width: 100%; border-bottom: 3px solid black; "></div>
       </div>
-
       ${data.detail_content}
       `;
       const res = await apix({

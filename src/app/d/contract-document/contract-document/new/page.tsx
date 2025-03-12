@@ -392,7 +392,39 @@ function Page() {
                 ) : (
                   <></>
                 )}
-
+                <div>
+                  <Field
+                    fm={fm}
+                    required={true}
+                    name={"hired_status"}
+                    label={"Hired Status"}
+                    type={"dropdown-async"}
+                    pagination={false}
+                    search={"local"}
+                    onLoad={async () => {
+                      return [
+                        {
+                          value: "Karyawan PKWT",
+                          label: "Karyawan PKWT",
+                        },
+                        {
+                          value: "Karyawan PKWTT",
+                          label: "Karyawan PKWTT",
+                        },
+                        {
+                          value: "Karyawan Tetap",
+                          label: "Karyawan Tetap",
+                        },
+                        {
+                          value: "Management Trainee",
+                          label: "Management Trainee",
+                        },
+                      ];
+                    }}
+                    onLabel={"label"}
+                    onValue={"value"}
+                  />
+                </div>
                 <div>
                   <Field
                     fm={fm}
