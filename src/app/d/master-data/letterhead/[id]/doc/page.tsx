@@ -27,10 +27,9 @@ function Home() {
         validate: "object",
       });
       const content = `
-      <div style="display: flex; flex-direction: column;background: red">
-      <div style="text-align: center;">
-        <img src="${data?.logo}" alt="Kop Surat" style="width: 1000px; height: 200px;">
-      </div>
+      <div style="display: flex; flex-direction: column;">
+      
+        <img src="${data?.logo}" alt="Kop Surat" style="width: 100%;">
       <div style="width: 100%; border-bottom: 3px solid black; "></div>
       </div>
       `;
