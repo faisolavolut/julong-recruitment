@@ -12,6 +12,8 @@ import { SidebarProvider } from "@/lib/context/SidebarContext";
 import { Navbar } from "flowbite-react";
 import { siteurl } from "@/lib/utils/siteurl";
 import SidebarBetterTree from "@/lib/components/partials/SidebarBetter";
+import { Bell, Calendar, Home } from "lucide-react";
+import { Menu } from "@/lib/svg/Menu";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -19,6 +21,7 @@ interface RootLayoutProps {
 const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const [mini, setMini] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [active, setActive] = useState("book");
 
   const local = useLocal({
     user: null as any,
@@ -60,9 +63,9 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="flex h-screen flex-row">
-      <div className="flex flex-col p-3 bg-layer ">
-        <div className="flex flex-col flex-grow rounded-2xl shadow-md">
+    <div className="flex h-screen flex-col md:flex-row">
+      <div className=" flex-col p-3 bg-layer hidden md:flex">
+        <div className=" flex-col flex-grow rounded-2xl shadow-md flex">
           <Navbar fluid className="pb-0 bg-white relative rounded-t-2xl">
             <div className="w-full p-1 pb-0">
               <div
@@ -141,13 +144,13 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
           )}
         </div>
       </div>
-      <div className="flex  bg-layer flex-grow flex-col py-3">
-        <div className="flex flex-row flex-grow  flex-grow">
+      <div className="flex  bg-layer flex-grow flex-col md:py-3">
+        <div className="flex flex-col md:flex-row  flex-grow">
           <div
             id="main-content"
             className="flex-grow  relative overflow-y-auto flex flex-row"
           >
-            <div className="w-full h-full absolute top-0 lef-0 flex flex-row  p-4 pb-0 pt-0 pr-6 pl-3">
+            <div className="w-full h-full absolute top-0 lef-0 flex flex-row  p-4 pb-0 pt-0 pr-1 md:pr-6 pl-1 md:pl-3">
               {isClient ? (
                 <main className="flex-grow flex flex-col">{children}</main>
               ) : (
@@ -155,6 +158,43 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
               )}
             </div>
           </div>
+        </div>
+      </div>
+      {/* MENU MOBILE */}
+      <div className="flex md:hidden flex-row ">
+        <div className="w-full bg-white shadow-md border border-primary text-white flex justify-around py-3 rounded-t-2xl">
+          <button
+            onClick={() => setActive("home")}
+            className={`p-2 ${
+              active === "home" ? "text-primary" : "text-gray-500"
+            }`}
+          >
+            <Home size={24} />
+          </button>
+          <button
+            onClick={() => setActive("bell")}
+            className={`p-2 ${
+              active === "bell" ? "text-primary" : "text-gray-500"
+            }`}
+          >
+            <Bell size={24} />
+          </button>
+          <button
+            onClick={() => setActive("calendar")}
+            className={`p-2 ${
+              active === "calendar" ? "text-primary" : "text-gray-500"
+            }`}
+          >
+            <Calendar size={24} />
+          </button>
+          <button
+            onClick={() => setActive("user")}
+            className={`p-2 w-10 ${
+              active === "user" ? "text-primary" : "text-gray-500"
+            }`}
+          >
+            <Menu />
+          </button>
         </div>
       </div>
     </div>

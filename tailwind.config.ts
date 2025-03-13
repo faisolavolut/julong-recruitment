@@ -39,6 +39,19 @@ export default {
         "linear-primary":
           "linear-gradient(90deg, rgba(62,62,97,1) 0%, rgba(46,46,72,1) 100%)",
       },
+      textColor: {
+        "linear-blue":
+          "linear-gradient(90deg, rgba(195,213,255,0.6) 0%, rgba(195,213,255,0.4) 100%)",
+        "linear-sidebar-active":
+          "linear-gradient(90deg, rgba(62,62,97,1) 0%, rgba(46,46,72,1) 100%)",
+        "linear-primary":
+          "linear-gradient(90deg, rgba(62,62,97,1) 0%, rgba(46,46,72,1) 100%)",
+      },
+      borderColor: {
+        "linear-blue": "rgba(195,213,255,0.6)",
+        "linear-sidebar-active": "rgba(62,62,97,1)",
+        "linear-primary": "rgba(62,62,97,1)",
+      },
       fontFamily: {
         body: [
           "Inter",

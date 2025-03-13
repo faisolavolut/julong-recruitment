@@ -66,6 +66,27 @@ function Page() {
       }}
       column={[
         {
+          name: "project_recruitment_header.document_number",
+          header: "Project Number",
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
+          name: "job_posting.document_number",
+          header: "Job Posting Number",
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
+          name: "job_posting.name",
+          header: "Job Title",
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
           name: "name",
           header: "Schedule Name",
           renderCell: ({ row, name }: any) => {

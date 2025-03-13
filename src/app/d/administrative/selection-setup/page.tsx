@@ -65,7 +65,14 @@ function Page() {
       column={[
         {
           name: "document_number",
-          header: "Project Number",
+          header: "Job Posting Number",
+          renderCell: ({ row, name }: any) => {
+            return <>{getValue(row, name)}</>;
+          },
+        },
+        {
+          name: "job_posting.project_recruitment_header.document_number",
+          header: "Job Posting Number",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
           },

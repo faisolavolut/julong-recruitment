@@ -268,7 +268,7 @@ function Page() {
         </div>
       </div>
       <div className="flex flex-col flex-grow gap-y-4">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid md:grid-cols-3 gap-4">
           <CardBetter className="p-4 flex flex-col">
             <div className="flex flex-col flex-grow gap-y-2">
               <p className="text-linear-primary font-bold text-sm">
@@ -354,8 +354,8 @@ function Page() {
           </CardBetter>
         </div>
 
-        <div className="bg-blue col-span-3 flex-grow  grid grid-cols-3 gap-4">
-          <div className="flex flex-col flex-grow col-span-2">
+        <div className="bg-blue col-span-3 flex-grow  grid md:grid-cols-3 gap-4">
+          <div className="flex flex-col flex-grow col-span-2 h-[250px] md:h-auto">
             <CardBetter className="col-span-2  p-4 flex flex-col h-full w-full">
               <div className="flex flex-col flex-grow gap-y-2">
                 <p className="text-linear-primary font-bold text-sm">
@@ -408,7 +408,7 @@ function Page() {
               </div>
             </CardBetter>
           </div>
-          <div className="flex flex-col flex-grow">
+          <div className="flex flex-col flex-grow col-span-2 md:col-span-1 h-[250px] md:h-auto">
             <CardBetter className="  p-4 flex flex-col  flex-grow">
               <div className="flex flex-col flex-grow gap-y-2">
                 <p className="text-linear-primary font-bold text-sm">
@@ -470,7 +470,7 @@ function Page() {
               </div>
             </CardBetter>
           </div>
-          <div className="flex flex-col flex-grow col-span-2">
+          <div className="flex flex-col flex-grow col-span-2 h-[250px] md:h-auto">
             <CardBetter className="  p-4 flex flex-col  flex-grow">
               <div className="flex flex-col flex-grow gap-y-2">
                 <p className="text-linear-primary font-bold text-sm">
@@ -525,7 +525,7 @@ function Page() {
               </div>
             </CardBetter>
           </div>
-          <div className="flex flex-col flex-grow">
+          <div className="flex flex-col flex-grow col-span-2 md:col-span-1 h-[250px] md:h-auto">
             <CardBetter className="  p-4 flex flex-col  flex-grow">
               <div className="flex flex-col flex-grow gap-y-2">
                 <p className="text-linear-primary font-bold text-sm">

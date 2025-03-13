@@ -17,7 +17,6 @@ import { configMenu } from "../d/config-menu";
 import { apix } from "@/lib/utils/apix";
 import ImageBetter from "@/lib/components/ui/Image";
 import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
-import { Down } from "@/lib/svg/Down";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/lib/components/ui/dialog";
 import { Up } from "@/lib/svg/Up";
+import { CgMenuRightAlt } from "react-icons/cg";
 
 const DefaultHeaderNavigation: FC = function () {
   const local = useLocal({
@@ -163,10 +163,9 @@ const DefaultHeaderNavigation: FC = function () {
                     console.log("HALO");
                   }}
                   variant="clean"
-                  className="flex flex-row items-center gap-x-2"
+                  className="flex flex-row items-center gap-x-2  "
                 >
-                  Menu
-                  <Down />
+                  <CgMenuRightAlt className="text-2xl" />
                 </ButtonContainer>
               </div>
             </DialogTrigger>
