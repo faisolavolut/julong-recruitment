@@ -10,8 +10,6 @@ import { useEffect } from "react";
 import { HiOutlinePencilAlt, HiPlus } from "react-icons/hi";
 import { IoEye } from "react-icons/io5";
 import { TableUI } from "@/lib/components/tablelist/TableUI";
-import { FilePreview } from "@/lib/components/form/field/FilePreview";
-import { siteurl } from "@/lib/utils/siteurl";
 
 function Page() {
   const local = useLocal({
@@ -61,19 +59,19 @@ function Page() {
             return <>{getValue(row, name)}</>;
           },
         },
-        {
-          name: "logo",
-          header: "File",
-          renderCell: ({ row, name }: any) => {
-            return (
-              <FilePreview
-                url={siteurl(getValue(row, name), "portal")}
-                disabled={true}
-                limit_name={5}
-              />
-            );
-          },
-        },
+        // {
+        //   name: "logo",
+        //   header: "File",
+        //   renderCell: ({ row, name }: any) => {
+        //     return (
+        //       <FilePreview
+        //         url={siteurl(getValue(row, name), "portal")}
+        //         disabled={true}
+        //         limit_name={5}
+        //       />
+        //     );
+        //   },
+        // },
         {
           name: "action",
           header: "Action",
