@@ -442,6 +442,17 @@ function Page() {
                               disabled={true}
                             />
                           </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"basic_wage"}
+                              label={"Gaji Pokok"}
+                              type={"money"}
+                              prefix={
+                                <div className="text-xs font-bold px-1">Rp</div>
+                              }
+                            />
+                          </div>
                           <div className="col-span-2">
                             <Field
                               hidden_label={true}

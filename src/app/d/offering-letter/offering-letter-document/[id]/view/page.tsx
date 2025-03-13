@@ -16,9 +16,10 @@ import {
 } from "@/lib/components/ui/accordion";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
+import { events } from "@/lib/utils/event";
 
 function Page() {
-  const id = getParams("id"); // Replace this with dynamic id retrieval
+  const id = getParams("id");
   const labelPage = "Offering Letter Document";
   const urlPage = `/d/offering-letter/offering-letter-document`;
   const local = useLocal({
@@ -58,7 +59,7 @@ function Page() {
                 ]}
               />
             </div>
-            <div className="flex flex-row space-x-2 items-center"></div>
+            <div className="flex flex-row gap-x-2 items-center"></div>
           </div>
         );
       }}
@@ -73,11 +74,13 @@ function Page() {
         });
         return {
           ...data,
+          recruitment_type: data?.job_posting?.recruitment_type,
           email: data?.applicant?.user_profile?.user?.email,
           project_number:
             data?.job_posting?.project_recruitment_header?.document_number,
           project_recruitment_header_id:
             data?.job_posting?.project_recruitment_header_id,
+          order: data?.project_recruitment_line?.order,
         };
       }}
       showResize={false}
@@ -92,40 +95,8 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    name={"applicant_name"}
-                    label={"Recipient's Name"}
-                    disabled={
-                      fm?.data?.project_recruitment_line_id &&
-                      fm?.data?.job_posting_id
-                        ? false
-                        : true
-                    }
-                    type={"dropdown"}
-                    onChange={({ data }) => {
-                      fm.data.email = data?.user_profile?.user?.email;
-                    }}
-                    onLoad={async () => {
-                      if (
-                        !fm?.data?.project_recruitment_line_id ||
-                        !fm?.data?.job_posting_id
-                      )
-                        return [];
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data.applicants",
-                        path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}?order=${fm?.data?.order}`,
-                        validate: "dropdown",
-                        keys: { label: "user_profile.name" },
-                      });
-                      return res;
-                    }}
-                  />
-                </div>
-                <div>
-                  <Field
-                    fm={fm}
-                    name={"email"}
-                    label={"Recipient's Email"}
+                    name={"document_number"}
+                    label={"Document Number"}
                     type={"text"}
                     disabled={true}
                   />
@@ -133,7 +104,16 @@ function Page() {
                 <div>
                   <Field
                     fm={fm}
-                    target="job_posting_id"
+                    name={"document_date"}
+                    label={"Document Date"}
+                    required={true}
+                    type={"date"}
+                  />
+                </div>
+                <div>
+                  <Field
+                    fm={fm}
+                    target={"job_posting_id"}
                     name={"job_posting"}
                     label={"Job Name"}
                     required={true}
@@ -141,6 +121,7 @@ function Page() {
                     onChange={({ data }) => {
                       fm.data.project_recruitment_header_id =
                         data?.project_recruitment_header_id;
+                      fm.data.recruitment_type = data?.recruitment_type;
                       fm.data.project_number =
                         data?.project_recruitment_header?.document_number;
                       fm.data.for_organization_id = data?.for_organization_id;
@@ -174,21 +155,8 @@ function Page() {
                     name={"recruitment_type"}
                     label={"Recruitment Type"}
                     required={true}
-                    pagination={false}
-                    search="local"
-                    type={"dropdown-async"}
-                    onLoad={async (param: any) => {
-                      const params = await events("onload-param", param);
-                      const res: any = await apix({
-                        port: "recruitment",
-                        value: "data.data",
-                        path: `/api/recruitment-types${params}`,
-                        validate: "array",
-                      });
-                      return res;
-                    }}
-                    onLabel={"value"}
-                    onValue={"value"}
+                    type={"text"}
+                    disabled={true}
                   />
                 </div>
                 <div>
@@ -311,6 +279,64 @@ function Page() {
                       </AccordionTriggerCustom>
                       <AccordionContent>
                         <div className="grid grid-cols-2 gap-4 md:gap-6">
+                          <div>
+                            <Field
+                              fm={fm}
+                              target="applicant_id"
+                              name={"applicant"}
+                              label={"Recipient's Name"}
+                              disabled={
+                                fm?.data?.project_recruitment_line_id &&
+                                fm?.data?.job_posting_id
+                                  ? false
+                                  : true
+                              }
+                              type={"dropdown-async"}
+                              autoRefresh={true}
+                              onChange={({ data }) => {
+                                fm.data.email = data?.user_profile?.user?.email;
+                              }}
+                              onLoad={async (param: any) => {
+                                if (
+                                  !fm?.data?.project_recruitment_line_id ||
+                                  !fm?.data?.job_posting_id
+                                )
+                                  return [];
+                                const params = await events("onload-param", {
+                                  ...param,
+                                  order: fm?.data?.order,
+                                });
+                                const res: any = await apix({
+                                  port: "recruitment",
+                                  value: "data.data.applicants",
+                                  path: `/api/applicants/job-posting/${fm?.data?.job_posting_id}${params}`,
+                                  validate: "array",
+                                });
+                                return res;
+                              }}
+                              onLabel={"user_profile.name"}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"email"}
+                              label={"Recipient's Email"}
+                              type={"text"}
+                              disabled={true}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
+                              name={"basic_wage"}
+                              label={"Gaji Pokok"}
+                              type={"money"}
+                              prefix={
+                                <div className="text-xs font-bold px-1">Rp</div>
+                              }
+                            />
+                          </div>
                           <div className="col-span-2">
                             <Field
                               hidden_label={true}
