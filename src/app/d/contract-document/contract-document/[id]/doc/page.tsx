@@ -47,9 +47,10 @@ function Home() {
           },
         },
         data: {
-          html: content,
+          html: data.detail_content,
+          document_sending_id: id,
         },
-        path: `/api/document-sending/generate-pdf`,
+        path: `/api/document-sending/generate-pdf-kop`,
       });
       const url = URL.createObjectURL(res);
       local.url = url;
