@@ -1,16 +1,13 @@
 "use client";
 import { Field } from "@/lib/components/form/Field";
-import {
-  convertToTimeOnly,
-  formatMoney,
-} from "@/lib/components/form/field/TypeInput";
+import { formatMoney } from "@/lib/components/form/field/TypeInput";
 import { Form } from "@/lib/components/form/Form";
 import { ButtonBetter } from "@/lib/components/ui/button";
 import { Progress } from "@/lib/components/ui/Progress";
 import { ScrollArea } from "@/lib/components/ui/scroll-area";
 import { userToken } from "@/lib/helpers/user";
 import { apix } from "@/lib/utils/apix";
-import { dayDate, formatTime, normalDate } from "@/lib/utils/date";
+import { dayDate, formatTime, normalDate, time } from "@/lib/utils/date";
 import { formatHoursTime } from "@/lib/utils/formatTime";
 import { getParams } from "@/lib/utils/get-params";
 import { getNumber } from "@/lib/utils/getNumber";
@@ -164,12 +161,12 @@ function Page() {
           const result = {
             ...schedule,
             start_date: new Date(
-              `${normalDate(schedule?.schedule_date)} ${convertToTimeOnly(
+              `${normalDate(schedule?.schedule_date)} ${time(
                 schedule?.start_time
               )}`
             ),
             end_date: new Date(
-              `${normalDate(schedule?.schedule_date)} ${convertToTimeOnly(
+              `${normalDate(schedule?.schedule_date)} ${time(
                 schedule?.end_time
               )}`
             ),

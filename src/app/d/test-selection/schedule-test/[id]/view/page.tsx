@@ -27,8 +27,7 @@ import {
 import { sortEducationLevels } from "@/app/lib/education-level";
 import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
-import { normalDate } from "@/lib/utils/date";
-import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
+import { normalDate, time } from "@/lib/utils/date";
 import { IoMdSave } from "react-icons/io";
 
 function Page() {
@@ -113,12 +112,12 @@ function Page() {
             end_date: normalDate(fm?.data?.end_date),
             schedule_date: normalDate(fm?.data?.schedule_date),
             start_time: normalDate(fm?.data?.schedule_date)
-              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+              ? `${normalDate(fm?.data?.schedule_date)} ${time(
                   fm.data.start_time
                 )}:00`
               : null,
             end_time: normalDate(fm?.data?.schedule_date)
-              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+              ? `${normalDate(fm?.data?.schedule_date)} ${time(
                   fm.data.end_time
                 )}:00`
               : null,

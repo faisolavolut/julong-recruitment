@@ -7,6 +7,8 @@ import {
   ButtonContainer,
 } from "@/lib/components/ui/button";
 import { Alert } from "@/lib/components/ui/alert";
+import { HiDocument } from "react-icons/hi2";
+
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
@@ -596,6 +598,16 @@ function Page() {
                               >
                                 <div className="flex items-center gap-x-2">
                                   <IoEye className="text-lg" />
+                                </div>
+                              </ButtonLink>
+                            </TooltipBetter>
+                            <TooltipBetter content="View Data Diri Karyawan">
+                              <ButtonLink
+                                className="bg-primary"
+                                href={`/d/administrative/selection-setup/${id}/candidate/${row?.id}/${row?.user_profile?.id}/biodata`}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <HiDocument className="text-lg" />
                                 </div>
                               </ButtonLink>
                             </TooltipBetter>

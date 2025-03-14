@@ -25,8 +25,8 @@ import {
 } from "@/app/lib/workExperiences";
 import { sortEducationLevels } from "@/app/lib/education-level";
 import { normalDate } from "@/lib/utils/date";
-import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
 import { get_user } from "@/lib/utils/get_user";
+import { time } from "console";
 
 function Page() {
   const id = getParams("id");
@@ -146,14 +146,12 @@ function Page() {
             end_date: normalDate(fm?.data?.end_date),
             schedule_date: normalDate(fm?.data?.schedule_date),
             start_time: normalDate(fm?.data?.start_date)
-              ? `${normalDate(fm?.data?.start_date)} ${convertToTimeOnly(
+              ? `${normalDate(fm?.data?.start_date)} ${time(
                   fm.data.start_time
                 )}:00`
               : null,
             end_time: normalDate(fm?.data?.end_date)
-              ? `${normalDate(fm?.data?.end_date)} ${convertToTimeOnly(
-                  fm.data.end_time
-                )}:00`
+              ? `${normalDate(fm?.data?.end_date)} ${time(fm.data.end_time)}:00`
               : null,
             fgd_schedule_assessors: Array.isArray(fgd_schedule_assessors)
               ? fgd_schedule_assessors.map((e) => {

@@ -28,8 +28,7 @@ import { AiOutlineCloudUpload } from "react-icons/ai";
 import { access } from "@/lib/utils/getAccess";
 import { Alert } from "@/lib/components/ui/alert";
 import { IoMdSave } from "react-icons/io";
-import { normalDate } from "@/lib/utils/date";
-import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
+import { normalDate, time } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id");
@@ -108,14 +107,12 @@ function Page() {
             end_date: normalDate(fm?.data?.end_date),
             schedule_date: normalDate(fm?.data?.schedule_date),
             start_time: normalDate(fm?.data?.start_date)
-              ? `${normalDate(fm?.data?.start_date)} ${convertToTimeOnly(
+              ? `${normalDate(fm?.data?.start_date)} ${time(
                   fm.data.start_time
                 )}:00`
               : null,
             end_time: normalDate(fm?.data?.end_date)
-              ? `${normalDate(fm?.data?.end_date)} ${convertToTimeOnly(
-                  fm.data.end_time
-                )}:00`
+              ? `${normalDate(fm?.data?.end_date)} ${time(fm.data.end_time)}:00`
               : null,
           },
         });

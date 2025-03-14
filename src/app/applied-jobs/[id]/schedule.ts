@@ -1,5 +1,5 @@
-import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
 import { apix } from "@/lib/utils/apix";
+import { time } from "@/lib/utils/date";
 
 export const scheduleFase = async ({
   step,
@@ -33,8 +33,10 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_time: convertToTimeOnly(test?.start_time),
-          end_time: convertToTimeOnly(test?.end_time),
+          start_date: test?.document_date,
+          end_date: test?.document_date,
+          start_time: time(test?.start_time),
+          end_time: time(test?.end_time),
         };
         result = detail;
       }
@@ -55,10 +57,10 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.project_recruitment_line?.start_date,
-          end_date: test?.project_recruitment_line?.end_date,
-          start_time: convertToTimeOnly(test?.start_time),
-          end_time: convertToTimeOnly(test?.end_time),
+          start_date: test?.document_date,
+          end_date: test?.document_date,
+          start_time: time(test?.start_time),
+          end_time: time(test?.end_time),
         };
         result = detail;
       }
@@ -80,10 +82,10 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.project_recruitment_line?.start_date,
-          end_date: test?.project_recruitment_line?.end_date,
-          start_time: convertToTimeOnly(test?.start_time),
-          end_time: convertToTimeOnly(test?.end_time),
+          start_date: test?.document_date,
+          end_date: test?.document_date,
+          start_time: time(test?.start_time),
+          end_time: time(test?.end_time),
         };
         result = detail;
       }
@@ -106,10 +108,10 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.project_recruitment_line?.start_date,
-          end_date: test?.project_recruitment_line?.end_date,
-          start_time: convertToTimeOnly(test?.start_time),
-          end_time: convertToTimeOnly(test?.end_time),
+          start_date: test?.document_date,
+          end_date: test?.document_date,
+          start_time: time(test?.start_time),
+          end_time: time(test?.end_time),
         };
         result = detail;
       }

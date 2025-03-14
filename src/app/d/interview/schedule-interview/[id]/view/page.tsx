@@ -22,8 +22,7 @@ import { TableList } from "@/lib/components/tablelist/TableList";
 import { Alert } from "@/lib/components/ui/alert";
 import { ButtonContainer } from "@/lib/components/ui/button";
 import { IoMdSave } from "react-icons/io";
-import { normalDate } from "@/lib/utils/date";
-import { convertToTimeOnly } from "@/lib/components/form/field/TypeInput";
+import { normalDate, time } from "@/lib/utils/date";
 
 function Page() {
   const id = getParams("id"); // Replace this with dynamic id retrieval
@@ -104,12 +103,12 @@ function Page() {
             end_date: normalDate(fm?.data?.end_date),
             schedule_date: normalDate(fm?.data?.schedule_date),
             start_time: normalDate(fm?.data?.schedule_date)
-              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+              ? `${normalDate(fm?.data?.schedule_date)} ${time(
                   fm.data.start_time
                 )}:00`
               : null,
             end_time: normalDate(fm?.data?.schedule_date)
-              ? `${normalDate(fm?.data?.schedule_date)} ${convertToTimeOnly(
+              ? `${normalDate(fm?.data?.schedule_date)} ${time(
                   fm.data.end_time
                 )}:00`
               : null,
