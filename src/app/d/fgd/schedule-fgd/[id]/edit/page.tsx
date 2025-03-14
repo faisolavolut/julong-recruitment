@@ -24,9 +24,8 @@ import {
   getTotalExperience,
 } from "@/app/lib/workExperiences";
 import { sortEducationLevels } from "@/app/lib/education-level";
-import { normalDate } from "@/lib/utils/date";
+import { normalDate, time } from "@/lib/utils/date";
 import { get_user } from "@/lib/utils/get_user";
-import { time } from "console";
 
 function Page() {
   const id = getParams("id");
