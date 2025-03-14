@@ -567,7 +567,7 @@ function Page() {
                                       port: "recruitment",
                                       value: "data.data",
                                       path: "/api/interview-applicants/update-final-result",
-                                      method: "post",
+                                      method: "put",
                                       data: {
                                         id: row.id,
                                         final_result: "ACCEPTED",
@@ -603,7 +603,7 @@ function Page() {
                                       port: "recruitment",
                                       value: "data.data",
                                       path: "/api/interview-applicants/update-final-result",
-                                      method: "post",
+                                      method: "put",
                                       data: {
                                         id: row.id,
                                         final_result: "REJECTED",
