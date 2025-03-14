@@ -19,6 +19,8 @@ import {
 } from "@/app/lib/workExperiences";
 import { FilePreview } from "@/lib/components/form/field/FilePreview";
 import { get_user } from "@/lib/utils/get_user";
+import { TooltipBetter } from "@/lib/components/ui/tooltip-better";
+import { HiDocument } from "react-icons/hi2";
 
 function Page() {
   const id_schedule = getParams("id_schedule");
@@ -267,6 +269,17 @@ function Page() {
                     </div>
                   </ButtonLink>
                 )}
+
+                <TooltipBetter content="View Data Diri Karyawan">
+                  <ButtonLink
+                    className="bg-primary"
+                    href={`/d/interview/result-interview/${id_schedule}/biodata/${row?.user_profile?.id}`}
+                  >
+                    <div className="flex items-center gap-x-2">
+                      <HiDocument className="text-lg" />
+                    </div>
+                  </ButtonLink>
+                </TooltipBetter>
               </div>
             );
           },

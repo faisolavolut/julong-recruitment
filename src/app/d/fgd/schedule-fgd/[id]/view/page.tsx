@@ -457,8 +457,8 @@ function Page() {
                     const params = await events("onload-param", param);
                     const result: any = await apix({
                       port: "recruitment",
-                      value: "data.data.test_applicants",
-                      path: `/api/test-applicants/test-schedule-header/${id}${params}`,
+                      value: "data.data.fgd_applicants",
+                      path: `/api/fgd-applicants/fgd-schedule/${id}${params}`,
                       validate: "array",
                     });
                     return result;
@@ -467,7 +467,7 @@ function Page() {
                     const result: any = await apix({
                       port: "recruitment",
                       value: "data.data.total",
-                      path: `/api/test-applicants/test-schedule-header/${id}?page=1&page_size=1`,
+                      path: `/api/fgd-applicants/fgd-schedule/${id}?page=1&page_size=1`,
                       validate: "object",
                     });
                     return getNumber(result);

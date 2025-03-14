@@ -31,6 +31,7 @@ import { labelDocumentType } from "@/lib/utils/document_type";
 import get from "lodash.get";
 import { normalDate, time } from "@/lib/utils/date";
 import { get_user } from "@/lib/utils/get_user";
+import { HiDocument } from "react-icons/hi2";
 
 function Page() {
   const id = getParams("id");
@@ -693,6 +694,17 @@ function Page() {
                               >
                                 <div className="flex items-center gap-x-2">
                                   <IoEye className="text-lg" />
+                                </div>
+                              </ButtonLink>
+                            </TooltipBetter>
+
+                            <TooltipBetter content="View Data Diri Karyawan">
+                              <ButtonLink
+                                className="bg-primary"
+                                href={`/d/test-selection/schedule-test/${id}/${row.user_profile_id}/biodata`}
+                              >
+                                <div className="flex items-center gap-x-2">
+                                  <HiDocument className="text-lg" />
                                 </div>
                               </ButtonLink>
                             </TooltipBetter>
