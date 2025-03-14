@@ -884,7 +884,7 @@ function Page() {
                                             "flex flex-row flex-wrap py-2"
                                           )}
                                         >
-                                          <div className="flex-grow grid gap-4 grid-cols-1 md:grid-cols-2">
+                                          <div className="flex-grow md:grid gap-4 grid-cols-1 md:grid-cols-2">
                                             {fm?.data
                                               ?.document_verification_lines
                                               ?.length ? (
@@ -951,6 +951,85 @@ function Page() {
                                                             });
                                                           }}
                                                           type={"upload"}
+                                                          description={() => {
+                                                            if (
+                                                              item?.name ===
+                                                              "Kartu BPJS TK"
+                                                            )
+                                                              return (
+                                                                <p>
+                                                                  Please upload
+                                                                  your file
+                                                                  using the{" "}
+                                                                  <span
+                                                                    className="cursor-pointer text-primary underline"
+                                                                    onClick={async () => {
+                                                                      await actionToast(
+                                                                        {
+                                                                          task: async () => {
+                                                                            const res =
+                                                                              await apix(
+                                                                                {
+                                                                                  port: "recruitment",
+                                                                                  method:
+                                                                                    "get",
+                                                                                  value:
+                                                                                    "data",
+                                                                                  options:
+                                                                                    {
+                                                                                      responseType:
+                                                                                        "blob",
+                                                                                      headers:
+                                                                                        {
+                                                                                          Accept:
+                                                                                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // Memastikan format yang benar
+                                                                                        },
+                                                                                    },
+                                                                                  path: `/api/document-verification-headers/bpjs-tk`,
+                                                                                }
+                                                                              );
+                                                                            const url =
+                                                                              window.URL.createObjectURL(
+                                                                                new Blob(
+                                                                                  [
+                                                                                    res,
+                                                                                  ]
+                                                                                )
+                                                                              );
+                                                                            const link =
+                                                                              document.createElement(
+                                                                                "a"
+                                                                              );
+                                                                            link.href =
+                                                                              url;
+                                                                            link.setAttribute(
+                                                                              "download",
+                                                                              "Kartu BPJS TK.xlsx"
+                                                                            );
+                                                                            document.body.appendChild(
+                                                                              link
+                                                                            );
+                                                                            link.click();
+                                                                          },
+                                                                          msg_load:
+                                                                            "Download Template",
+                                                                          msg_error:
+                                                                            "Download Template Failed",
+                                                                          msg_succes:
+                                                                            "Download Template Success",
+                                                                        }
+                                                                      );
+                                                                    }}
+                                                                  >
+                                                                    BPJS
+                                                                    Employment
+                                                                    Card (BPJS
+                                                                    TK) template
+                                                                  </span>
+                                                                </p>
+                                                              );
+                                                            return <></>;
+                                                          }}
                                                         />
                                                       </div>
                                                     );
