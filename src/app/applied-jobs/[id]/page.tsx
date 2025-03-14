@@ -111,6 +111,7 @@ function Page() {
           applicant,
         },
       });
+      console.log({ test });
       if (stepName === "FINAL_RESULT") {
         local.step = stepNow?.id + 1;
       }

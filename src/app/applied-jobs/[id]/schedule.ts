@@ -32,8 +32,8 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.start_time,
-          end_date: test?.start_time,
+          start_date: test?.schedule_date,
+          end_date: test?.schedule_date,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
@@ -56,8 +56,8 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.start_time,
-          end_date: test?.start_time,
+          start_date: test?.schedule_date,
+          end_date: test?.schedule_date,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
@@ -80,8 +80,8 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.start_time,
-          end_date: test?.start_time,
+          start_date: test?.schedule_date,
+          end_date: test?.schedule_date,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
@@ -105,8 +105,8 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.start_time,
-          end_date: test?.start_time,
+          start_date: test?.schedule_date,
+          end_date: test?.schedule_date,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
