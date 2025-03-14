@@ -10,7 +10,6 @@ export const scheduleFase = async ({
 }) => {
   let result = null as any;
   let test = null as any;
-  console.log(step);
   switch (step) {
     case "TEST":
       try {
@@ -33,8 +32,8 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.document_date,
-          end_date: test?.document_date,
+          start_date: test?.start_time,
+          end_date: test?.start_time,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
@@ -57,8 +56,8 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.document_date,
-          end_date: test?.document_date,
+          start_date: test?.start_time,
+          end_date: test?.start_time,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
@@ -74,7 +73,6 @@ export const scheduleFase = async ({
                   `,
           validate: "object",
         });
-        console.log({ test });
         if (test?.status === "DRAFT") test = null;
       } catch (ex) {}
       if (test) {
@@ -82,14 +80,13 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.document_date,
-          end_date: test?.document_date,
+          start_date: test?.start_time,
+          end_date: test?.start_time,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
         result = detail;
       }
-      console.log({ result });
       break;
 
     case "FGD":
@@ -108,8 +105,8 @@ export const scheduleFase = async ({
         let detail = {
           ...test,
           url: url,
-          start_date: test?.document_date,
-          end_date: test?.document_date,
+          start_date: test?.start_time,
+          end_date: test?.start_time,
           start_time: time(test?.start_time),
           end_time: time(test?.end_time),
         };
@@ -159,7 +156,6 @@ export const scheduleFase = async ({
         };
         result = detail;
       }
-      console.log({ result });
       break;
     case "CONTRACT_DOCUMENT":
       try {

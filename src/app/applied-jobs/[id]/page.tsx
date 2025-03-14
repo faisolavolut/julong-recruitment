@@ -96,7 +96,6 @@ function Page() {
               : null,
         };
       });
-      console.log(steps);
       steps = steps?.sort((a: any, b: any) => a?.id - b?.id);
       const stepNumber = steps?.length ? steps?.map((e: any) => e?.id) : [];
       const max = Math.max(...stepNumber);
@@ -112,7 +111,6 @@ function Page() {
           applicant,
         },
       });
-      console.log({ test });
       if (stepName === "FINAL_RESULT") {
         local.step = stepNow?.id + 1;
       }
@@ -861,7 +859,6 @@ function Page() {
                                   }}
                                   onLoad={async () => {
                                     const data = local.detail;
-                                    console.log({ data });
                                     return {
                                       employee_contract:
                                         "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/Contract.pdf",
