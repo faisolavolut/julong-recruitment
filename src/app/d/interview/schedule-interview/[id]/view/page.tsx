@@ -207,7 +207,7 @@ function Page() {
                     fm={fm}
                     name={"job_name"}
                     label={"Job Name"}
-                    type={"time"}
+                    type={"text"}
                     required={true}
                   />
                 </div>

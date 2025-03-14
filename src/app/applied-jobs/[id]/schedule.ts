@@ -100,6 +100,7 @@ export const scheduleFase = async ({
         });
         if (test?.status === "DRAFT") test = null;
       } catch (ex) {}
+      console.log("test", test);
       if (test) {
         let url = test.link;
         let detail = {

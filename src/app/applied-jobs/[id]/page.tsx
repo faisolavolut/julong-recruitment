@@ -103,6 +103,7 @@ function Page() {
         now >= max ? e?.id === max : e?.id === now
       );
       const stepName = stepNow?.name;
+      console.log(stepName);
       const test = await scheduleFase({
         step: stepName,
         data: {
