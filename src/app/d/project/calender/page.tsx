@@ -201,7 +201,6 @@ function Page() {
                       };
                     })
                   : [];
-                console.log(result);
                 return result;
               }}
             />
