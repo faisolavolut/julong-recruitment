@@ -285,6 +285,7 @@ const DefaultHeaderNavigation: FC = function () {
               </div>
               <div className="flex flex-col flex-grow">
                 <ListUI
+                  className={"border-none"}
                   name="todo"
                   content={({ item }: any) => {
                     return (
