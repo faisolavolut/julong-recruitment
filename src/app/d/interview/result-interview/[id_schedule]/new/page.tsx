@@ -289,7 +289,7 @@ function Page() {
                     type={"upload"}
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"content_description"}

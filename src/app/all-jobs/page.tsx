@@ -188,7 +188,7 @@ function HomePage() {
                         )}
                       >
                         <div className="flex-grow grid grid-cols-1">
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
                             <Accordion
                               type="single"
                               collapsible
@@ -247,7 +247,7 @@ function HomePage() {
                               </AccordionItem>
                             </Accordion>
                           </div>
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
                             <Accordion
                               type="single"
                               collapsible
@@ -298,7 +298,7 @@ function HomePage() {
                             </Accordion>
                           </div>
 
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
                             <Accordion
                               type="single"
                               collapsible
@@ -356,7 +356,7 @@ function HomePage() {
                               </AccordionItem>
                             </Accordion>
                           </div>
-                          <div className="col-span-2 hidden">
+                          <div className="md:col-span-2 hidden">
                             <Accordion
                               type="single"
                               collapsible

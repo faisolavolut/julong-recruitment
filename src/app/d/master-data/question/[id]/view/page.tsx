@@ -199,7 +199,7 @@ function Page() {
                 {["TEST", "INTERVIEW", "FGD", "FINAL_INTERVIEW"].includes(
                   fm?.data?.form_type
                 ) && (
-                  <div className="col-span-2">
+                  <div className="md:col-span-2">
                     <Accordion
                       type="single"
                       collapsible
@@ -282,7 +282,7 @@ function Page() {
                   ["CONTRACT_DOCUMENT", "OFFERING_LETTER"].includes(
                     fm?.data?.form_type
                   ) && (
-                    <div className="col-span-2">
+                    <div className="md:col-span-2">
                       <Accordion type="single" collapsible className="w-full">
                         <AccordionItem value="item-1">
                           <AccordionTrigger>Detail Document</AccordionTrigger>
@@ -313,7 +313,7 @@ function Page() {
                                 />
                               </div>
 
-                              <div className="col-span-2">
+                              <div className="md:col-span-2">
                                 <Field
                                   fm={fm}
                                   name={"header"}
@@ -321,7 +321,7 @@ function Page() {
                                   type={"richtext"}
                                 />
                               </div>
-                              <div className="col-span-2">
+                              <div className="md:col-span-2">
                                 <Field
                                   fm={fm}
                                   name={"notes"}
@@ -329,7 +329,7 @@ function Page() {
                                   type={"richtext"}
                                 />
                               </div>
-                              <div className="col-span-2">
+                              <div className="md:col-span-2">
                                 <Field
                                   fm={fm}
                                   name={"footer"}

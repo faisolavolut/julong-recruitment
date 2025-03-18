@@ -141,7 +141,7 @@ function Page() {
           <>
             <div className={"flex flex-col flex-wrap px-4 py-2"}>
               <div className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8">
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <div className="w-48 h-48">
                     <ImageBetter
                       src={siteurl(fm?.data?.avatar)}
@@ -213,7 +213,7 @@ function Page() {
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Accordion
                     type="single"
                     collapsible
@@ -289,7 +289,7 @@ function Page() {
                     </AccordionItem>
                   </Accordion>
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Accordion
                     type="single"
                     collapsible
@@ -372,7 +372,7 @@ function Page() {
                   </Accordion>
                 </div>
 
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Accordion
                     type="single"
                     collapsible
@@ -406,7 +406,7 @@ function Page() {
                                       type={"text"}
                                     />
                                   </div>
-                                  <div className="col-span-2">
+                                  <div className="md:col-span-2">
                                     <Field
                                       fm={cloneFM(fm, e)}
                                       name={"description"}

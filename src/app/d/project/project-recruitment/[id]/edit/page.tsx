@@ -365,7 +365,7 @@ function Page() {
                     onValue={"value"}
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"description"}

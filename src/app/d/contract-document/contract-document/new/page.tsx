@@ -451,7 +451,7 @@ function Page() {
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Accordion
                     type="single"
                     collapsible
@@ -632,7 +632,7 @@ function Page() {
                               type={"text"}
                             />
                           </div>
-                          <div className="col-span-2">
+                          <div className="md:col-span-2">
                             <Field
                               hidden_label={true}
                               fm={fm}

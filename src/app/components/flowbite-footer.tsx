@@ -6,7 +6,7 @@ const FlowbiteFooterSection: FC = function () {
     <footer className="bg-gray-50 dark:bg-gray-800">
       <div className="lg:-10 mx-auto max-w-screen-xl p-4 py-6 md:p-8">
         <div className="grid grid-cols-2 gap-8 lg:grid-cols-6">
-          <div className="col-span-2">
+          <div className="md:col-span-2">
             <a
               href="#"
               className="mb-2 flex items-center text-2xl font-semibold text-gray-900 dark:text-white sm:mb-0"

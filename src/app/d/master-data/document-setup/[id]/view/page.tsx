@@ -177,7 +177,7 @@ function Page() {
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"header"}
@@ -185,7 +185,7 @@ function Page() {
                     type={"richtext"}
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"body"}
@@ -193,7 +193,7 @@ function Page() {
                     type={"richtext"}
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"footer"}

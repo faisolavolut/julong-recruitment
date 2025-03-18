@@ -283,7 +283,7 @@ function Page() {
                     )
                   )}
                 </div>
-                <div className="col-span-2 flex flex-row items-center justify-end">
+                <div className="md:col-span-2 flex flex-row items-center justify-end">
                   <ProgressChart
                     percentage={getNumber(
                       local?.dashboard?.total_recruitment_target?.percentage
@@ -315,7 +315,7 @@ function Page() {
                     )
                   )}
                 </div>
-                <div className="col-span-2 flex flex-row items-center justify-end">
+                <div className="md:col-span-2 flex flex-row items-center justify-end">
                   <ProgressChart
                     percentage={getNumber(
                       local?.dashboard?.total_recruitment_realization
@@ -356,7 +356,7 @@ function Page() {
 
         <div className="bg-blue col-span-3 flex-grow  grid md:grid-cols-3 gap-4">
           <div className="flex flex-col flex-grow col-span-2 h-[250px] md:h-auto">
-            <CardBetter className="col-span-2  p-4 flex flex-col h-full w-full">
+            <CardBetter className="md:col-span-2  p-4 flex flex-col h-full w-full">
               <div className="flex flex-col flex-grow gap-y-2">
                 <p className="text-linear-primary font-bold text-sm">
                   Duration Recruitment

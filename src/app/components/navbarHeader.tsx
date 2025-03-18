@@ -246,7 +246,7 @@ const DefaultHeaderNavigation: FC = function () {
                 </div>
                 <Link
                   href={siteurl("/")}
-                  className="col-span-2 flex flex-row items-center px-4 col-span-2 md:col-span-1 justify-end md:justify-center"
+                  className="md:col-span-2 flex flex-row items-center px-4 col-span-2 md:col-span-1 justify-end md:justify-center"
                 >
                   <img
                     src={siteurl("/logo-full.png")}

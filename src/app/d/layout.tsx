@@ -73,7 +73,7 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="flex h-screen max-h-screen flex-col md:flex-row">
+    <div className="flex h-screen flex-col md:flex-row">
       <div className=" flex-col p-3 bg-layer hidden md:flex">
         <div className=" flex-col flex-grow rounded-2xl shadow-md flex">
           <Navbar fluid className="pb-0 bg-white relative rounded-t-2xl">
@@ -171,7 +171,14 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
         </div>
       </div>
       {/* MENU MOBILE */}
-      <div className="flex md:hidden flex-row ">
+      <div
+        className={cx(
+          "flex md:hidden flex-row  sticky bottom-0 left-0",
+          css`
+            z-index: 1;
+          `
+        )}
+      >
         <div
           className={cx(
             "w-full bg-white shadow-md border border-primary text-white flex justify-around py-3 rounded-t-2xl flex-row items-center",
@@ -260,6 +267,9 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
                     data={local.data}
                     minimaze={() => {
                       setMini(!mini);
+                    }}
+                    onClick={() => {
+                      setOpen(false);
                     }}
                     mini={false}
                   />

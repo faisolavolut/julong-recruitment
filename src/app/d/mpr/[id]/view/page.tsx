@@ -333,7 +333,7 @@ function Page() {
                 {["penggantian", "penambahan"].includes(
                   fm.data?.is_replacement
                 ) ? (
-                  <div className="col-span-2">
+                  <div className="md:col-span-2">
                     <Field
                       hidden_label={true}
                       fm={fm}
@@ -487,7 +487,7 @@ function Page() {
                     }}
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"experiences"}
@@ -496,7 +496,7 @@ function Page() {
                   />
                 </div>
                 <div></div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"required_qualification"}
@@ -541,7 +541,7 @@ function Page() {
                     type={"text"}
                   />
                 </div>
-                <div className="col-span-2">
+                <div className="md:col-span-2">
                   <Field
                     fm={fm}
                     name={"jobdesc"}
