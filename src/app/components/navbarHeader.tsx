@@ -139,6 +139,26 @@ const DefaultHeaderNavigation: FC = function () {
     <>
       {local.user ? (
         <>
+          {get(local.user, "roles[0].permissions.length") ? (
+            <>
+              <ButtonLink
+                className="flex flex-row items-center gap-x-1"
+                variant={"noline"}
+                href={`/d/dashboard`}
+              >
+                Dashboard
+              </ButtonLink>
+              <ButtonLink
+                className="flex flex-row items-center gap-x-1"
+                variant={"noline"}
+                href={`${process.env.NEXT_PUBLIC_API_PORTAL}/choose-roles?state=recruitment`}
+              >
+                Switch Role
+              </ButtonLink>
+            </>
+          ) : (
+            <></>
+          )}
           <ButtonLink
             href={`${siteurl("/login", "portal")}`}
             className="md:hidden flex w-full text-primary font-bold"

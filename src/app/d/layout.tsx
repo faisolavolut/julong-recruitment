@@ -14,6 +14,9 @@ import { siteurl } from "@/lib/utils/siteurl";
 import SidebarBetterTree from "@/lib/components/partials/SidebarBetter";
 import { Bell, Calendar, Home } from "lucide-react";
 import { Menu } from "@/lib/svg/Menu";
+import { SheetBetter } from "@/lib/components/ui/sheet";
+import { IoIosArrowBack } from "react-icons/io";
+import { ButtonLink } from "@/lib/components/ui/button-link";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -21,6 +24,9 @@ interface RootLayoutProps {
 const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
   const [mini, setMini] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isOpen, setOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState("");
+  const [isNotification, setNotification] = useState(false);
   const [active, setActive] = useState("book");
 
   const local = useLocal({
@@ -37,6 +43,10 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
       setMini(localMini === "true" ? true : false);
     }
     const run = async () => {
+      if (typeof location === "object") {
+        const newPage = window.location.pathname;
+        setCurrentPage(newPage);
+      }
       try {
         const user = await api.get(
           `${process.env.NEXT_PUBLIC_API_PORTAL}/api/users/me`
@@ -162,15 +172,34 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
       </div>
       {/* MENU MOBILE */}
       <div className="flex md:hidden flex-row ">
-        <div className="w-full bg-white shadow-md border border-primary text-white flex justify-around py-3 rounded-t-2xl">
-          <button
-            onClick={() => setActive("home")}
-            className={`p-2 ${
-              active === "home" ? "text-primary" : "text-gray-500"
-            }`}
-          >
-            <Home size={24} />
-          </button>
+        <div
+          className={cx(
+            "w-full bg-white shadow-md border border-primary text-white flex justify-around py-3 rounded-t-2xl flex-row items-center",
+            css`
+              z-index: 1;
+            `
+          )}
+        >
+          <div className="flex flex-row items-center">
+            <ButtonLink
+              variant="clean"
+              href="/d/dashboard"
+              onClick={() => {
+                setCurrentPage("/d/dashboard");
+              }}
+            >
+              <div
+                className={cx(
+                  currentPage === "/d/dashboard"
+                    ? "text-primary"
+                    : "text-gray-500"
+                )}
+              >
+                <Home className="w-6 h-6" />
+              </div>
+            </ButtonLink>
+          </div>
+
           <button
             onClick={() => setActive("bell")}
             className={`p-2 ${
@@ -179,22 +208,65 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
           >
             <Bell size={24} />
           </button>
-          <button
-            onClick={() => setActive("calendar")}
-            className={`p-2 ${
-              active === "calendar" ? "text-primary" : "text-gray-500"
-            }`}
+
+          <div className="flex flex-row items-center">
+            <ButtonLink
+              variant="clean"
+              href="/d/project/calender"
+              onClick={() => {
+                setCurrentPage("/d/project/calender");
+              }}
+            >
+              <div
+                className={cx(
+                  currentPage === "/d/project/calender"
+                    ? "text-primary"
+                    : "text-gray-500"
+                )}
+              >
+                <Calendar className="w-6 h-6" />
+              </div>
+            </ButtonLink>
+          </div>
+          <SheetBetter
+            open={isOpen}
+            contentOpen={
+              <div>
+                <Menu className="w-6 h-6 text-gray-500" />
+              </div>
+            }
+            side="left"
+            onOpenChange={(event) => {
+              setOpen(event);
+            }}
+            showClose={false}
+            className="p-0"
           >
-            <Calendar size={24} />
-          </button>
-          <button
-            onClick={() => setActive("user")}
-            className={`p-2 w-10 ${
-              active === "user" ? "text-primary" : "text-gray-500"
-            }`}
-          >
-            <Menu />
-          </button>
+            <div className="flex flex-col h-full">
+              <div className="flex flex-row py-4 items-center  px-6 ">
+                <div
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                  className="flex flex-row items-center gap-x-2 text-gray-500 cursor-pointer"
+                >
+                  <IoIosArrowBack className="h-6 w-6" />
+                  Back
+                </div>
+              </div>
+              <div className="flex flex-col gap-y-2 flex-grow">
+                <SidebarProvider>
+                  <SidebarBetterTree
+                    data={local.data}
+                    minimaze={() => {
+                      setMini(!mini);
+                    }}
+                    mini={false}
+                  />
+                </SidebarProvider>
+              </div>
+            </div>
+          </SheetBetter>
         </div>
       </div>
     </div>

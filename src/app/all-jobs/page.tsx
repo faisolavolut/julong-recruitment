@@ -94,11 +94,11 @@ function HomePage() {
       <DefaultHeaderNavigation />
       <div
         className={cx(
-          "h-64 relative mb-8 flex flex-row items-center justify-center bg-primary"
+          "h-64 relative mb-8 flex flex-row items-center justify-center bg-primary px-2 md:px-0"
         )}
       >
         <div className="flex flex-grow max-w-screen-xl justify-center">
-          <div className="flex  w-3/4 bg-gradient-white shadow-md rounded-full">
+          <div className="flex w-full md:w-3/4 bg-gradient-white shadow-md rounded-md md:rounded-full">
             <Form
               onSubmit={async (fm: any) => {}}
               onLoad={async () => {
@@ -111,7 +111,11 @@ function HomePage() {
               children={(fm: any) => {
                 return (
                   <>
-                    <div className={cx("flex flex-row flex-wrap px-4 py-2")}>
+                    <div
+                      className={cx(
+                        "flex flex-col gap-y-2 md:gap-y-0 md:flex-row flex-wrap px-4 py-2"
+                      )}
+                    >
                       <div className="flex-grow grid gap-4 md:gap-6 md:grid-cols-2">
                         <div>
                           <Field
@@ -162,7 +166,7 @@ function HomePage() {
       </div>
       <div className="relative flex flex-col flex-grow">
         <div className="flex flex-col justify-center items-center">
-          <div className="flex-grow grid grid-cols-5 p-8 max-w-screen-xl">
+          <div className="flex-grow grid md:grid-cols-5 p-8 max-w-screen-xl">
             <div>
               <Form
                 onSubmit={async (fm: any) => {}}
@@ -407,7 +411,7 @@ function HomePage() {
                 }}
               />
             </div>
-            <div className="flex-grow flex flex-col p-8 col-span-4 pt-0">
+            <div className="flex-grow flex flex-col md:p-8 md:col-span-4 pt-0">
               <div className="flex flex-row items-center pb-4  w-full">
                 <p className="font-bold text-3xl">Jobs</p>
               </div>

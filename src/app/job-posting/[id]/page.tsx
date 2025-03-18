@@ -78,13 +78,13 @@ function Page() {
                 <div className="flex-grow flex flex-col ">
                   <div
                     className={cx(
-                      "bg-gradient-to-r from-blue-500 to-blue-700 p-6  flex items-center space-x-4 shadow-lg bg-no-repeat bg-cover	bg-center	",
+                      "flex-col md:flex-row bg-gradient-to-r from-blue-500 to-blue-700 p-6  flex items-center  shadow-lg bg-no-repeat bg-cover	bg-center	",
                       css`
                         background-image: url("${siteurl("/frame.jpg")}");
                       `
                     )}
                   >
-                    <div className="flex flex-col px-10 gap-x-4">
+                    <div className="flex flex-col md:px-10 gap-x-4">
                       <div className="w-16 h-16">
                         <ImageBetter
                           src={siteurl(get(local, "data.organization_logo"))}
@@ -253,10 +253,10 @@ function Page() {
                       )}
                     </div>
                   </div>
-                  <div className="flex flex-row gap-x-4 p-8">
+                  <div className="flex flex-col md:flex-row gap-x-4 p-2 md:p-8">
                     <div
                       className={cx(
-                        "grid grid-cols-3 gap-x-4 flex-grow",
+                        "grid grid-cols-1 md:grid-cols-3 gap-x-4 flex-grow p-2 md:p-6",
                         css`
                           .tiptap h1 {
                             font-size: 1.4rem !important;
@@ -268,10 +268,6 @@ function Page() {
 
                           .tiptap h3 {
                             font-size: 1.1rem !important;
-                          }
-                          .ProseMirror {
-                            outline: none !important;
-                            padding: 10px 2rem 10px 2rem;
                           }
                           .tiptap a {
                             font-weight: bold;
@@ -294,7 +290,7 @@ function Page() {
                     >
                       <div
                         className={cx(
-                          "flex flex-grow flex-col col-span-2 tiptap ProseMirror"
+                          "flex flex-grow flex-col md:col-span-2 tiptap ProseMirror"
                         )}
                         dangerouslySetInnerHTML={{
                           __html: get(local, "data.content_description"),
