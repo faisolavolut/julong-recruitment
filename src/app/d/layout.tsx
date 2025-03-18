@@ -73,7 +73,7 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div className="flex h-screen flex-col md:flex-row">
+    <div className="flex h-screen max-h-screen flex-col md:flex-row">
       <div className=" flex-col p-3 bg-layer hidden md:flex">
         <div className=" flex-col flex-grow rounded-2xl shadow-md flex">
           <Navbar fluid className="pb-0 bg-white relative rounded-t-2xl">
