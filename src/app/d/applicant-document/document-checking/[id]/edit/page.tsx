@@ -423,6 +423,9 @@ function Page() {
                       sortable: false,
                       header: "File",
                       renderCell: ({ row, name }: any) => {
+                        if (row?.document_verification?.format === "text") {
+                          return <>{getValue(row, name)}</>;
+                        }
                         return (
                           <FilePreview
                             url={getValue(row, name)}
