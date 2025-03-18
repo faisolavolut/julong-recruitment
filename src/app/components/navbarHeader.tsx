@@ -12,24 +12,21 @@ import { useLocal } from "@/lib/utils/use-local";
 import { Dropdown } from "flowbite-react";
 import get from "lodash.get";
 import Link from "next/link";
-import { useEffect, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import { configMenu } from "../d/config-menu";
 import { apix } from "@/lib/utils/apix";
 import ImageBetter from "@/lib/components/ui/Image";
 import { ButtonBetter } from "@/lib/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/lib/components/ui/dialog";
-import { Up } from "@/lib/svg/Up";
 import { NotificationUnread } from "@/lib/svg/NotificationUnread";
 import { SheetBetter } from "@/lib/components/ui/sheet";
+import { CgMenuLeftAlt } from "react-icons/cg";
+import { X } from "lucide-react";
+import { ListUI } from "@/lib/components/list/ListUI";
+import { getNumber } from "@/lib/utils/getNumber";
 
 const DefaultHeaderNavigation: FC = function () {
+  const [isOpen, setOpen] = useState(false);
+  const [isNotification, setNotification] = useState(false);
   const local = useLocal({
     user: null as any,
     role: null as any,
@@ -138,78 +135,119 @@ const DefaultHeaderNavigation: FC = function () {
       )}
     </>
   );
+  const userMenuMobile = (
+    <>
+      {local.user ? (
+        <>
+          <ButtonLink
+            href={`${siteurl("/login", "portal")}`}
+            className="md:hidden flex w-full text-primary font-bold"
+            variant={"noline"}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width={25}
+              height={25}
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M12 3.25a.75.75 0 0 1 0 1.5a7.25 7.25 0 0 0 0 14.5a.75.75 0 0 1 0 1.5a8.75 8.75 0 1 1 0-17.5"
+              ></path>
+              <path
+                fill="currentColor"
+                d="M16.47 9.53a.75.75 0 0 1 1.06-1.06l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H10a.75.75 0 0 1 0-1.5h8.19z"
+              ></path>
+            </svg>
+            Sign out
+          </ButtonLink>
+        </>
+      ) : (
+        <>
+          <ButtonLink
+            href={`${siteurl("/login", "portal")}`}
+            variant={"noline"}
+            className="md:flex hidden"
+          >
+            Log in
+          </ButtonLink>
+          <ButtonLink
+            href={`${siteurl("/login", "portal")}`}
+            className="md:hidden flex w-full text-primary font-bold"
+            variant={"noline"}
+          >
+            Log in
+          </ButtonLink>
+          <ButtonBetter
+            onClick={() => {
+              localStorage.setItem(
+                "redirect_apply_job",
+                JSON.stringify({
+                  path: `/all-jobs`,
+                })
+              );
+              navigate(`${siteurl("/register", "portal")}`);
+            }}
+            className="md:w-auto w-full"
+          >
+            Sign up
+          </ButtonBetter>
+        </>
+      )}
+    </>
+  );
   return (
     <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
-      <div className="grid grid-cols-3 md:grid-cols-5 max-w-screen-xl items-center w-full">
+      <div className="grid grid-cols-4 py-2 md:py-0 md:grid-cols-5 max-w-screen-xl items-center w-full">
         <div className="md:hidden flex justify-start">
-          <SheetBetter />
-          {/* <Dialog open={local.open}>
-            <DialogTrigger
-              asChild
-              onClick={() => {
-                local.open = true;
-                local.render();
-                console.log("HALO");
-              }}
-            >
+          <SheetBetter
+            open={isOpen}
+            contentOpen={
               <div>
                 <CgMenuLeftAlt className="text-xl" />
               </div>
-            </DialogTrigger>
-            <DialogContent
-              className={cx(
-                " flex flex-col w-screen h-screen py-0 px-0",
-                css`
-                  .dialog-close {
-                    display: none;
-                  }
-                  max-width: 100vw !important;
-                `
-              )}
-              onClick={() => {
-                local.open = false;
-                local.render();
-              }}
-            >
-              <DialogHeader className="hidden">
-                <DialogTitle>Applicant</DialogTitle>
-                <DialogDescription className="hidden"></DialogDescription>
-              </DialogHeader>
-              <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
-                <div className="grid grid-cols-2 md:grid-cols-5 max-w-screen-xl items-center w-full">
-                  <Link
-                    href={siteurl("/")}
-                    className="flex flex-row items-center px-4"
-                  >
-                    <img
-                      src={siteurl("/logo-full.png")}
-                      className="mr-3 h-6"
-                      alt="Flowbite Logo"
-                    />
-                  </Link>
-                  <div className="md:hidden flex justify-end">
-                    <ButtonBetter
-                      onClick={() => {
-                        local.open = false;
-                        local.render();
-                      }}
-                      variant="clean"
-                      className="flex flex-row items-center gap-x-2"
-                    >
-                      Menu
-                      <Up />
-                    </ButtonBetter>
-                  </div>
+            }
+            side="left"
+            onOpenChange={(event) => {
+              setOpen(event);
+            }}
+            showClose={false}
+            className="p-0"
+          >
+            <div className="flex flex-col">
+              <div className="flex flex-row py-5 items-center  px-2 ">
+                <div className="hidden md:grid grid-cols-4 flex-grow"></div>
+                <div
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </div>
+                <Link
+                  href={siteurl("/")}
+                  className="col-span-2 flex flex-row items-center px-4 col-span-2 md:col-span-1 justify-end md:justify-center"
+                >
+                  <img
+                    src={siteurl("/logo-full.png")}
+                    className="mr-3 h-6"
+                    alt="Flowbite Logo"
+                  />
+                </Link>
+              </div>
+              <div className="flex flex-col gap-y-2 justify-center items-center">
+                {menuNavbar}
+                <div className="flex flex-col items-center w-3/4 gap-x-2 px-4">
+                  {userMenuMobile}
                 </div>
               </div>
-              <div className="flex flex-col flex-grow gap-y-2 px-2">
-                {menuNavbar}
-                {userMenu}
-              </div>
-            </DialogContent>
-          </Dialog> */}
+            </div>
+          </SheetBetter>
         </div>
-        <Link href={siteurl("/")} className="flex flex-row items-center px-4">
+        <Link
+          href={siteurl("/")}
+          className="flex flex-row items-center px-4 col-span-2 md:col-span-1 justify-end md:justify-center"
+        >
           <img
             src={siteurl("/logo-full.png")}
             className="mr-3 h-6"
@@ -217,71 +255,84 @@ const DefaultHeaderNavigation: FC = function () {
           />
         </Link>
         <div className="md:hidden flex justify-end">
-          <Dialog open={local.open}>
-            <DialogTrigger
-              asChild
-              onClick={() => {
-                local.open = true;
-                local.render();
-                console.log("HALO");
-              }}
-            >
-              <div className="text-2xl text-gray-900 cursor-pointer">
-                <NotificationUnread className="w-6" />
+          <SheetBetter
+            open={isNotification}
+            contentOpen={
+              <div>
+                <NotificationUnread className="h-6 w-6" />
               </div>
-            </DialogTrigger>
-            <DialogContent
-              className={cx(
-                " flex flex-col w-screen h-screen py-0 px-0",
-                css`
-                  .dialog-close {
-                    display: none;
-                  }
-                  max-width: 100vw !important;
-                `
-              )}
-              onClick={() => {
-                local.open = false;
-                local.render();
-              }}
-            >
-              <DialogHeader className="hidden">
-                <DialogTitle>Applicant</DialogTitle>
-                <DialogDescription className="hidden"></DialogDescription>
-              </DialogHeader>
-              <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
-                <div className="grid grid-cols-2 md:grid-cols-5 max-w-screen-xl items-center w-full">
-                  <Link
-                    href={siteurl("/")}
-                    className="flex flex-row items-center px-4"
-                  >
-                    <img
-                      src={siteurl("/logo-full.png")}
-                      className="mr-3 h-6"
-                      alt="Flowbite Logo"
-                    />
-                  </Link>
-                  <div className="md:hidden flex justify-end">
-                    <ButtonBetter
-                      onClick={() => {
-                        local.open = false;
-                        local.render();
-                      }}
-                      variant="clean"
-                      className="flex flex-row items-center gap-x-2"
-                    >
-                      Menu
-                      <Up />
-                    </ButtonBetter>
-                  </div>
+            }
+            side="right"
+            onOpenChange={(event) => {
+              setNotification(event);
+            }}
+            showClose={false}
+            className="p-0"
+          >
+            <div className="flex flex-col h-full">
+              <div className="flex flex-row py-4 items-center  px-2 border-b border-gray-300">
+                <div className="flex flex-grow">
+                  <p className="font-bold text-lg">Notification</p>
+                </div>
+
+                <div
+                  onClick={() => {
+                    setNotification(false);
+                  }}
+                >
+                  <X className="h-5 w-5" />
                 </div>
               </div>
-              <div className="flex flex-col flex-grow gap-y-2 px-2">
-                {menuNavbar}
-                {userMenu}
+              <div className="flex flex-col flex-grow">
+                <ListUI
+                  name="todo"
+                  content={({ item }: any) => {
+                    return (
+                      <>
+                        <div className="border border-gray-200  bg-white p-2 rounded-lg shadow-lg max-w-md">
+                          <div className="flex flex-col">
+                            <div className="flex flex-row gap-x-2 text-xs items-center">
+                              <div className=" p-1 rounded-md font-bold text-gray-800 bg-red-500">
+                                ANNOUNCEMENT
+                              </div>
+                              <div className="text-gray-600 ">
+                                March 17, 2025
+                              </div>
+                            </div>
+                            <p className="text-xs py-2">
+                              Join our online event and learn how to make money
+                              online
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  }}
+                  onLoad={async (param: any) => {
+                    const params = await events("onload-param", {
+                      ...param,
+                    });
+                    const result: any = await apix({
+                      port: "recruitment",
+                      value: "data.data.job_postings",
+                      path: `/api/job-postings${params}`,
+                      validate: "array",
+                    });
+                    return result;
+                  }}
+                  onCount={async () => {
+                    const result: any = await apix({
+                      port: "recruitment",
+                      value: "data.data.total",
+                      path: `/api/job-postings?page=1&page_size=1`,
+                      validate: "object",
+                    });
+                    return getNumber(result);
+                  }}
+                />
               </div>
-            </DialogContent>
-          </Dialog>
+            </div>
+          </SheetBetter>
         </div>
         <div className="md:flex hidden flex flex-row flex-grow items-center justify-center col-span-3">
           {menuNavbar}
