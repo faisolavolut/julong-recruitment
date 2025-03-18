@@ -949,7 +949,12 @@ function Page() {
                                                                 "Upload success ",
                                                             });
                                                           }}
-                                                          type={"upload"}
+                                                          type={
+                                                            item?.format ===
+                                                            "text"
+                                                              ? "text"
+                                                              : "upload"
+                                                          }
                                                           description={() => {
                                                             if (
                                                               item?.name ===

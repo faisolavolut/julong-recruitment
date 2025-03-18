@@ -16,7 +16,7 @@ import { useEffect, type FC } from "react";
 import { configMenu } from "../d/config-menu";
 import { apix } from "@/lib/utils/apix";
 import ImageBetter from "@/lib/components/ui/Image";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
+import { ButtonBetter } from "@/lib/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -26,7 +26,8 @@ import {
   DialogTrigger,
 } from "@/lib/components/ui/dialog";
 import { Up } from "@/lib/svg/Up";
-import { CgMenuRightAlt } from "react-icons/cg";
+import { NotificationUnread } from "@/lib/svg/NotificationUnread";
+import { SheetBetter } from "@/lib/components/ui/sheet";
 
 const DefaultHeaderNavigation: FC = function () {
   const local = useLocal({
@@ -139,7 +140,75 @@ const DefaultHeaderNavigation: FC = function () {
   );
   return (
     <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
-      <div className="grid grid-cols-2 md:grid-cols-5 max-w-screen-xl items-center w-full">
+      <div className="grid grid-cols-3 md:grid-cols-5 max-w-screen-xl items-center w-full">
+        <div className="md:hidden flex justify-start">
+          <SheetBetter />
+          {/* <Dialog open={local.open}>
+            <DialogTrigger
+              asChild
+              onClick={() => {
+                local.open = true;
+                local.render();
+                console.log("HALO");
+              }}
+            >
+              <div>
+                <CgMenuLeftAlt className="text-xl" />
+              </div>
+            </DialogTrigger>
+            <DialogContent
+              className={cx(
+                " flex flex-col w-screen h-screen py-0 px-0",
+                css`
+                  .dialog-close {
+                    display: none;
+                  }
+                  max-width: 100vw !important;
+                `
+              )}
+              onClick={() => {
+                local.open = false;
+                local.render();
+              }}
+            >
+              <DialogHeader className="hidden">
+                <DialogTitle>Applicant</DialogTitle>
+                <DialogDescription className="hidden"></DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-row py-2 items-center bg-white shadow-sm px-2 sticky top-0 z-50 justify-center">
+                <div className="grid grid-cols-2 md:grid-cols-5 max-w-screen-xl items-center w-full">
+                  <Link
+                    href={siteurl("/")}
+                    className="flex flex-row items-center px-4"
+                  >
+                    <img
+                      src={siteurl("/logo-full.png")}
+                      className="mr-3 h-6"
+                      alt="Flowbite Logo"
+                    />
+                  </Link>
+                  <div className="md:hidden flex justify-end">
+                    <ButtonBetter
+                      onClick={() => {
+                        local.open = false;
+                        local.render();
+                      }}
+                      variant="clean"
+                      className="flex flex-row items-center gap-x-2"
+                    >
+                      Menu
+                      <Up />
+                    </ButtonBetter>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col flex-grow gap-y-2 px-2">
+                {menuNavbar}
+                {userMenu}
+              </div>
+            </DialogContent>
+          </Dialog> */}
+        </div>
         <Link href={siteurl("/")} className="flex flex-row items-center px-4">
           <img
             src={siteurl("/logo-full.png")}
@@ -157,16 +226,8 @@ const DefaultHeaderNavigation: FC = function () {
                 console.log("HALO");
               }}
             >
-              <div>
-                <ButtonContainer
-                  onClick={() => {
-                    console.log("HALO");
-                  }}
-                  variant="clean"
-                  className="flex flex-row items-center gap-x-2  "
-                >
-                  <CgMenuRightAlt className="text-2xl" />
-                </ButtonContainer>
+              <div className="text-2xl text-gray-900 cursor-pointer">
+                <NotificationUnread className="w-6" />
               </div>
             </DialogTrigger>
             <DialogContent
@@ -176,6 +237,7 @@ const DefaultHeaderNavigation: FC = function () {
                   .dialog-close {
                     display: none;
                   }
+                  max-width: 100vw !important;
                 `
               )}
               onClick={() => {

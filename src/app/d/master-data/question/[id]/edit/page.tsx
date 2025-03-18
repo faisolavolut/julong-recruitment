@@ -491,10 +491,7 @@ function Page() {
                                     ...fm,
                                     data: e,
                                   };
-                                  console.log(
-                                    idx,
-                                    fm_row.data.question_options
-                                  );
+
                                   return (
                                     <div
                                       className="grid gap-4 mb-4 md:gap-6 md:grid-cols-2 sm:mb-8"

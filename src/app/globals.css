@@ -386,3 +386,124 @@ body {
     transform: rotate(1turn);
   }
 }
+@layer utilities {
+}
+
+.data-\[state\=closed\]\:duration-300[data-state="closed"] {
+  animation-duration: 300ms;
+}
+
+.data-\[state\=open\]\:duration-500[data-state="open"] {
+  animation-duration: 500ms;
+}
+/* Animasi Slide In */
+.data-\[state\=open\]\:slide-in-from-top[data-state="open"] {
+  animation: slideInFromTop 0.5s ease-in-out forwards;
+}
+.data-\[state\=open\]\:slide-in-from-bottom[data-state="open"] {
+  animation: slideInFromBottom 0.5s ease-in-out forwards;
+}
+.data-\[state\=open\]\:slide-in-from-left[data-state="open"] {
+  animation: slideInFromLeft 0.5s ease-in-out forwards;
+}
+.data-\[state\=open\]\:slide-in-from-right[data-state="open"] {
+  animation: slideInFromRight 0.5s ease-in-out forwards;
+}
+
+/* Animasi Slide Out */
+.data-\[state\=closed\]\:slide-out-to-top[data-state="closed"] {
+  animation: slideOutToTop 0.3s ease-in-out forwards;
+}
+.data-\[state\=closed\]\:slide-out-to-bottom[data-state="closed"] {
+  animation: slideOutToBottom 0.3s ease-in-out forwards;
+}
+.data-\[state\=closed\]\:slide-out-to-left[data-state="closed"] {
+  animation: slideOutToLeft 0.3s ease-in-out forwards;
+}
+.data-\[state\=closed\]\:slide-out-to-right[data-state="closed"] {
+  animation: slideOutToRight 0.3s ease-in-out forwards;
+}
+
+/* Keyframes untuk Slide In */
+@keyframes slideInFromTop {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Keyframes untuk Slide Out */
+@keyframes slideOutToTop {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+@keyframes slideOutToBottom {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+@keyframes slideOutToLeft {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+@keyframes slideOutToRight {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
