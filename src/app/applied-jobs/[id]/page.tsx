@@ -894,6 +894,92 @@ function Page() {
                                                       item
                                                         ?.document_verification
                                                         ?.format;
+                                                    if (format === "text") {
+                                                      return (
+                                                        <div
+                                                          key={`files-${
+                                                            idx + 1
+                                                          }`}
+                                                        >
+                                                          <Field
+                                                            fm={cloneFM(
+                                                              fm,
+                                                              item
+                                                            )}
+                                                            isDebounce={true}
+                                                            name={"answer"}
+                                                            label={item?.name}
+                                                            onChange={async (
+                                                              ev
+                                                            ) => {
+                                                              await actionToast(
+                                                                {
+                                                                  task: async () => {
+                                                                    const res =
+                                                                      await apix(
+                                                                        {
+                                                                          port: "recruitment",
+                                                                          value:
+                                                                            "data.data",
+                                                                          path:
+                                                                            "/api/document-verification-lines/" +
+                                                                            item?.id +
+                                                                            "/answer",
+                                                                          method:
+                                                                            "put",
+                                                                          data: {
+                                                                            answer:
+                                                                              ev,
+                                                                            id: item?.id,
+                                                                          },
+                                                                        }
+                                                                      );
+                                                                    if (res) {
+                                                                      fm.data.document_verification_lines[
+                                                                        idx
+                                                                      ] = {
+                                                                        ...fm
+                                                                          .data
+                                                                          .document_verification_lines[
+                                                                          idx
+                                                                        ],
+                                                                        answer:
+                                                                          res?.answer,
+                                                                      };
+                                                                      fm.render();
+                                                                    }
+                                                                  },
+                                                                  failed:
+                                                                    () => {
+                                                                      fm.data.document_verification_lines[
+                                                                        idx
+                                                                      ] = {
+                                                                        ...fm
+                                                                          .data
+                                                                          .document_verification_lines[
+                                                                          idx
+                                                                        ],
+                                                                        answer:
+                                                                          null,
+                                                                      };
+                                                                      fm.render();
+                                                                    },
+                                                                  after:
+                                                                    () => {},
+                                                                  msg_load:
+                                                                    "Update ",
+                                                                  msg_error:
+                                                                    "Update failed ",
+                                                                  msg_succes:
+                                                                    "Update success ",
+                                                                }
+                                                              );
+                                                            }}
+                                                            type={"text"}
+                                                          />
+                                                        </div>
+                                                      );
+                                                    }
                                                     return (
                                                       <div
                                                         key={`files-${idx + 1}`}
@@ -963,6 +1049,7 @@ function Page() {
                                                                     "Upload success ",
                                                                 }
                                                               );
+                                                            } else {
                                                             }
                                                           }}
                                                           type={

@@ -421,10 +421,11 @@ function Page() {
                     {
                       name: "path",
                       sortable: false,
-                      header: "File",
+                      header: "Respon",
                       renderCell: ({ row, name }: any) => {
+                        console.log(row?.name, { row });
                         if (row?.document_verification?.format === "text") {
-                          return <>{getValue(row, name)}</>;
+                          return <>{getValue(row, "answer")}</>;
                         }
                         return (
                           <FilePreview
