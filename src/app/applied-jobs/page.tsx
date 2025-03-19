@@ -222,16 +222,6 @@ function HomePage() {
                                 <MdOutlineLocationOn />
                                 {getValue(row, "for_organization_location")}
                               </div>
-                              <div className="flex flex-row gap-x-0.5 items-center">
-                                <div className="text-sm">Rp</div>
-                                {formatMoney(
-                                  getNumber(getValue(row, "salary_min"))
-                                )}
-                                -
-                                {formatMoney(
-                                  getNumber(getValue(row, "salary_max"))
-                                )}
-                              </div>
                             </div>
                           </div>
                         </div>
