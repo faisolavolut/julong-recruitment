@@ -354,7 +354,11 @@ function Page() {
                       header: "Respon",
                       renderCell: ({ row, name }: any) => {
                         if (row?.document_verification?.format === "text") {
-                          return <>{getValue(row, "answer")}</>;
+                          return (
+                            <div className="flex items-center h-10">
+                              {getValue(row, "answer")}
+                            </div>
+                          );
                         }
                         return (
                           <FilePreview

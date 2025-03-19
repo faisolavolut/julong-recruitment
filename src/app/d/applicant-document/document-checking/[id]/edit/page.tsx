@@ -423,9 +423,12 @@ function Page() {
                       sortable: false,
                       header: "Respon",
                       renderCell: ({ row, name }: any) => {
-                        console.log(row?.name, { row });
                         if (row?.document_verification?.format === "text") {
-                          return <>{getValue(row, "answer")}</>;
+                          return (
+                            <div className="flex items-center  h-10">
+                              {getValue(row, "answer")}
+                            </div>
+                          );
                         }
                         return (
                           <FilePreview
