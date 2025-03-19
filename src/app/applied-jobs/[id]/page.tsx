@@ -103,7 +103,7 @@ function Page() {
         now >= max ? e?.id === max : e?.id === now
       );
       const stepName = stepNow?.name;
-      console.log(stepName);
+      // console.log(stepName);
       const test = await scheduleFase({
         step: stepName,
         data: {
@@ -890,6 +890,10 @@ function Page() {
                                               <>
                                                 {fm?.data?.document_verification_lines.map(
                                                   (item: any, idx: number) => {
+                                                    const format =
+                                                      item
+                                                        ?.document_verification
+                                                        ?.format;
                                                     return (
                                                       <div
                                                         key={`files-${idx + 1}`}
@@ -950,8 +954,7 @@ function Page() {
                                                             });
                                                           }}
                                                           type={
-                                                            item?.format ===
-                                                            "text"
+                                                            format === "text"
                                                               ? "text"
                                                               : "upload"
                                                           }

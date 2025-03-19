@@ -151,16 +151,16 @@ export const JobCard: React.FC<any> = ({
         }}
         className={cx(" flex flex-col", user ? "cursor-pointer" : "")}
       >
-        <h2 className="mt-3 font-bold text-lg line-clamp-2">
+        <h2 className="text-md md:text-lg mt-3 font-bold  line-clamp-2">
           {data?.name || data?.job_name}
         </h2>
-        <p className="text-gray-600 text-sm line-clamp-1">
+        <p className="text-gray-600 text-xs md:text-sm  line-clamp-1">
           {data?.for_organization_name} &bull; {data?.for_organization_location}
         </p>
 
         {/* Deskripsi */}
         <div
-          className={cx("mt-2 text-gray-500 text-sm line-clamp-1")}
+          className={cx("mt-2 text-gray-500 text-xs md:text-sm line-clamp-1")}
           dangerouslySetInnerHTML={{ __html: data?.content_description }}
         ></div>
 
@@ -196,10 +196,15 @@ export const JobCard: React.FC<any> = ({
                       });
                     },
                     after: () => {},
-                    msg_load: "Saving your favorite job ",
-                    msg_error: "Failed to save your favorite job ",
-                    msg_succes:
-                      "Your favorite job has been saved successfully! ",
+                    msg_load: favorite
+                      ? `Removing your favorite job `
+                      : `Saving your favorite job `,
+                    msg_error: favorite
+                      ? `Failed to remove your favorite job `
+                      : "Failed to save your favorite job ",
+                    msg_succes: favorite
+                      ? "Your favorite job has been removed successfully! "
+                      : "Your favorite job has been saved successfully! ",
                   });
                 }
               }}

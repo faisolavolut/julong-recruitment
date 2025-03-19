@@ -94,7 +94,7 @@ function HomePage() {
       <DefaultHeaderNavigation />
       <div
         className={cx(
-          "h-64 relative mb-8 flex flex-row items-center justify-center bg-primary px-2 md:px-0"
+          "h-64 relative md:mb-8 flex flex-row items-center justify-center bg-primary px-2 md:px-0"
         )}
       >
         <div className="flex flex-grow max-w-screen-xl justify-center">
@@ -166,8 +166,72 @@ function HomePage() {
       </div>
       <div className="relative flex flex-col flex-grow">
         <div className="flex flex-col justify-center items-center">
-          <div className="flex-grow grid md:grid-cols-5 p-8 max-w-screen-xl">
-            <div>
+          <div className="flex-grow grid md:grid-cols-5 md:p-8 max-w-screen-xl">
+            {/* Filter Mobile */}
+            <div className="flex flex-row md:hidden">
+              <Form
+                onSubmit={async (fm: any) => {}}
+                onLoad={async () => {
+                  return {
+                    priority: "recent",
+                  };
+                }}
+                showResize={false}
+                header={(fm: any) => {
+                  return <></>;
+                }}
+                children={(fm: any) => {
+                  return (
+                    <>
+                      <div
+                        className={cx(
+                          "flex flex-row flex-wrap px-4 py-2  rounded-md"
+                        )}
+                      >
+                        <div className="flex-grow grid grid-cols-1">
+                          <div className="grid grid-cols-2 gap-4">
+                            <ButtonBetter
+                              className="rounded-full w-full px-6 text-sm"
+                              variant={
+                                fm?.data?.priority === "relevent"
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fm.data.priority = "relevent";
+                                fm.render();
+                              }}
+                            >
+                              Relevant
+                            </ButtonBetter>
+                            <ButtonBetter
+                              className="rounded-full w-full px-6 "
+                              variant={
+                                fm?.data?.priority === "recent"
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fm.data.priority = "recent";
+                                fm.render();
+                              }}
+                            >
+                              Recent
+                            </ButtonBetter>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                }}
+              />
+            </div>
+            {/* Filter Desktop */}
+            <div className="hidden md:flex">
               <Form
                 onSubmit={async (fm: any) => {}}
                 onLoad={async () => {
@@ -411,7 +475,7 @@ function HomePage() {
                 }}
               />
             </div>
-            <div className="flex-grow flex flex-col md:p-8 md:col-span-4 pt-0">
+            <div className="flex-grow flex flex-col p-8 md:pt-0 md:col-span-4 pt-0">
               <div className="flex flex-row items-center pb-4  w-full">
                 <p className="font-bold text-3xl">Jobs</p>
               </div>
