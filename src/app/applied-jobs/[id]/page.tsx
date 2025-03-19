@@ -903,55 +903,67 @@ function Page() {
                                                           name={"path"}
                                                           label={item?.name}
                                                           onChange={async () => {
-                                                            await actionToast({
-                                                              task: async () => {
-                                                                const res =
-                                                                  await apix({
-                                                                    port: "recruitment",
-                                                                    value:
-                                                                      "data.data",
-                                                                    path: "/api/document-verification-lines/upload",
-                                                                    method:
-                                                                      "post",
-                                                                    type: "form",
-                                                                    data: {
-                                                                      file: item?.path,
-                                                                      id: item?.id,
+                                                            if (
+                                                              format !== "text"
+                                                            ) {
+                                                              await actionToast(
+                                                                {
+                                                                  task: async () => {
+                                                                    const res =
+                                                                      await apix(
+                                                                        {
+                                                                          port: "recruitment",
+                                                                          value:
+                                                                            "data.data",
+                                                                          path: "/api/document-verification-lines/upload",
+                                                                          method:
+                                                                            "post",
+                                                                          type: "form",
+                                                                          data: {
+                                                                            file: item?.path,
+                                                                            id: item?.id,
+                                                                          },
+                                                                        }
+                                                                      );
+                                                                    if (res) {
+                                                                      fm.data.document_verification_lines[
+                                                                        idx
+                                                                      ] = {
+                                                                        ...fm
+                                                                          .data
+                                                                          .document_verification_lines[
+                                                                          idx
+                                                                        ],
+                                                                        path: res?.path,
+                                                                      };
+                                                                      fm.render();
+                                                                    }
+                                                                  },
+                                                                  failed:
+                                                                    () => {
+                                                                      fm.data.document_verification_lines[
+                                                                        idx
+                                                                      ] = {
+                                                                        ...fm
+                                                                          .data
+                                                                          .document_verification_lines[
+                                                                          idx
+                                                                        ],
+                                                                        path: null,
+                                                                      };
+                                                                      fm.render();
                                                                     },
-                                                                  });
-                                                                if (res) {
-                                                                  fm.data.document_verification_lines[
-                                                                    idx
-                                                                  ] = {
-                                                                    ...fm.data
-                                                                      .document_verification_lines[
-                                                                      idx
-                                                                    ],
-                                                                    path: res?.path,
-                                                                  };
-                                                                  fm.render();
+                                                                  after:
+                                                                    () => {},
+                                                                  msg_load:
+                                                                    "Upload ",
+                                                                  msg_error:
+                                                                    "Upload failed ",
+                                                                  msg_succes:
+                                                                    "Upload success ",
                                                                 }
-                                                              },
-                                                              failed: () => {
-                                                                fm.data.document_verification_lines[
-                                                                  idx
-                                                                ] = {
-                                                                  ...fm.data
-                                                                    .document_verification_lines[
-                                                                    idx
-                                                                  ],
-                                                                  path: null,
-                                                                };
-                                                                fm.render();
-                                                              },
-                                                              after: () => {},
-                                                              msg_load:
-                                                                "Upload ",
-                                                              msg_error:
-                                                                "Upload failed ",
-                                                              msg_succes:
-                                                                "Upload success ",
-                                                            });
+                                                              );
+                                                            }
                                                           }}
                                                           type={
                                                             format === "text"
