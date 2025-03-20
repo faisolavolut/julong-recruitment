@@ -23,6 +23,7 @@ import { CgMenuLeftAlt } from "react-icons/cg";
 import { X } from "lucide-react";
 import { ListUI } from "@/lib/components/list/ListUI";
 import { getNumber } from "@/lib/utils/getNumber";
+import { IoIosArrowBack } from "react-icons/io";
 
 const DefaultHeaderNavigation: FC = function () {
   const [isOpen, setOpen] = useState(false);
@@ -235,14 +236,21 @@ const DefaultHeaderNavigation: FC = function () {
             className="p-0"
           >
             <div className="flex flex-col">
-              <div className="flex flex-row py-5 items-center  px-2 ">
-                <div className="hidden md:grid grid-cols-4 flex-grow"></div>
+              <div className="flex flex-row py-5 items-center justify-center px-2 relative">
                 <div
+                  className={cx(
+                    "absolute",
+                    css`
+                      top: 50%;
+                      left: 5%;
+                      transform: translate(-50%, -50%);
+                    `
+                  )}
                   onClick={() => {
                     setOpen(false);
                   }}
                 >
-                  <X className="h-4 w-4" />
+                  <IoIosArrowBack className="h-6 w-6" />
                 </div>
                 <Link
                   href={siteurl("/")}

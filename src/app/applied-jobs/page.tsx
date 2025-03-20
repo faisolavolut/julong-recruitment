@@ -71,7 +71,7 @@ function HomePage() {
       <DefaultHeaderNavigation />
       <div
         className={cx(
-          "h-64 max-h-64 py-8 relative flex flex-row items-center justify-center bg-primary"
+          "h-64 max-h-64 py-8 relative hidden md:flex flex-row items-center justify-center bg-primary"
         )}
       >
         <div className="flex flex-grow max-w-screen-xl justify-center">
@@ -143,7 +143,7 @@ function HomePage() {
         )}
       >
         <div className="flex flex-row flex-grow max-w-screen-xl justify-center">
-          <div className="p-6">
+          <div className="hidden md:flex p-6">
             <ProfileCard />
           </div>
           <div className="flex p-4 flex-col flex-grow  rounded-lg ">

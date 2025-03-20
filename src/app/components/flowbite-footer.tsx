@@ -18,9 +18,8 @@ const FlowbiteFooterSection: FC = function () {
               />
             </a>
             <p className="my-4 text-gray-500 dark:text-gray-400">
-              Flowbite is a open-source library of over 400+ web components and
-              interactive elements built with the utility classes from Tailwind
-              CSS.
+              Looking for a career at Julong Group Indonesia? Fortizy helps you
+              find the right job with ease.
             </p>
             <ul className="mt-5 flex space-x-6">
               <li>

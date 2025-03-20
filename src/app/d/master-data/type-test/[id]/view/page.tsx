@@ -7,11 +7,7 @@ import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoMdSave } from "react-icons/io";
 import { getParams } from "@/lib/utils/get-params";
-import { Alert } from "@/lib/components/ui/alert";
-import { ButtonContainer } from "@/lib/components/ui/button";
-import { MdDelete } from "react-icons/md";
 
 function Page() {
   const id = getParams("id");
@@ -39,7 +35,7 @@ function Page() {
     <FormBetter
       onTitle={(fm: any) => {
         return (
-          <div className="flex flex-row w-full">
+          <div className="flex flex-row w-full flex-wrap">
             <div className="flex flex-col py-4 pt-0 pb-0 flex-grow">
               <h2 className="text-xl font-semibold text-gray-900">
                 <span className="">{labelPage}</span>

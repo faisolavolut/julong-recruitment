@@ -34,7 +34,7 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
     <div className="flex relative items-center w-full  mx-auto">
       <div
         className={cx(
-          `grid w-full`,
+          `flex flex-col md:grid w-full gap-y-2`,
           css`
             grid-template-columns: repeat(${steps?.length}, minmax(0, 1fr));
           `
@@ -50,7 +50,7 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
                 ? endRef
                 : null
             }
-            className="flex-1 flex flex-col items-center relative"
+            className="flex-1 flex gap-x-2 flex-row md:flex-col items-center relative"
           >
             {/* Garis */}
             {/* Step Number */}
@@ -65,7 +65,7 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
             >
               <div
                 className={cx(
-                  `relative w-10 h-10 flex items-center justify-center rounded-full text-white font-bold z-10 ${
+                  `relative w-10 h-10 flex  items-center justify-center rounded-full text-white font-bold z-10 ${
                     currentStep - 1 > index
                       ? "bg-primary"
                       : currentStep - 1 === index
@@ -87,33 +87,37 @@ const Stepper: FC<{ steps: any[]; step: number }> = ({ steps, step = 0 }) => {
                   <>{currentStep - 1 > index ? <FaCheck /> : index + 1}</>
                 )}
               </div>
-              {index === 0 && (
-                <Progress
-                  value={progress}
-                  className={cx(
-                    `absolute top-5 left-0 w-full h-1 bg-gray-300`,
-                    css`
-                      z-index: -1;
-                    `
-                  )}
-                  style={{ width: `${distance}px` }}
-                />
-              )}
+              <div className="hidden md:flex">
+                {index === 0 && (
+                  <Progress
+                    value={progress}
+                    className={cx(
+                      `absolute top-5 left-0 w-full h-1 bg-gray-300`,
+                      css`
+                        z-index: -1;
+                      `
+                    )}
+                    style={{ width: `${distance}px` }}
+                  />
+                )}
+              </div>
             </div>
-            <div
-              className={cx(
-                `mt-2 text-sm px-3 py-1 rounded-lg text-center ${
-                  currentStep >= step.id
-                    ? "bg-primary text-white"
-                    : "bg-gray-300 text-gray-500"
-                }`,
+            <div className="md:px-2">
+              <div
+                className={cx(
+                  `mt-0 md:mt-2 text-sm px-3 py-1 rounded-lg md:text-center ${
+                    currentStep >= step.id
+                      ? "bg-primary text-white"
+                      : "bg-gray-300 text-gray-500"
+                  }`,
 
-                currentStep - 1 === index && step?.result === "failed"
-                  ? "bg-red-900 text-white "
-                  : ""
-              )}
-            >
-              {step.label}
+                  currentStep - 1 === index && step?.result === "failed"
+                    ? "bg-red-900 text-white "
+                    : ""
+                )}
+              >
+                {step.label}
+              </div>
             </div>
           </div>
         ))}

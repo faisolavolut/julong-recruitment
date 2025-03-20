@@ -65,7 +65,7 @@ function Page() {
     <FormBetter
       onTitle={(fm: any) => {
         return (
-          <div className="flex flex-row w-full">
+          <div className="flex flex-row w-full flex-wrap">
             <div className="flex flex-col py-4 pt-0 pb-0 flex-grow">
               <h2 className="text-xl font-semibold text-gray-900">
                 <span className="">{labelPage}</span>

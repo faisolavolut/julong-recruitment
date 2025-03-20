@@ -85,10 +85,10 @@ function HomePage() {
       <DefaultHeaderNavigation />
       <div className="relative flex flex-col flex-grow">
         <div className="flex flex-col justify-center items-center">
-          <div className="flex-grow grid grid-cols-5 p-8 max-w-screen-xl w-full">
-            <div className="flex-grow flex flex-col p-8 col-span-5 pt-0">
+          <div className="flex-grow grid grid-cols-5 p-4 md:p-8 max-w-screen-xl w-full">
+            <div className="flex-grow flex flex-col md:p-8 col-span-5 pt-0">
               <div className="flex flex-row items-center pb-4  w-full">
-                <p className="font-bold text-3xl">
+                <p className="font-bold text-xl md:text-3xl">
                   Favorite Jobs ({getNumber(local?.count)})
                 </p>
               </div>

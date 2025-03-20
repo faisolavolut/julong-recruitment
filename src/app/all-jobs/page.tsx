@@ -21,9 +21,16 @@ import {
 import { PaginationPage } from "@/lib/components/tablelist/TableList";
 import { getNumber } from "@/lib/utils/getNumber";
 import { get_user } from "@/lib/utils/get_user";
+import { Popover } from "@/lib/components/Popover/Popover";
+import { GoChevronDown, GoChevronUp } from "react-icons/go";
+import React from "react";
+import { DrawerBetter } from "@/lib/components/ui/drawer";
+import { FilterOutline } from "@/lib/svg/FilterOutline";
+import { SortEp } from "@/lib/svg/SortEp";
 
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
+  const [open, setOpen] = useState(false);
   const local = useLocal({
     open: false,
     ready: false,
@@ -88,6 +95,10 @@ function HomePage() {
       window.history.pushState({}, "", currentUrl);
     }
   };
+  const priorityOptions = [
+    { label: "relevant", value: "relevant" },
+    { label: "recent", value: "recent" },
+  ];
   useEffect(() => {}, []);
   return (
     <div className="flex flex-col max-w-screen bg-white">
@@ -167,69 +178,6 @@ function HomePage() {
       <div className="relative flex flex-col flex-grow">
         <div className="flex flex-col justify-center items-center">
           <div className="flex-grow grid md:grid-cols-5 md:p-8 max-w-screen-xl">
-            {/* Filter Mobile */}
-            <div className="flex flex-row md:hidden">
-              <Form
-                onSubmit={async (fm: any) => {}}
-                onLoad={async () => {
-                  return {
-                    priority: "recent",
-                  };
-                }}
-                showResize={false}
-                header={(fm: any) => {
-                  return <></>;
-                }}
-                children={(fm: any) => {
-                  return (
-                    <>
-                      <div
-                        className={cx(
-                          "flex flex-row flex-wrap px-4 py-2  rounded-md"
-                        )}
-                      >
-                        <div className="flex-grow grid grid-cols-1">
-                          <div className="grid grid-cols-2 gap-4">
-                            <ButtonBetter
-                              className="rounded-full w-full px-6 text-sm"
-                              variant={
-                                fm?.data?.priority === "relevent"
-                                  ? "default"
-                                  : "outline"
-                              }
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                fm.data.priority = "relevent";
-                                fm.render();
-                              }}
-                            >
-                              Relevant
-                            </ButtonBetter>
-                            <ButtonBetter
-                              className="rounded-full w-full px-6 "
-                              variant={
-                                fm?.data?.priority === "recent"
-                                  ? "default"
-                                  : "outline"
-                              }
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                fm.data.priority = "recent";
-                                fm.render();
-                              }}
-                            >
-                              Recent
-                            </ButtonBetter>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  );
-                }}
-              />
-            </div>
             {/* Filter Desktop */}
             <div className="hidden md:flex">
               <Form
@@ -475,9 +423,261 @@ function HomePage() {
                 }}
               />
             </div>
-            <div className="flex-grow flex flex-col p-8 md:pt-0 md:col-span-4 pt-0">
+            <div className="flex-grow flex flex-col p-4 md:p-8 md:pt-0 md:col-span-4 pt-0">
               <div className="flex flex-row items-center pb-4  w-full">
-                <p className="font-bold text-3xl">Jobs</p>
+                <p className="font-bold text-3xl flex-grow">Jobs</p>
+                {/* Filter Mobile */}
+                <div className="flex flex-row  md:hidden">
+                  <Form
+                    onSubmit={async (fm: any) => {}}
+                    onLoad={async () => {
+                      return {
+                        priority: "recent",
+                      };
+                    }}
+                    showResize={false}
+                    header={(fm: any) => {
+                      return <></>;
+                    }}
+                    children={(fm: any) => {
+                      return (
+                        <>
+                          <div
+                            className={cx(
+                              "flex flex-row flex-wrap px-4 pr-0 py-2  rounded-md"
+                            )}
+                          >
+                            <div className="flex flex-row flex-grow">
+                              <div className="flex flex-row items-center text-sm gap-x-1">
+                                <DrawerBetter
+                                  contentOpen={
+                                    <>
+                                      <div className="px-4 pb-4 flex flex-col gap-y-2">
+                                        <Field
+                                          fm={fm}
+                                          name={"priority"}
+                                          hidden_label={true}
+                                          label={"Option"}
+                                          type={"radio"}
+                                          className={"text-md"}
+                                          placeholder="Choose"
+                                          onChange={() => {
+                                            fm.data.update = true;
+                                            fm.render();
+                                          }}
+                                          onLoad={() => {
+                                            return [
+                                              {
+                                                label: "Relevant",
+                                                value: "relevant",
+                                              },
+                                              {
+                                                label: "Recent",
+                                                value: "recent",
+                                              },
+                                            ];
+                                          }}
+                                        />
+                                        <ButtonBetter className="rounded-full w-full px-6 ">
+                                          Apply
+                                        </ButtonBetter>
+                                      </div>
+                                    </>
+                                  }
+                                  title={"Sort Jobs"}
+                                  description="Filter job listings by relevance or most recent"
+                                >
+                                  <ButtonBetter variant={"outline"}>
+                                    <SortEp className="w-6 h-6" />
+                                  </ButtonBetter>
+                                </DrawerBetter>
+                                <DrawerBetter
+                                  contentOpen={
+                                    <>
+                                      <div className="px-4 pb-4 flex flex-col gap-y-2">
+                                        <div className="grid grid-cols-1">
+                                          <div>
+                                            <Field
+                                              fm={fm}
+                                              // hidden_label={true}
+                                              name={"job_type"}
+                                              label={"Job Type"}
+                                              type={"checkbox"}
+                                              onLoad={() => {
+                                                return [
+                                                  {
+                                                    label: "Management Trainee",
+                                                    value:
+                                                      "MT_Management Trainee",
+                                                  },
+                                                  {
+                                                    label: "Personal Hire",
+                                                    value:
+                                                      "PH_Professional Hire",
+                                                  },
+                                                  {
+                                                    label: "Non Staff",
+                                                    value:
+                                                      "NS_Non Staff to Staff",
+                                                  },
+                                                ];
+                                              }}
+                                            />
+                                            <div>
+                                              <Field
+                                                fm={fm}
+                                                // hidden_label={true}
+                                                name={"experience"}
+                                                label={"Experience"}
+                                                type={"checkbox"}
+                                                onLoad={() => {
+                                                  return [
+                                                    {
+                                                      label: "No Experience",
+                                                      value: "0",
+                                                    },
+                                                    {
+                                                      label: "< 1 Year",
+                                                      value: "less_1",
+                                                    },
+                                                    {
+                                                      label: "1-3 Year",
+                                                      value: "1-3 year",
+                                                    },
+                                                    {
+                                                      label: "3-5 Year",
+                                                      value: "3-5",
+                                                    },
+                                                    {
+                                                      label: "> 5 Year",
+                                                      value: "gte_5",
+                                                    },
+                                                  ];
+                                                }}
+                                              />
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <ButtonBetter className="rounded-full w-full px-6 ">
+                                          Apply Filter
+                                        </ButtonBetter>
+                                      </div>
+                                    </>
+                                  }
+                                  title={"Filter Jobs"}
+                                  description="Narrow down job listings based on your preferences"
+                                >
+                                  <ButtonBetter variant={"outline"}>
+                                    <FilterOutline className="w-6 h-6" />
+                                  </ButtonBetter>
+                                </DrawerBetter>
+                              </div>
+                              <div className="hidden flex flex-row items-center text-sm">
+                                Sorted By
+                                <Popover
+                                  open={open}
+                                  arrow={false}
+                                  onOpenChange={(event) => {
+                                    setOpen(event);
+                                  }}
+                                  backdrop={false}
+                                  classNameTrigger={
+                                    "flex flex-row items-center px-1"
+                                  }
+                                  placement="bottom-start"
+                                  className=" overflow-hidden rounded-md"
+                                  content={
+                                    <div
+                                      className={cx(
+                                        "flex flex-col border  rounded-md text-sm capitalize",
+                                        css`
+                                          min-width: 150px;
+                                        `,
+                                        css`
+                                          max-height: 400px;
+                                          overflow: auto;
+                                        `
+                                      )}
+                                    >
+                                      {priorityOptions.map((option, index) => (
+                                        <React.Fragment key={option.value}>
+                                          <div
+                                            className="flex px-2 py-1 hover:bg-gray-100 cursor-pointer"
+                                            onClick={() => {
+                                              fm.data.priority = option.value;
+                                              fm.render();
+                                              setOpen(false);
+                                            }}
+                                          >
+                                            {option.label}
+                                          </div>
+                                          {index <
+                                            priorityOptions.length - 1 && (
+                                            <div className="w-full border-b border-gray-300"></div>
+                                          )}
+                                        </React.Fragment>
+                                      ))}
+                                    </div>
+                                  }
+                                >
+                                  <div
+                                    className="flex items-center font-bold gap-x-2 cursor-pointer capitalize"
+                                    onClick={() => {
+                                      setOpen(true);
+                                    }}
+                                  >
+                                    {fm.data.priority}{" "}
+                                    {open ? (
+                                      <GoChevronUp size={14} />
+                                    ) : (
+                                      <GoChevronDown size={14} />
+                                    )}
+                                  </div>
+                                </Popover>
+                              </div>
+                            </div>
+                            <div className="flex-grow grid grid-cols-1 hidden">
+                              <div className="grid grid-cols-2 gap-4">
+                                {/* <ButtonBetter
+                              className="rounded-full w-full px-6 text-sm"
+                              variant={
+                                fm?.data?.priority === "relevent"
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fm.data.priority = "relevent";
+                                fm.render();
+                              }}
+                            >
+                              Relevant
+                            </ButtonBetter>
+                            <ButtonBetter
+                              className="rounded-full w-full px-6 "
+                              variant={
+                                fm?.data?.priority === "recent"
+                                  ? "default"
+                                  : "outline"
+                              }
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                fm.data.priority = "recent";
+                                fm.render();
+                              }}
+                            >
+                              Recent
+                            </ButtonBetter> */}
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    }}
+                  />
+                </div>
               </div>
               <div className="flex flex-grow pb-4">
                 <PinterestLayout

@@ -85,7 +85,10 @@ function Page() {
         const order = applicant?.order <= 1 ? 1 : applicant?.order;
         return {
           id: e?.order,
-          label: labelDocumentType(e?.template_activity_line?.name),
+          label:
+            labelDocumentType(e?.template_activity_line?.name) === "Interview 1"
+              ? "Fortizy is the official job portal for Julong Group Indonesia, connecting top talent with the right opportunities"
+              : labelDocumentType(e?.template_activity_line?.name),
           name: e?.template_activity_line?.template_question?.form_type,
           id_line: e?.id,
           result:
@@ -142,13 +145,13 @@ function Page() {
               <div className="flex-grow flex flex-col ">
                 <div
                   className={cx(
-                    "bg-gradient-to-r from-blue-500 to-blue-700 p-6  flex items-center space-x-4 shadow-lg bg-no-repeat bg-cover	bg-center	",
+                    "bg-gradient-to-r from-blue-500 to-blue-700 p-6 gap-y-2 md:gap-y-0 flex items-center flex-col md:flex-row shadow-lg bg-no-repeat bg-cover	bg-center	",
                     css`
                       background-image: url("${siteurl("/frame.jpg")}");
                     `
                   )}
                 >
-                  <div className="flex flex-col px-10 gap-x-4">
+                  <div className="flex flex-col gap-y-1 md:px-10 gap-x-4 w-full md:w-auto">
                     <div className="w-16 h-16">
                       <ImageBetter
                         src={siteurl(get(local, "data.organization_logo"))}
@@ -168,8 +171,8 @@ function Page() {
                     </div>
                   </div>
                   <div className="flex-grow"></div>
-                  <div className="flex flex-col gap-x-4 gap-y-2   min-w-[350px] ">
-                    <div className="flex flex-row w-full">
+                  <div className="flex flex-col gap-x-4 gap-y-2  w-full md:w-auto md:min-w-[350px] ">
+                    <div className="flex flex-row w-full flex-wrap">
                       <div className="w-full flex items-center justify-center p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
                         <div className="hidden">
                           <h3 className="text-sm font-medium text-gray-500">
@@ -271,51 +274,14 @@ function Page() {
                     )}
                   </div>
                 </div>
-                <div className="flex flex-row gap-x-4 p-8">
-                  <div
-                    className={cx(
-                      "grid grid-cols-3 gap-x-4 flex-grow",
-                      css`
-                        .tiptap h1 {
-                          font-size: 1.4rem !important;
-                        }
-
-                        .tiptap h2 {
-                          font-size: 1.2rem !important;
-                        }
-
-                        .tiptap h3 {
-                          font-size: 1.1rem !important;
-                        }
-                        .ProseMirror {
-                          outline: none !important;
-                          padding: 10px 2rem 10px 2rem;
-                        }
-                        .tiptap a {
-                          font-weight: bold;
-                          color: #313678;
-                          text-decoration: underline;
-                        }
-                        .ProseMirror ul,
-                        ol {
-                          padding: 0 1rem;
-                          margin: 1.25rem 1rem 1.25rem 0.4rem;
-                        }
-                        .ProseMirror ol {
-                          list-style-type: decimal;
-                        }
-                        .ProseMirror ul {
-                          list-style-type: disc;
-                        }
-                      `
-                    )}
-                  >
+                <div className="flex flex-row gap-x-4 p-4 md:p-8">
+                  <div className={cx("grid grid-cols-3 gap-x-4 flex-grow")}>
                     <div className="col-span-3 flex flex-col gap-y-4">
-                      <div className="border border-gray-200 flex flex-col py-4 rounded-lg">
-                        <div className="font-bold flex flex-col border-b border-gray-200 px-4 mx-4 py-2">
+                      <div className="border border-gray-200 flex flex-col md:py-4 rounded-lg">
+                        <div className="text-sm md:text-md font-bold flex flex-col border-b border-gray-200 px-4 mx-4 py-2">
                           Activity Details
                         </div>
-                        <div className="flex flex-col flex-grow py-4">
+                        <div className="flex flex-col flex-grow py-4 px-2 md:px-0">
                           <Stepper steps={local.steps} step={local.step} />
                         </div>
                       </div>

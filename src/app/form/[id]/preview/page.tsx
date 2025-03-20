@@ -119,7 +119,7 @@ function Page() {
     <div className="flex flex-col flex-grow min-h-screen bg-white">
       <div
         className={cx(
-          "flex flex-col bg-white w-full p-4 shadow-md",
+          "flex flex-col bg-white w-full p-4 shadow-md sticky top-0",
           css`
             z-index: 1;
           `
@@ -181,7 +181,7 @@ function Page() {
       </div>
 
       <div className="w-full flex-grow flex flex-row">
-        <div className="flex flex-col py-1 min-w-[350px] max-w-[350px] bg-white border-r border-gray-200">
+        <div className="hidden md:flex flex-col py-1 min-w-[350px] max-w-[350px] bg-white border-r border-gray-200">
           <div className="grid grid-cols-1 bg-white">
             <div className="grid  gap-2 grid-cols-1 p-4 border-b border-gray-200">
               <div className="font-bold text-2xl">
@@ -245,222 +245,224 @@ function Page() {
 
         <div className="flex flex-col flex-grow relative">
           <div className="flex flex-col flex-grow items-center justify-center">
-            <div className="w-full flex flex-col py-2 ">
-              <Form
-                onSubmit={async (fm: any) => {
-                  local.tab = fm.data.tab;
-                  local.render();
-                  fm.reload();
-                }}
-                onLoad={async () => {
-                  return {
-                    ...get(local, `data.questions[${local.tab}]`),
-                    tab: local.tab,
-                  };
-                }}
-                showResize={false}
-                header={(fm: any) => {
-                  return <></>;
-                }}
-                children={(fm: any) => {
-                  const typeField = fm?.data?.answer_type_name.toLowerCase();
-                  return (
-                    <>
-                      <div className={cx("flex flex-col flex-wrap px-8")}>
-                        <div className="flex flex-col  py-2">
-                          <div className="grid gap-2 grid-cols-1">
-                            <div className="grid  gap-2 grid-cols-1 p-4 text-xl">
-                              <div className="font-bold text-2xl">
-                                {local.tab + 1}. {get(fm, "data.name")}
-                              </div>
-                              {["text", "paragraph", "attachment"].includes(
-                                typeof fm?.data?.answer_type_name === "string"
-                                  ? fm?.data?.answer_type_name.toLowerCase()
-                                  : null
-                              ) && (
-                                <div className="grid grid-col-1">
-                                  <div>
-                                    {typeField === "attachment" ? (
+            <div className="flex flex-row flex-grow items-center">
+              <div className="w-full flex flex-col py-2 md:min-w-[350px]">
+                <Form
+                  onSubmit={async (fm: any) => {
+                    local.tab = fm.data.tab;
+                    local.render();
+                    fm.reload();
+                  }}
+                  onLoad={async () => {
+                    return {
+                      ...get(local, `data.questions[${local.tab}]`),
+                      tab: local.tab,
+                    };
+                  }}
+                  showResize={false}
+                  header={(fm: any) => {
+                    return <></>;
+                  }}
+                  children={(fm: any) => {
+                    const typeField = fm?.data?.answer_type_name.toLowerCase();
+                    return (
+                      <>
+                        <div className={cx("flex flex-col flex-wrap px-8")}>
+                          <div className="flex flex-col  py-2">
+                            <div className="grid gap-2 grid-cols-1">
+                              <div className="grid  gap-2 grid-cols-1 p-4 text-xl">
+                                <div className="font-bold text-2xl">
+                                  {local.tab + 1}. {get(fm, "data.name")}
+                                </div>
+                                {["text", "paragraph", "attachment"].includes(
+                                  typeof fm?.data?.answer_type_name === "string"
+                                    ? fm?.data?.answer_type_name.toLowerCase()
+                                    : null
+                                ) && (
+                                  <div className="grid grid-col-1">
+                                    <div>
+                                      {typeField === "attachment" ? (
+                                        <Field
+                                          fm={fm}
+                                          name={"answer"}
+                                          hidden_label={true}
+                                          label={"Option"}
+                                          type={"upload"}
+                                          placeholder="Your Answer"
+                                          onChange={() => {
+                                            fm.data.update = true;
+                                            fm.render();
+                                          }}
+                                        />
+                                      ) : (
+                                        <Field
+                                          fm={fm}
+                                          name={"answer"}
+                                          style="underline"
+                                          hidden_label={true}
+                                          label={"Option"}
+                                          type={
+                                            typeField === "attachment"
+                                              ? "upload"
+                                              : typeField === "paragraph"
+                                              ? "textarea"
+                                              : "text"
+                                          }
+                                          onChange={() => {
+                                            fm.data.update = true;
+                                            fm.render();
+                                            console.log(fm.data.update);
+                                          }}
+                                          placeholder="Your Answer"
+                                        />
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                                {[
+                                  "multiple choice",
+                                  "checkbox",
+                                  "single checkbox",
+                                  "dropdown",
+                                ].includes(
+                                  typeof fm?.data?.answer_type_name === "string"
+                                    ? fm?.data?.answer_type_name.toLowerCase()
+                                    : null
+                                ) && (
+                                  <div className="grid grid-col-1">
+                                    <div>
                                       <Field
                                         fm={fm}
                                         name={"answer"}
-                                        hidden_label={true}
-                                        label={"Option"}
-                                        type={"upload"}
-                                        placeholder="Your Answer"
-                                        onChange={() => {
-                                          fm.data.update = true;
-                                          fm.render();
-                                        }}
-                                      />
-                                    ) : (
-                                      <Field
-                                        fm={fm}
-                                        name={"answer"}
-                                        style="gform"
                                         hidden_label={true}
                                         label={"Option"}
                                         type={
-                                          typeField === "attachment"
-                                            ? "upload"
-                                            : typeField === "paragraph"
-                                            ? "textarea"
-                                            : "text"
+                                          typeField === "multiple choice"
+                                            ? "radio"
+                                            : typeField === "checkbox"
+                                            ? "checkbox"
+                                            : typeField === "single checkbox"
+                                            ? "single-checkbox"
+                                            : "dropdown"
                                         }
+                                        placeholder="Choose"
                                         onChange={() => {
                                           fm.data.update = true;
                                           fm.render();
-                                          console.log(fm.data.update);
                                         }}
-                                        placeholder="Your Answer"
+                                        onLoad={() => {
+                                          const data =
+                                            fm?.data?.question_options || [];
+                                          return data.map((e: string) => {
+                                            return {
+                                              label: e,
+                                              value: e,
+                                            };
+                                          });
+                                        }}
                                       />
-                                    )}
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                              {[
-                                "multiple choice",
-                                "checkbox",
-                                "single checkbox",
-                                "dropdown",
-                              ].includes(
-                                typeof fm?.data?.answer_type_name === "string"
-                                  ? fm?.data?.answer_type_name.toLowerCase()
-                                  : null
-                              ) && (
-                                <div className="grid grid-col-1">
-                                  <div>
-                                    <Field
-                                      fm={fm}
-                                      name={"answer"}
-                                      hidden_label={true}
-                                      label={"Option"}
-                                      type={
-                                        typeField === "multiple choice"
-                                          ? "radio"
-                                          : typeField === "checkbox"
-                                          ? "checkbox"
-                                          : typeField === "single checkbox"
-                                          ? "single-checkbox"
-                                          : "dropdown"
-                                      }
-                                      placeholder="Choose"
-                                      onChange={() => {
-                                        fm.data.update = true;
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-2">
+                            <div className="px-4 ">
+                              {local.tab > 0 && local.maxPage > 1 ? (
+                                <>
+                                  <ButtonBetter
+                                    className="rounded-full bg-primary"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      if (!fm.data.update) {
+                                        local.tab = local.tab - 1;
+                                        local.render();
+                                        fm.reload();
+                                        local.done = false;
+                                        local.render();
+                                      } else {
+                                        fm.data.tab = local.tab - 1;
                                         fm.render();
-                                      }}
-                                      onLoad={() => {
-                                        const data =
-                                          fm?.data?.question_options || [];
-                                        return data.map((e: string) => {
-                                          return {
-                                            label: e,
-                                            value: e,
-                                          };
-                                        });
-                                      }}
-                                    />
-                                  </div>
-                                </div>
+                                        fm.submit();
+                                        local.done = false;
+                                        local.render();
+                                      }
+                                    }}
+                                  >
+                                    <FaAngleLeft /> Prev
+                                  </ButtonBetter>
+                                </>
+                              ) : (
+                                <></>
+                              )}
+                            </div>
+                            <div className="px-4 flex flex-row justify-end">
+                              {local.tab < local.maxPage - 1 &&
+                              local.maxPage > 1 ? (
+                                <>
+                                  <ButtonBetter
+                                    className="rounded-full bg-primary"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      if (!fm.data.update) {
+                                        local.tab = local.tab + 1;
+                                        local.render();
+                                        fm.reload();
+                                        local.done = false;
+                                        local.render();
+                                      } else {
+                                        fm.data.tab = local.tab + 1;
+                                        fm.render();
+                                        fm.submit();
+                                        local.done = false;
+                                        local.render();
+                                      }
+                                    }}
+                                  >
+                                    Next <FaAngleRight />
+                                  </ButtonBetter>
+                                </>
+                              ) : (
+                                <></>
+                              )}
+                              {local.tab === local.maxPage - 1 ? (
+                                <>
+                                  <ButtonBetter
+                                    className="rounded-full bg-primary"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      e.preventDefault();
+                                      fm.data.status = "COMPLETED";
+                                      fm.render();
+                                      fm.submit();
+                                      local.done = false;
+                                      local.render();
+                                    }}
+                                  >
+                                    Submit <IoMdSave />
+                                  </ButtonBetter>
+                                </>
+                              ) : (
+                                <></>
                               )}
                             </div>
                           </div>
                         </div>
-                        <div className="grid grid-cols-2">
-                          <div className="px-4 ">
-                            {local.tab > 0 && local.maxPage > 1 ? (
-                              <>
-                                <ButtonBetter
-                                  className="rounded-full bg-primary"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    if (!fm.data.update) {
-                                      local.tab = local.tab - 1;
-                                      local.render();
-                                      fm.reload();
-                                      local.done = false;
-                                      local.render();
-                                    } else {
-                                      fm.data.tab = local.tab - 1;
-                                      fm.render();
-                                      fm.submit();
-                                      local.done = false;
-                                      local.render();
-                                    }
-                                  }}
-                                >
-                                  <FaAngleLeft /> Prev
-                                </ButtonBetter>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </div>
-                          <div className="px-4 flex flex-row justify-end">
-                            {local.tab < local.maxPage - 1 &&
-                            local.maxPage > 1 ? (
-                              <>
-                                <ButtonBetter
-                                  className="rounded-full bg-primary"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    if (!fm.data.update) {
-                                      local.tab = local.tab + 1;
-                                      local.render();
-                                      fm.reload();
-                                      local.done = false;
-                                      local.render();
-                                    } else {
-                                      fm.data.tab = local.tab + 1;
-                                      fm.render();
-                                      fm.submit();
-                                      local.done = false;
-                                      local.render();
-                                    }
-                                  }}
-                                >
-                                  Next <FaAngleRight />
-                                </ButtonBetter>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                            {local.tab === local.maxPage - 1 ? (
-                              <>
-                                <ButtonBetter
-                                  className="rounded-full bg-primary"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    e.preventDefault();
-                                    fm.data.status = "COMPLETED";
-                                    fm.render();
-                                    fm.submit();
-                                    local.done = false;
-                                    local.render();
-                                  }}
-                                >
-                                  Submit <IoMdSave />
-                                </ButtonBetter>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  );
-                }}
-                onInit={(e: any) => {
-                  local.fm = e;
-                  local.render();
-                }}
-              />
+                      </>
+                    );
+                  }}
+                  onInit={(e: any) => {
+                    local.fm = e;
+                    local.render();
+                  }}
+                />
+              </div>
             </div>
 
-            <div className="w-full absolute bottom-0 left-0 py-3 px-4 text-sm  text-white bg-primary flex flex-row items-center justify-center">
+            <div className="w-full sticky md:absolute bottom-0 left-0 py-3 px-4 text-sm  text-white bg-primary flex flex-row items-center justify-center">
               <p>
                 {0} of{" "}
                 {formatMoney(getNumber(get(local, `data.questions.length`)))}{" "}

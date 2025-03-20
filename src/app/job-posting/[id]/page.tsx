@@ -108,7 +108,7 @@ function Page() {
                     <div className="flex flex-col gap-x-4 gap-y-2 min-w-[350px]  ">
                       <div className=""></div>
 
-                      <div className="flex flex-row w-full">
+                      <div className="flex flex-row w-full flex-wrap">
                         <div className="w-full flex items-center justify-center p-4 bg-gradient-to-r from-blue-100 to-blue-50 rounded-lg shadow-md max-w-md mx-auto">
                           <div className="hidden">
                             <h3 className="text-sm font-medium text-gray-500">

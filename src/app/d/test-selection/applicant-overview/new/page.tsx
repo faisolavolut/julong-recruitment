@@ -3,16 +3,13 @@
 import { Field } from "@/lib/components/form/Field";
 import { FormBetter } from "@/lib/components/form/FormBetter";
 import { BreadcrumbBetterLink } from "@/lib/components/ui/breadcrumb-link";
-import { ButtonBetter, ButtonContainer } from "@/lib/components/ui/button";
-import { Alert } from "@/lib/components/ui/alert";
+import { ButtonBetter } from "@/lib/components/ui/button";
 import { apix } from "@/lib/utils/apix";
 import { useLocal } from "@/lib/utils/use-local";
 import { notFound } from "next/navigation";
 import { useEffect } from "react";
-import { IoMdSave } from "react-icons/io";
 import { normalDate } from "@/lib/utils/date";
 import get from "lodash.get";
-import { current } from "tailwindcss/colors";
 import { getNumber } from "@/lib/utils/getNumber";
 import { QuestionPage } from "../QuestionPage";
 
@@ -39,7 +36,7 @@ function Page() {
     <FormBetter
       onTitle={(fm: any) => {
         return (
-          <div className="flex flex-row w-full">
+          <div className="flex flex-row w-full flex-wrap">
             <div className="flex flex-col py-4 pt-0 pb-0 flex-grow">
               <h2 className="text-xl font-semibold text-gray-900">
                 <span className="">{labelPage}</span>
