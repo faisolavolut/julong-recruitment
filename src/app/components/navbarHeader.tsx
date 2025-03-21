@@ -147,7 +147,7 @@ const DefaultHeaderNavigation: FC = function () {
                 variant={"noline"}
                 href={`/d/dashboard`}
               >
-                Dashboard
+                Menu
               </ButtonLink>
               <ButtonLink
                 className="flex flex-row items-center gap-x-1"
@@ -429,7 +429,7 @@ const UserDropdown: FC<{ user: any }> = function ({ user }) {
               }
             }}
           >
-            Dashboard
+            Menu
           </Dropdown.Item>
           <Dropdown.Divider className="my-0" />
         </>
