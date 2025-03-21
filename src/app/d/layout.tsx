@@ -17,6 +17,7 @@ import { Menu } from "@/lib/svg/Menu";
 import { SheetBetter } from "@/lib/components/ui/sheet";
 import { IoIosArrowBack } from "react-icons/io";
 import { ButtonLink } from "@/lib/components/ui/button-link";
+import { NotificationSheet } from "@/lib/components/ui/notification";
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -207,14 +208,12 @@ const AdminLayout: React.FC<RootLayoutProps> = ({ children }) => {
             </ButtonLink>
           </div>
 
-          <button
-            onClick={() => setActive("bell")}
-            className={`p-2 ${
-              active === "bell" ? "text-primary" : "text-gray-500"
-            }`}
-          >
-            <Bell size={24} />
-          </button>
+          <div className={cx("text-gray-500 flex flex-row items-center")}>
+            <NotificationSheet
+              className="text-gray-500"
+              children={<Bell size={24} />}
+            />
+          </div>
 
           <div className="flex flex-row items-center">
             <ButtonLink
