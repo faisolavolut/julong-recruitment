@@ -28,6 +28,7 @@ function Page() {
     <TableUI
       title="University"
       name="university"
+      filter={false}
       header={{
         sideLeft: (data: any) => {
           return <></>;
@@ -39,13 +40,6 @@ function Page() {
           header: "Name",
           renderCell: ({ row, name }: any) => {
             return <>{getValue(row, name)}</>;
-          },
-        },
-        {
-          name: "status",
-          header: "Status",
-          renderCell: ({ row, name }: any) => {
-            return getValue(row, name) === "ACTIVE" ? "Active" : "Inactive";
           },
         },
       ]}
