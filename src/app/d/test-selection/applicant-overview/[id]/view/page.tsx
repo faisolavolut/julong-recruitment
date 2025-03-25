@@ -109,13 +109,14 @@ function Page() {
                     name={"select_test_type"}
                     label={"Select Test Type"}
                     type={"dropdown-async"}
-                    pagination={false}
-                    search={"local"}
-                    onLoad={async () => {
+                    onLoad={async (param: any) => {
+                      const params = await events("onload-param", {
+                        ...param,
+                      });
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data",
-                        path: "/api/test-types",
+                        value: "data.data.test_types",
+                        path: `/api/test-types${params}`,
                         validate: "array",
                       });
                       return res;

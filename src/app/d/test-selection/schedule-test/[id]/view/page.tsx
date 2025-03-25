@@ -179,7 +179,7 @@ function Page() {
                     onLoad={async () => {
                       const res: any = await apix({
                         port: "recruitment",
-                        value: "data.data",
+                        value: "data.data.test_types",
                         path: "/api/test-types",
                         validate: "dropdown",
                         keys: {

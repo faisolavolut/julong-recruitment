@@ -98,7 +98,7 @@ function Page() {
         const params = await events("onload-param", param);
         const result: any = await apix({
           port: "recruitment",
-          value: "data.data",
+          value: "data.data.test_types",
           path: `/api/test-types${params}`,
           validate: "array",
         });
