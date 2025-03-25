@@ -542,6 +542,37 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
+                              required={true}
+                              target={"grade_id"}
+                              name={"grade"}
+                              label={"Grade"}
+                              type={"dropdown-async"}
+                              pagination={false}
+                              search="local"
+                              onLabel={"name"}
+                              autoRefresh={true}
+                              disabled={!fm.data?.job_level_id}
+                              onLoad={async (param) => {
+                                if (!fm.data?.job_level_id) return [];
+                                const params = await events(
+                                  "onload-param",
+                                  param
+                                );
+                                const res: any = await apix({
+                                  port: "portal",
+                                  value: "data.data",
+                                  path:
+                                    `/api/grades/job-level/${fm.data?.job_level_id}` +
+                                    params,
+                                  validate: "array",
+                                });
+                                return res;
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
                               name={"basic_wage"}
                               label={"Gaji Pokok"}
                               type={"money"}
