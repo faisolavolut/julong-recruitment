@@ -60,21 +60,21 @@ function Page() {
             return <>{getValue(row, name)}</>;
           },
         },
-        {
-          name: "link",
-          header: "Link Job Posting",
-          renderCell: ({ row, name }: any) => {
-            return (
-              <a
-                href={getValue(row, name)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {getValue(row, name)}
-              </a>
-            );
-          },
-        },
+        // {
+        //   name: "link",
+        //   header: "Link Job Posting",
+        //   renderCell: ({ row, name }: any) => {
+        //     return (
+        //       <a
+        //         href={getValue(row, name)}
+        //         target="_blank"
+        //         rel="noopener noreferrer"
+        //       >
+        //         {getValue(row, name)}
+        //       </a>
+        //     );
+        //   },
+        // },
         {
           name: "name",
           header: "Job Name",
