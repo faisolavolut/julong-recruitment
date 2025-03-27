@@ -511,6 +511,38 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
+                              target={"allowance_approval_id"}
+                              name={"allowance_approval"}
+                              label={"Allowance Approval"}
+                              type={"dropdown-async"}
+                              onLoad={async (param: any) => {
+                                const params = await events(
+                                  "onload-param",
+                                  param
+                                );
+                                const result: any = await apix({
+                                  port: "portal",
+                                  value: "data.data.employees",
+                                  path: `/api/employees${params}`,
+                                  validate: "array",
+                                });
+                                let res = result?.length
+                                  ? result.map((e: any) => {
+                                      return {
+                                        employee_id: e?.id,
+                                        employee_name: e?.name,
+                                      };
+                                    })
+                                  : [];
+                                return res;
+                              }}
+                              onValue={"employee_id"}
+                              onLabel={"employee_name"}
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
                               target="job_level_id"
                               name={"job_level"}
                               label={"Job Level"}
