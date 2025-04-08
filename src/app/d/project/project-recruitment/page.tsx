@@ -69,12 +69,16 @@ function Page() {
         {
           name: "start_date",
           header: "Start Date",
+          labelFilter: "Date",
+          placeholderFilter: ["Start Date", "End Date"],
+          type: "date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
         },
         {
           name: "end_date",
+          filter: false,
           header: "End Date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
@@ -89,7 +93,6 @@ function Page() {
         },
         {
           name: "action",
-
           header: "Action",
           filter: false,
           sortable: false,

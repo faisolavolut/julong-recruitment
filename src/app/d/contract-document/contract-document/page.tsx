@@ -69,6 +69,7 @@ function Page() {
         {
           name: "document_date",
           header: "Send Date",
+          type: "date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },

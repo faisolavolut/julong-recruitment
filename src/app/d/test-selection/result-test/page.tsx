@@ -96,6 +96,7 @@ function Page() {
         {
           name: "start_date",
           header: "Schedule Test",
+          type: "date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },

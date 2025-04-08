@@ -91,6 +91,9 @@ function Page() {
         {
           name: "job_posting.start_date",
           header: "Start Date",
+          labelFilter: "Date",
+          placeholderFilter: ["Start Date", "End Date"],
+          type: "date",
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
@@ -98,6 +101,7 @@ function Page() {
         {
           name: "job_posting.end_date",
           header: "End Date",
+          filter: false,
           renderCell: ({ row, name }: any) => {
             return <>{dayDate(getValue(row, name))}</>;
           },
