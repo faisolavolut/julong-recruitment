@@ -409,15 +409,6 @@ function Page() {
                                         name: e.name,
                                       };
                                     });
-                                    // let result =
-                                    // console.log({
-                                    //   template_question_id: id,
-                                    //   questions: question,
-                                    //   deleted_question_ids:
-                                    //     get(fm, "data.deleted_question_ids") ||
-                                    //     [],
-                                    // });
-                                    // return;
                                     await actionToast({
                                       task: async () => {
                                         console.log({

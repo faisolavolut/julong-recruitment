@@ -694,7 +694,9 @@ function Page() {
                                 });
                                 return res;
                               }}
-                              onLabel={"level"}
+                              onLabel={(item: any) =>
+                                `${item.level} - ${item?.name}`
+                              }
                             />
                           </div>
                           <div>

@@ -27,10 +27,12 @@ import React from "react";
 import { DrawerBetter } from "@/lib/components/ui/drawer";
 import { FilterOutline } from "@/lib/svg/FilterOutline";
 import { SortEp } from "@/lib/svg/SortEp";
+import { get_params_url } from "@/lib/utils/getParamsUrl";
 
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
+  const take = 15;
   const local = useLocal({
     open: false,
     ready: false,
@@ -40,17 +42,21 @@ function HomePage() {
     page: 1,
     maxPage: 100,
     user: null as any,
-  });
-  useEffect(() => {
-    setIsClient(true);
-    const run = async () => {
+    filter: {} as any,
+    reload: async () => {
       try {
+        const params = await events("onload-param", {
+          paging: local.page,
+          take: take,
+          status: "IN PROGRESS",
+          ...local.filter,
+        });
         const res = await apix({
           port: "recruitment",
           value: "data.data.job_postings",
           path: `/api${
             get_user("id") ? `/` : `/no-auth/`
-          }job-postings/show-only?page=1&page_size=15&status=IN PROGRESS`,
+          }job-postings/show-only${params}`,
           method: "get",
         });
 
@@ -59,12 +65,12 @@ function HomePage() {
           value: "data.data.total",
           path: `/api${
             get_user("id") ? `/` : `/no-auth/`
-          }job-postings/show-only?page=1&page_size=8&status=IN PROGRESS`,
+          }job-postings/show-only${params}`,
           method: "get",
         });
         local.data = res;
         local.count = count;
-        local.maxPage = Math.ceil(getNumber(count) / 15);
+        local.maxPage = Math.ceil(getNumber(count) / take);
         local.render();
       } catch (ex) {}
 
@@ -82,6 +88,16 @@ function HomePage() {
       } catch (ex) {}
       local.ready = true;
       local.render();
+    },
+  });
+  useEffect(() => {
+    setIsClient(true);
+
+    const run = async () => {
+      const page = get_params_url("page");
+      local.page = getNumber(page) ? getNumber(page) : 1;
+      local.render();
+      await local.reload();
     };
     run();
   }, []);
@@ -93,6 +109,7 @@ function HomePage() {
         !getNumber(local.page) ? "1" : `${getNumber(local.page)}`
       );
       window.history.pushState({}, "", currentUrl);
+      local.reload();
     }
   };
   const priorityOptions = [
@@ -181,7 +198,10 @@ function HomePage() {
             {/* Filter Desktop */}
             <div className="hidden md:flex">
               <Form
-                onSubmit={async (fm: any) => {}}
+                onSubmit={async (fm: any) => {
+                  const data = fm.data;
+                  console.log(data);
+                }}
                 onLoad={async () => {
                   return {
                     priority: "recent",
@@ -413,7 +433,14 @@ function HomePage() {
                           </div>
                         </div>
                         <div className="flex flex-row items-center justify-end py-4 w-full">
-                          <ButtonBetter className="rounded-full w-full px-6 ">
+                          <ButtonBetter
+                            className="rounded-full w-full px-6 "
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              event.preventDefault();
+                              fm.submit();
+                            }}
+                          >
                             Apply Filter
                           </ButtonBetter>
                         </div>
@@ -429,10 +456,26 @@ function HomePage() {
                 {/* Filter Mobile */}
                 <div className="flex flex-row  md:hidden">
                   <Form
-                    onSubmit={async (fm: any) => {}}
+                    onSubmit={async (fm: any) => {
+                      let filter = {
+                        ...local.filter,
+                        relevant:
+                          fm.data.priority === "relevant" ? "YES" : "NO",
+                      };
+                      local.filter = filter;
+                      setParam({
+                        relevant:
+                          fm.data.priority === "relevant" ? "YES" : "NO",
+                      });
+                      local.render();
+                      local.reload();
+                    }}
                     onLoad={async () => {
                       return {
-                        priority: "recent",
+                        priority:
+                          local?.filter?.relevant === "YES"
+                            ? "relevant"
+                            : "recent",
                       };
                     }}
                     showResize={false}
@@ -478,7 +521,14 @@ function HomePage() {
                                             ];
                                           }}
                                         />
-                                        <ButtonBetter className="rounded-full w-full px-6 ">
+                                        <ButtonBetter
+                                          className="rounded-full w-full px-6 "
+                                          onClick={(event) => {
+                                            event.stopPropagation();
+                                            event.preventDefault();
+                                            fm.submit();
+                                          }}
+                                        >
                                           Apply
                                         </ButtonBetter>
                                       </div>
@@ -565,7 +615,7 @@ function HomePage() {
                                     </>
                                   }
                                   title={"Filter Jobs"}
-                                  description="Narrow down job listings based on your preferences"
+                                  description="Find jobs that match your preferences"
                                 >
                                   <ButtonBetter variant={"outline"}>
                                     <FilterOutline className="w-6 h-6" />
@@ -637,40 +687,7 @@ function HomePage() {
                               </div>
                             </div>
                             <div className="flex-grow grid grid-cols-1 hidden">
-                              <div className="grid grid-cols-2 gap-4">
-                                {/* <ButtonBetter
-                              className="rounded-full w-full px-6 text-sm"
-                              variant={
-                                fm?.data?.priority === "relevent"
-                                  ? "default"
-                                  : "outline"
-                              }
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                fm.data.priority = "relevent";
-                                fm.render();
-                              }}
-                            >
-                              Relevant
-                            </ButtonBetter>
-                            <ButtonBetter
-                              className="rounded-full w-full px-6 "
-                              variant={
-                                fm?.data?.priority === "recent"
-                                  ? "default"
-                                  : "outline"
-                              }
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                fm.data.priority = "recent";
-                                fm.render();
-                              }}
-                            >
-                              Recent
-                            </ButtonBetter> */}
-                              </div>
+                              <div className="grid grid-cols-2 gap-4"></div>
                             </div>
                           </div>
                         </>
@@ -715,7 +732,7 @@ function HomePage() {
                   setPage={(page: any) => {}}
                   countPage={1}
                   countData={local.count}
-                  take={15}
+                  take={take}
                   onChangePage={(page: number) => {
                     local.page = page;
                     local.render();
@@ -730,39 +747,25 @@ function HomePage() {
           <FlowbiteFooterSection />
         </div>
       </div>
-      {/* <div className="relative flex flex-col flex-grow">
-        <div className="flex-grow flex flex-col p-8 ">
-          <div className="flex flex-row items-center justify-between pb-4">
-            <p className="font-bold text-3xl">All Jobs</p>
-          </div>
-          <div className="flex flex-row flex-grow">
-            <div>
-              <PinterestLayout
-                gap={4}
-                data={[1, 2, 3, 4, 1]}
-                child={() => {
-                  return <JobCard />;
-                }}
-                col={1}
-              />
-            </div>
-            <div className="relative flex flex-row flex-grow overflow-y-scroll">
-              <div className="absolute top-0 left-0 flex-grow flex flex-col p-8 ">
-                <DetailJobs />
-                <CardCompanyProfile />
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-row items-center py-4">
-            <PaginationDemo />
-          </div>
-        </div>
-        <div className="flex flex-col">
-          <FlowbiteFooterSection />
-        </div>
-      </div> */}
     </div>
   );
 }
-
+const setParam = (data: Record<string, any>) => {
+  const currentUrl = new URL(window.location.href);
+  if (Object.keys(data).length > 0) {
+    Object.keys(data).forEach((key) => {
+      if (data[key]) {
+        currentUrl.searchParams.set(key, data[key]);
+      } else {
+        currentUrl.searchParams.delete(key);
+      }
+    });
+  } else {
+    // delete all params url
+    currentUrl.searchParams.forEach((value, key) => {
+      currentUrl.searchParams.delete(key);
+    });
+  }
+  window.history.pushState({}, "", currentUrl);
+};
 export default HomePage;
