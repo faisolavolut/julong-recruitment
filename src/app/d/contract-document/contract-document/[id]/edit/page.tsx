@@ -197,6 +197,12 @@ function Page() {
                 name: data?.job?.name,
               }
             : null,
+          grade: data?.grade_id
+            ? {
+                id: data?.grade_id,
+                name: data?.grade_name,
+              }
+            : null,
           job_title: data?.job_posting?.name,
           email: data?.applicant?.user_profile?.user?.email,
           project_number:

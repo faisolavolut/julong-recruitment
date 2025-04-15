@@ -107,6 +107,12 @@ function Page() {
         });
         return {
           status: "DRAFT",
+          grade: res?.grade_id
+            ? {
+                id: res?.grade_id,
+                name: res?.grade_name,
+              }
+            : null,
           document_number: res,
           sync_midsuit: "NO",
         };

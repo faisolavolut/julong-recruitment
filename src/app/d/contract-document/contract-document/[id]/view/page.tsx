@@ -78,6 +78,12 @@ function Page() {
                 name: data?.job?.name,
               }
             : null,
+          grade: data?.grade_id
+            ? {
+                id: data?.grade_id,
+                name: data?.grade_name,
+              }
+            : null,
           email: data?.applicant?.user_profile?.user?.email,
           project_number:
             data?.job_posting?.project_recruitment_header?.document_number,
