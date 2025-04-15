@@ -542,8 +542,8 @@ function Page() {
                                     await apix({
                                       port: "recruitment",
                                       value: "data.data",
-                                      path: "/api/administrative-results" + id,
-                                      method: "put",
+                                      path: "/api/administrative-results",
+                                      method: "post",
                                       data: {
                                         administrative_results: [
                                           {
