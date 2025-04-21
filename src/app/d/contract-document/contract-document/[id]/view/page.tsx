@@ -635,6 +635,17 @@ function Page() {
                           <div>
                             <Field
                               fm={fm}
+                              name={"house_allowance"}
+                              label={"Tunjangan Rumah"}
+                              type={"money"}
+                              prefix={
+                                <div className="text-xs font-bold px-1">Rp</div>
+                              }
+                            />
+                          </div>
+                          <div>
+                            <Field
+                              fm={fm}
                               name={"operational_allowance"}
                               label={"Tunjangan Operasional Kerja"}
                               type={"money"}

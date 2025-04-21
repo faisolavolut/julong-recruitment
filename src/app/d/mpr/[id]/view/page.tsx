@@ -439,30 +439,30 @@ function Page() {
                       return [
                         {
                           label: "1 - Doctoral / Professor",
-                          value: "1 - Doctoral / Professor",
+                          value: "S3",
                         },
                         {
                           label: "2 - Master Degree",
-                          value: "2 - Master Degree",
+                          value: "S2",
                         },
-                        { label: "3 - Bachelor", value: "3 - Bachelor" },
-                        { label: "4 - Diploma 1", value: "4 - Diploma 1" },
-                        { label: "5 - Diploma 2", value: "5 - Diploma 2" },
-                        { label: "6 - Diploma 3", value: "6 - Diploma 3" },
-                        { label: "7 - Diploma 4", value: "7 - Diploma 4" },
+                        { label: "3 - Bachelor", value: "S1" },
+                        { label: "4 - Diploma 1", value: "D1" },
+                        { label: "5 - Diploma 2", value: "D2" },
+                        { label: "6 - Diploma 3", value: "D3" },
+                        { label: "7 - Diploma 4", value: "D4" },
                         {
                           label: "8 - Elementary School",
-                          value: "8 - Elementary School",
+                          value: "SD",
                         },
                         {
                           label: "9 - Senior High School",
-                          value: "9 - Senior High School",
+                          value: "SMA",
                         },
                         {
                           label: "10 - Junior High School",
-                          value: "10 - Junior High School",
+                          value: "SMP",
                         },
-                        { label: "11 - Unschooled", value: "11 - Unschooled" },
+                        { label: "11 - Unschooled", value: "TS" },
                       ];
                     }}
                   />
