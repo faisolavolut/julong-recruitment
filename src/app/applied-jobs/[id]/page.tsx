@@ -926,7 +926,7 @@ function Page() {
                                                                           idx
                                                                         ],
                                                                         answer:
-                                                                          null,
+                                                                          ev,
                                                                       };
                                                                       fm.render();
                                                                     },
