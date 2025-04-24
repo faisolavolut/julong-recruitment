@@ -18,7 +18,6 @@ import { LuPartyPopper } from "react-icons/lu";
 import { Field } from "@/lib/components/form/Field";
 import { Form } from "@/lib/components/form/Form";
 import { notFound } from "next/navigation";
-import { labelDocumentType } from "@/lib/utils/document_type";
 import { dayDate } from "@/lib/utils/date";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { GoClock } from "react-icons/go";
@@ -84,11 +83,7 @@ function Page() {
       let steps = res.map((e: any) => {
         const order = applicant?.order <= 1 ? 1 : applicant?.order;
         return {
-          id: e?.order,
-          label:
-            labelDocumentType(e?.template_activity_line?.name) === "Interview 1"
-              ? "Fortizy is the official job portal for Julong Group Indonesia, connecting top talent with the right opportunities"
-              : labelDocumentType(e?.template_activity_line?.name),
+          id: e?.orlabelDocumentType(e?.template_activity_line?.name),
           name: e?.template_activity_line?.template_question?.form_type,
           id_line: e?.id,
           result:
