@@ -876,13 +876,13 @@ function Page() {
                                                             placeholder={
                                                               item?.name ===
                                                               "Nomor Kartu BPJS KS"
-                                                                ? "min/max 11 digit"
+                                                                ? "min/max 13 digit"
                                                                 : item?.name ===
                                                                   "Nomor KTP"
                                                                 ? "min/max 16 digit"
                                                                 : item?.name ===
                                                                   "Nomor NPWP"
-                                                                ? "min/max 15 digit"
+                                                                ? "min 15 digit, max 16 digit"
                                                                 : item?.name ===
                                                                   "Nomor Kartu BPJS TK"
                                                                 ? "min/max 11 digit"
