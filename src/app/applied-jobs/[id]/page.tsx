@@ -871,7 +871,23 @@ function Page() {
                                                             )}
                                                             isDebounce={true}
                                                             name={"answer"}
+                                                            // “Nomor NPWP” : min 15 digit, max 16 digit “Nomor Kartu BPJS TK” : min/max 11 digit “Nomor KTP” : min/max 16 digit “Nomor Kartu BPJS KS” : min/max 13 digit
                                                             label={item?.name}
+                                                            placeholder={
+                                                              item?.name ===
+                                                              "Nomor Kartu BPJS KS"
+                                                                ? "min/max 11 digit"
+                                                                : item?.name ===
+                                                                  "Nomor KTP"
+                                                                ? "min/max 16 digit"
+                                                                : item?.name ===
+                                                                  "Nomor NPWP"
+                                                                ? "min/max 15 digit"
+                                                                : item?.name ===
+                                                                  "Nomor Kartu BPJS TK"
+                                                                ? "min/max 11 digit"
+                                                                : ""
+                                                            }
                                                             onChange={async (
                                                               ev
                                                             ) => {
