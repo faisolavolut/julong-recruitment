@@ -138,7 +138,7 @@ function HomePage() {
       </div>
       <div className="relative flex flex-col flex-grow">
         <div className="flex flex-col justify-center items-center">
-          <div className="flex-grow flex flex-col p-8 max-w-screen-xl">
+          <div className="flex-grow flex flex-col p-8 w-full max-w-screen-xl">
             <div className="flex flex-row items-center justify-between pb-4  w-full">
               <p className="font-bold text-xl md:text-3xl">Featured Jobs</p>
               <Link

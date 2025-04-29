@@ -313,27 +313,30 @@ const DefaultHeaderNavigation: FC = function () {
               </div>
               <div className="flex flex-col flex-grow">
                 <ListUI
-                  className={"border-none"}
+                  className={"border-none py-0"}
+                  classNameContainer={"gap-y-0"}
+                  classNameScrollArea={"p-0"}
                   name="todo"
                   content={({ item }: any) => {
                     return (
                       <>
-                        <div className="border border-gray-200  bg-white p-2 rounded-lg shadow-lg max-w-md">
-                          <div className="flex flex-col">
-                            <div className="flex flex-row gap-x-2 text-xs items-center">
-                              <div className=" p-1 rounded-md font-bold text-gray-800 bg-red-500">
-                                ANNOUNCEMENT
-                              </div>
-                              <div className="text-gray-600 ">
-                                March 17, 2025
-                              </div>
+                        <a
+                          href="#"
+                          className="flex border-y py-3 px-4 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+                        >
+                          <div className="w-full pl-3">
+                            <div className="mb-1.5 text-md font-normal text-gray-500 ">
+                              New message from&nbsp;
+                              <span className="font-semibold text-gray-900 ">
+                                Bonnie Green
+                              </span>
+                              : "Hey, what's up? All set for the presentation?"
                             </div>
-                            <p className="text-xs py-2">
-                              Join our online event and learn how to make money
-                              online
-                            </p>
+                            <div className="text-md font-medium text-primary-700 ">
+                              a few moments ago
+                            </div>
                           </div>
-                        </div>
+                        </a>
                       </>
                     );
                   }}

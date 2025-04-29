@@ -647,7 +647,7 @@ function Page() {
                             <Field
                               fm={fm}
                               name={"house_allowance"}
-                              label={"Tunjangan Rumah"}
+                              label={"Tunjangan Tempat Tinggal"}
                               type={"money"}
                               prefix={
                                 <div className="text-xs font-bold px-1">Rp</div>

@@ -194,7 +194,7 @@ function HomePage() {
       </div>
       <div className="relative flex flex-col flex-grow">
         <div className="flex flex-col justify-center items-center">
-          <div className="flex-grow grid md:grid-cols-5 md:p-8 max-w-screen-xl">
+          <div className="flex-grow grid md:grid-cols-5 md:p-8 w-full max-w-screen-xl">
             {/* Filter Desktop */}
             <div className="hidden md:flex">
               <Form
