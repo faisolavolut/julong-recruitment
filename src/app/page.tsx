@@ -93,7 +93,7 @@ function HomePage() {
                           <Field
                             style="underline"
                             fm={fm}
-                            name={"recommended_by"}
+                            name={"search"}
                             label={"Recommend by"}
                             type={"text"}
                             hidden_label={true}
@@ -110,7 +110,7 @@ function HomePage() {
                           <Field
                             fm={fm}
                             style="underline"
-                            name={"recommended_by"}
+                            name={"location"}
                             label={"Recommend by"}
                             type={"text"}
                             hidden_label={true}

@@ -1,17 +1,27 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  nextjs:
+  julong-mpp:
+    container_name: julong-recruitment
     build:
       context: .
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_BASE_URL: https://julong-portal.avolut.com
+        NEXT_PUBLIC_API_MPP: https://api-mpp.avolut.com
+        NEXT_PUBLIC_API_PORTAL: https://julong-portal.avolut.com
+        NEXT_PUBLIC_API_RECRUITMENT: https://api-recruitment.avolut.com
+        NEXT_PUBLIC_MAIN_URL: avolut.com
         NEXT_PUBLIC_BASE_URL: https://julong-mpp.avolut.com
+        NEXT_PUBLIC_MODE: production
+        NEXT_PUBLIC_NAME: recruitment
         NODE_ENV: production
-    environment:
-      - NEXT_PUBLIC_API_BASE_URL=https://julong-portal.avolut.com
-      - NEXT_PUBLIC_BASE_URL=https://julong-mpp.avolut.com
-      - NODE_ENV=production
     ports:
-      - "3000:3000"
+      - "3002:3000"
+    restart: unless-stopped
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
