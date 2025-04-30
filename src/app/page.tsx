@@ -124,7 +124,13 @@ function HomePage() {
                         </div>
                       </div>
                       <div className="flex flex-row items-center">
-                        <ButtonBetter className="rounded-full px-6">
+                        <ButtonBetter
+                          className="rounded-full px-6"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            fm.submit();
+                          }}
+                        >
                           Search My Job
                         </ButtonBetter>
                       </div>
