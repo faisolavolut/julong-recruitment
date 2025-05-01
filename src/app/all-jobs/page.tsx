@@ -32,7 +32,7 @@ import { get_params_url } from "@/lib/utils/getParamsUrl";
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
-  const take = 15;
+  const take = 1;
   const local = useLocal({
     open: false,
     ready: false,
@@ -94,6 +94,16 @@ function HomePage() {
     setIsClient(true);
 
     const run = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const filter: Record<string, any> = {};
+      params.forEach((value, key) => {
+        if (key === "priority") {
+          filter.relevant = value === "relevant" ? "YES" : "NO";
+        } else {
+          filter[key] = value;
+        }
+      });
+      local.filter = filter;
       const page = get_params_url("page");
       local.page = getNumber(page) ? getNumber(page) : 1;
       local.render();
@@ -113,8 +123,8 @@ function HomePage() {
     }
   };
   const priorityOptions = [
-    { label: "relevant", value: "relevant" },
-    { label: "recent", value: "recent" },
+    { label: "relevant", value: "YES" },
+    { label: "recent", value: "NO" },
   ];
   useEffect(() => {}, []);
   return (
@@ -128,9 +138,20 @@ function HomePage() {
         <div className="flex flex-grow max-w-screen-xl justify-center">
           <div className="flex w-full md:w-3/4 bg-gradient-white shadow-md rounded-md md:rounded-full">
             <Form
-              onSubmit={async (fm: any) => {}}
+              onSubmit={async (fm: any) => {
+                resetParam();
+                setParam({
+                  search: fm.data.search,
+                  location: fm.data.location,
+                  page: 1,
+                });
+                local.render();
+                local.reload();
+              }}
               onLoad={async () => {
-                return {};
+                return {
+                  ...local.filter,
+                };
               }}
               showResize={false}
               header={(fm: any) => {
@@ -149,7 +170,7 @@ function HomePage() {
                           <Field
                             style="underline"
                             fm={fm}
-                            name={"recommended_by"}
+                            name={"search"}
                             label={"Recommend by"}
                             type={"text"}
                             hidden_label={true}
@@ -166,7 +187,7 @@ function HomePage() {
                           <Field
                             fm={fm}
                             style="underline"
-                            name={"recommended_by"}
+                            name={"location"}
                             label={"Recommend by"}
                             type={"text"}
                             hidden_label={true}
@@ -200,11 +221,20 @@ function HomePage() {
               <Form
                 onSubmit={async (fm: any) => {
                   const data = fm.data;
-                  console.log(data);
+                  setParam({
+                    ...data,
+                    page: 1,
+                  });
                 }}
                 onLoad={async () => {
                   return {
-                    priority: "recent",
+                    ...local.filter,
+                    job_type: local.filter?.job_type
+                      ? local.filter?.job_type.split(",")
+                      : [],
+                    experience: local.filter?.experience
+                      ? local.filter?.experience.split(",")
+                      : [],
                   };
                 }}
                 showResize={false}
@@ -244,14 +274,14 @@ function HomePage() {
                                       <ButtonBetter
                                         className="rounded-full w-full px-6 text-sm"
                                         variant={
-                                          fm?.data?.priority === "relevent"
+                                          fm?.data?.relevant === "YES"
                                             ? "default"
                                             : "outline"
                                         }
                                         onClick={(e) => {
                                           e.preventDefault();
                                           e.stopPropagation();
-                                          fm.data.priority = "relevent";
+                                          fm.data.relevant = "YES";
                                           fm.render();
                                         }}
                                       >
@@ -260,14 +290,14 @@ function HomePage() {
                                       <ButtonBetter
                                         className="rounded-full w-full px-6 "
                                         variant={
-                                          fm?.data?.priority === "recent"
+                                          fm?.data?.relevant === "NO"
                                             ? "default"
                                             : "outline"
                                         }
                                         onClick={(e) => {
                                           e.preventDefault();
                                           e.stopPropagation();
-                                          fm.data.priority = "recent";
+                                          fm.data.relevant = "NO";
                                           fm.render();
                                         }}
                                       >
@@ -459,23 +489,37 @@ function HomePage() {
                     onSubmit={async (fm: any) => {
                       let filter = {
                         ...local.filter,
-                        relevant:
-                          fm.data.priority === "relevant" ? "YES" : "NO",
+                        ...fm.data,
                       };
                       local.filter = filter;
+                      const data = fm.data;
                       setParam({
-                        relevant:
-                          fm.data.priority === "relevant" ? "YES" : "NO",
+                        ...data,
+                        page: 1,
                       });
                       local.render();
                       local.reload();
                     }}
                     onLoad={async () => {
+                      console.log({
+                        ...local.filter,
+
+                        job_type: local.filter?.job_type
+                          ? local.filter?.job_type.split(",")
+                          : [],
+                        experience: local.filter?.experience
+                          ? local.filter?.experience.split(",")
+                          : [],
+                      });
                       return {
-                        priority:
-                          local?.filter?.relevant === "YES"
-                            ? "relevant"
-                            : "recent",
+                        ...local.filter,
+
+                        job_type: local.filter?.job_type
+                          ? local.filter?.job_type.split(",")
+                          : [],
+                        experience: local.filter?.experience
+                          ? local.filter?.experience.split(",")
+                          : [],
                       };
                     }}
                     showResize={false}
@@ -498,7 +542,7 @@ function HomePage() {
                                       <div className="px-4 pb-4 flex flex-col gap-y-2">
                                         <Field
                                           fm={fm}
-                                          name={"priority"}
+                                          name={"relevant"}
                                           hidden_label={true}
                                           label={"Option"}
                                           type={"radio"}
@@ -512,11 +556,11 @@ function HomePage() {
                                             return [
                                               {
                                                 label: "Relevant",
-                                                value: "relevant",
+                                                value: "YES",
                                               },
                                               {
                                                 label: "Recent",
-                                                value: "recent",
+                                                value: "NO",
                                               },
                                             ];
                                           }}
@@ -654,7 +698,7 @@ function HomePage() {
                                           <div
                                             className="flex px-2 py-1 hover:bg-gray-100 cursor-pointer"
                                             onClick={() => {
-                                              fm.data.priority = option.value;
+                                              fm.data.relevant = option.value;
                                               fm.render();
                                               setOpen(false);
                                             }}
@@ -676,7 +720,7 @@ function HomePage() {
                                       setOpen(true);
                                     }}
                                   >
-                                    {fm.data.priority}{" "}
+                                    {fm.data.relevant}{" "}
                                     {open ? (
                                       <GoChevronUp size={14} />
                                     ) : (
@@ -766,6 +810,13 @@ const setParam = (data: Record<string, any>) => {
       currentUrl.searchParams.delete(key);
     });
   }
+  window.history.pushState({}, "", currentUrl);
+};
+const resetParam = () => {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.forEach((value, key) => {
+    currentUrl.searchParams.delete(key);
+  });
   window.history.pushState({}, "", currentUrl);
 };
 export default HomePage;
