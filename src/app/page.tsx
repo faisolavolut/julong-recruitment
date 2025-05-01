@@ -72,7 +72,11 @@ function HomePage() {
         <div className="flex flex-grow max-w-screen-xl justify-center">
           <div className="flex w-full md:w-3/4 bg-gradient-white shadow-md rounded-md md:rounded-full">
             <Form
-              onSubmit={async (fm: any) => {}}
+              onSubmit={async (fm: any) => {
+                navigate(
+                  `/all-jobs?search=${fm.data.search}&location=${fm.data.location}`
+                );
+              }}
               onLoad={async () => {
                 return {};
               }}
@@ -124,7 +128,13 @@ function HomePage() {
                         </div>
                       </div>
                       <div className="flex flex-row items-center">
-                        <ButtonBetter className="rounded-full px-6">
+                        <ButtonBetter
+                          className="rounded-full px-6"
+                          onClick={(event) => {
+                            event.preventDefault();
+                            fm.submit();
+                          }}
+                        >
                           Search My Job
                         </ButtonBetter>
                       </div>
@@ -169,5 +179,22 @@ function HomePage() {
     </div>
   );
 }
-
+const setParam = (data: Record<string, any>) => {
+  const currentUrl = new URL(window.location.href);
+  if (Object.keys(data).length > 0) {
+    Object.keys(data).forEach((key) => {
+      if (data[key]) {
+        currentUrl.searchParams.set(key, data[key]);
+      } else {
+        currentUrl.searchParams.delete(key);
+      }
+    });
+  } else {
+    // delete all params url
+    currentUrl.searchParams.forEach((value, key) => {
+      currentUrl.searchParams.delete(key);
+    });
+  }
+  window.history.pushState({}, "", currentUrl);
+};
 export default HomePage;
