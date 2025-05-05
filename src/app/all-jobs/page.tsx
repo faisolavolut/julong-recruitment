@@ -32,7 +32,7 @@ import { get_params_url } from "@/lib/utils/getParamsUrl";
 function HomePage() {
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
-  const take = 1;
+  const take = 10;
   const local = useLocal({
     open: false,
     ready: false,
