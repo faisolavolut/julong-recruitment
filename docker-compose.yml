@@ -11,6 +11,8 @@ services:
         NEXT_PUBLIC_API_MPP: https://hris.julongindonesia.com:5502
         NEXT_PUBLIC_API_PORTAL: https://hris.julongindonesia.com:5501
         NEXT_PUBLIC_API_RECRUITMENT: https://hris.julongindonesia.com:5503
+        NEXT_PUBLIC_API_ONBOARDING: https://hris.julongindonesia.com:5504
+        NEXT_PUBLIC_API_NOTIFICATION: https://hris.julongindonesia.com:5505
         NEXT_PUBLIC_MAIN_URL: hris.julongindonesia.com
         NEXT_PUBLIC_BASE_URL: https://hris.julongindonesia.com:3002
         NEXT_PUBLIC_MODE: production
