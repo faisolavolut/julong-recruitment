@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "ts-node server.ts",
+    "dev": "node server.ts",
     "build": "next build --no-lint",
     "start": "node server.ts",
     "prod": "node server.ts",
