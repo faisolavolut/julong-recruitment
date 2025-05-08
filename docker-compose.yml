@@ -7,12 +7,12 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_BASE_URL: https://julong-portal.avolut.com
-        NEXT_PUBLIC_API_MPP: https://api-mpp.avolut.com
-        NEXT_PUBLIC_API_PORTAL: https://julong-portal.avolut.com
-        NEXT_PUBLIC_API_RECRUITMENT: https://api-recruitment.avolut.com
-        NEXT_PUBLIC_MAIN_URL: avolut.com
-        NEXT_PUBLIC_BASE_URL: https://julong-mpp.avolut.com
+        NEXT_PUBLIC_API_BASE_URL: https://hris.julongindonesia.com:5503
+        NEXT_PUBLIC_API_MPP: https://hris.julongindonesia.com:5502
+        NEXT_PUBLIC_API_PORTAL: https://hris.julongindonesia.com:5501
+        NEXT_PUBLIC_API_RECRUITMENT: https://hris.julongindonesia.com:5503
+        NEXT_PUBLIC_MAIN_URL: hris.julongindonesia.com
+        NEXT_PUBLIC_BASE_URL: https://hris.julongindonesia.com:3002
         NEXT_PUBLIC_MODE: production
         NEXT_PUBLIC_NAME: recruitment
         NODE_ENV: production
