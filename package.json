@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "node server.ts",
     "build": "next build --no-lint",
-    "start": "node server.ts",
-    "prod": "node server.ts",
+    "start": "NODE_ENV=production server.ts",
+    "prod": "NODE_ENV=production server.ts",
     "lint": "next lint"
   },
   "dependencies": {
