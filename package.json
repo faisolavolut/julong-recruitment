@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node server.ts",
+    "dev": "node server.js",
     "build": "next build --no-lint",
-    "start": "NODE_ENV=production server.ts",
-    "prod": "NODE_ENV=production server.ts",
+    "start": "NODE_ENV=production server.js",
+    "prod": "NODE_ENV=production server.js",
     "lint": "next lint"
   },
   "dependencies": {
